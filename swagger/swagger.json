@@ -413,7 +413,7 @@
                     "200": {
                         "description": "请求结果",
                         "schema": {
-                            "$ref": "#/definitions/model.FileUploadRes"
+                            "$ref": "#/definitions/internal.FileUploadRes"
                         }
                     }
                 }
@@ -656,7 +656,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.UserRegisterReq"
+                            "$ref": "#/definitions/internal.UserRegisterReq"
                         }
                     }
                 ],
@@ -687,7 +687,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.ReplyDoCreateReq"
+                            "$ref": "#/definitions/internal.ReplyDoCreateReq"
                         }
                     }
                 ],
@@ -1057,7 +1057,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.UserPasswordReq"
+                            "$ref": "#/definitions/internal.UserPasswordReq"
                         }
                     }
                 ],
@@ -1087,7 +1087,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.UserUpdateProfileReq"
+                            "$ref": "#/definitions/internal.UserUpdateProfileReq"
                         }
                     }
                 ],
@@ -1233,6 +1233,101 @@
                 }
             }
         },
+        "internal.FileUploadRes": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "description": "文件名称",
+                    "type": "string"
+                },
+                "url": {
+                    "description": "访问URL，可能只是URI",
+                    "type": "string"
+                }
+            }
+        },
+        "internal.ReplyDoCreateReq": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "description": "回复内容",
+                    "type": "string"
+                },
+                "parentId": {
+                    "description": "回复对应的上一级回复ID(没有的话默认为0)",
+                    "type": "integer"
+                },
+                "targetId": {
+                    "description": "对应内容ID",
+                    "type": "integer"
+                },
+                "targetType": {
+                    "description": "评论类型: topic, ask, article, reply",
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "internal.UserPasswordReq": {
+            "type": "object",
+            "properties": {
+                "newPassword": {
+                    "description": "新密码",
+                    "type": "string"
+                },
+                "oldPassword": {
+                    "description": "原密码",
+                    "type": "string"
+                }
+            }
+        },
+        "internal.UserRegisterReq": {
+            "type": "object",
+            "properties": {
+                "captcha": {
+                    "description": "验证码",
+                    "type": "string"
+                },
+                "nickname": {
+                    "description": "昵称",
+                    "type": "string"
+                },
+                "passport": {
+                    "description": "账号",
+                    "type": "string"
+                },
+                "password": {
+                    "description": "密码",
+                    "type": "string"
+                }
+            }
+        },
+        "internal.UserUpdateProfileReq": {
+            "type": "object",
+            "properties": {
+                "avatar": {
+                    "description": "头像地址",
+                    "type": "string"
+                },
+                "gender": {
+                    "description": "性别 0: 未设置 1: 男 2: 女",
+                    "type": "integer"
+                },
+                "id": {
+                    "description": "用户ID",
+                    "type": "integer"
+                },
+                "nickname": {
+                    "description": "昵称",
+                    "type": "string"
+                }
+            }
+        },
         "model.CategoryTreeItem": {
             "type": "object",
             "properties": {
@@ -1281,46 +1376,6 @@
                 }
             }
         },
-        "model.FileUploadRes": {
-            "type": "object",
-            "properties": {
-                "name": {
-                    "description": "文件名称",
-                    "type": "string"
-                },
-                "url": {
-                    "description": "访问URL，可能只是URI",
-                    "type": "string"
-                }
-            }
-        },
-        "model.ReplyDoCreateReq": {
-            "type": "object",
-            "properties": {
-                "content": {
-                    "description": "回复内容",
-                    "type": "string"
-                },
-                "parentId": {
-                    "description": "回复对应的上一级回复ID(没有的话默认为0)",
-                    "type": "integer"
-                },
-                "targetId": {
-                    "description": "对应内容ID",
-                    "type": "integer"
-                },
-                "targetType": {
-                    "description": "评论类型: topic, ask, article, reply",
-                    "type": "string"
-                },
-                "title": {
-                    "type": "string"
-                },
-                "userId": {
-                    "type": "integer"
-                }
-            }
-        },
         "model.UserGetListInput": {
             "type": "object",
             "properties": {
@@ -1350,61 +1405,6 @@
                 "userId": {
                     "description": "要查询的用户ID",
                     "type": "integer"
-                }
-            }
-        },
-        "model.UserPasswordReq": {
-            "type": "object",
-            "properties": {
-                "newPassword": {
-                    "description": "新密码",
-                    "type": "string"
-                },
-                "oldPassword": {
-                    "description": "原密码",
-                    "type": "string"
-                }
-            }
-        },
-        "model.UserRegisterReq": {
-            "type": "object",
-            "properties": {
-                "captcha": {
-                    "description": "验证码",
-                    "type": "string"
-                },
-                "nickname": {
-                    "description": "昵称",
-                    "type": "string"
-                },
-                "passport": {
-                    "description": "账号",
-                    "type": "string"
-                },
-                "password": {
-                    "description": "密码",
-                    "type": "string"
-                }
-            }
-        },
-        "model.UserUpdateProfileReq": {
-            "type": "object",
-            "properties": {
-                "avatar": {
-                    "description": "头像地址",
-                    "type": "string"
-                },
-                "gender": {
-                    "description": "性别 0: 未设置 1: 男 2: 女",
-                    "type": "integer"
-                },
-                "id": {
-                    "description": "用户ID",
-                    "type": "integer"
-                },
-                "nickname": {
-                    "description": "昵称",
-                    "type": "string"
                 }
             }
         },

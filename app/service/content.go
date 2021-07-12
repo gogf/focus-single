@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"focus/app/cnt"
 	"focus/app/dao"
 	"focus/app/model"
 	"github.com/gogf/gf/database/gdb"
@@ -28,7 +29,7 @@ func (s *contentService) GetList(ctx context.Context, input model.ContentGetList
 	if input.Type != "" {
 		m = m.Where(dao.Content.C.Type, input.Type)
 	} else {
-		m = m.Where(dao.Content.C.Type, model.ContentTypeTopic)
+		m = m.Where(dao.Content.C.Type, cnt.ContentTypeTopic)
 	}
 	// 栏目检索
 	if input.CategoryId > 0 {
@@ -46,10 +47,12 @@ func (s *contentService) GetList(ctx context.Context, input model.ContentGetList
 	listModel := m.Page(input.Page, input.Size)
 	// 排序方式
 	switch input.Sort {
-	case model.ContentSortHot:
+	case cnt.ContentSortHot:
 		listModel = listModel.OrderDesc(dao.Content.C.ViewCount)
-	case model.ContentSortActive:
+
+	case cnt.ContentSortActive:
 		listModel = listModel.OrderDesc(dao.Content.C.UpdatedAt)
+
 	default:
 		listModel = listModel.OrderDesc(dao.Content.C.Id)
 	}
@@ -114,12 +117,15 @@ func (s *contentService) Search(ctx context.Context, input model.ContentSearchIn
 	}
 	listModel := m.Page(input.Page, input.Size)
 	switch input.Sort {
-	case model.ContentSortHot:
+	case cnt.ContentSortHot:
 		listModel = listModel.OrderDesc(dao.Content.C.ViewCount)
-	case model.ContentSortActive:
+
+	case cnt.ContentSortActive:
 		listModel = listModel.OrderDesc(dao.Content.C.UpdatedAt)
+
 	//case model.ContentSortScore:
 	//	listModel = listModel.OrderDesc("score")
+
 	default:
 		listModel = listModel.OrderDesc(dao.Content.C.Id)
 	}

@@ -1,6 +1,8 @@
 package api
 
 import (
+	"focus/app/api/internal"
+	"focus/app/cnt"
 	"focus/app/model"
 	"focus/app/service"
 	"focus/library/response"
@@ -19,7 +21,7 @@ type userApi struct{}
 // @success 200 {string} html "页面HTML"
 func (a *userApi) Index(r *ghttp.Request) {
 	var (
-		req *model.UserGetListReq
+		req *internal.UserGetListReq
 	)
 	if err := r.Parse(&req); err != nil {
 		service.View.Render500(r, model.View{
@@ -99,7 +101,7 @@ func (a *userApi) Password(r *ghttp.Request) {
 // @router  /user/article [GET]
 // @success 200 {string} html "页面HTML"
 func (a *userApi) Article(r *ghttp.Request) {
-	a.getContentList(r, model.ContentTypeArticle, service.Context.Get(r.Context()).User.Id)
+	a.getContentList(r, cnt.ContentTypeArticle, service.Context.Get(r.Context()).User.Id)
 }
 
 // @summary 我的主题页面
@@ -108,7 +110,7 @@ func (a *userApi) Article(r *ghttp.Request) {
 // @router  /user/topic [GET]
 // @success 200 {string} html "页面HTML"
 func (a *userApi) Topic(r *ghttp.Request) {
-	a.getContentList(r, model.ContentTypeTopic, service.Context.Get(r.Context()).User.Id)
+	a.getContentList(r, cnt.ContentTypeTopic, service.Context.Get(r.Context()).User.Id)
 }
 
 // @summary 我的问答页面
@@ -117,13 +119,13 @@ func (a *userApi) Topic(r *ghttp.Request) {
 // @router  /user/ask [GET]
 // @success 200 {string} html "页面HTML"
 func (a *userApi) Ask(r *ghttp.Request) {
-	a.getContentList(r, model.ContentTypeAsk, service.Context.Get(r.Context()).User.Id)
+	a.getContentList(r, cnt.ContentTypeAsk, service.Context.Get(r.Context()).User.Id)
 }
 
 // 获取内容列表 参数contentType,用户信息
 func (a *userApi) getContentList(r *ghttp.Request, contentType string, userId uint) {
 	var (
-		req *model.UserGetListReq
+		req *internal.UserGetListReq
 	)
 	if err := r.Parse(&req); err != nil {
 		service.View.Render500(r, model.View{
@@ -156,7 +158,7 @@ func (a *userApi) getContentList(r *ghttp.Request, contentType string, userId ui
 // @success 200 {string} html "页面HTML"
 func (a *userApi) Message(r *ghttp.Request) {
 	var (
-		req *model.UserGetMessageListReq
+		req *internal.UserGetMessageListReq
 	)
 	if err := r.Parse(&req); err != nil {
 		response.JsonExit(r, 1, err.Error())
@@ -177,12 +179,12 @@ func (a *userApi) Message(r *ghttp.Request) {
 // @summary AJAX保存个人资料
 // @tags    前台-用户
 // @produce json
-// @param   entity body model.UserPasswordReq true "请求参数" required
+// @param   entity body internal.UserPasswordReq true "请求参数" required
 // @router  /user/update-password [POST]
 // @success 200 {object} response.JsonRes "请求结果"
 func (a *userApi) UpdatePassword(r *ghttp.Request) {
 	var (
-		req *model.UserPasswordReq
+		req *internal.UserPasswordReq
 	)
 	if err := r.Parse(&req); err != nil {
 		response.JsonExit(r, 1, err.Error())
@@ -218,7 +220,7 @@ func (a *userApi) UpdateAvatar(r *ghttp.Request) {
 	}
 
 	var (
-		req *model.UserUpdateProfileReq
+		req *internal.UserUpdateProfileReq
 	)
 	if err := r.Parse(&req); err != nil {
 		response.JsonExit(r, 1, err.Error())
@@ -236,12 +238,12 @@ func (a *userApi) UpdateAvatar(r *ghttp.Request) {
 // @summary AJAX保存个人资料
 // @tags    前台-用户
 // @produce json
-// @param   entity body model.UserUpdateProfileReq true "请求参数" required
+// @param   entity body internal.UserUpdateProfileReq true "请求参数" required
 // @router  /user/update-profile [POST]
 // @success 200 {object} response.JsonRes "请求结果"
 func (a *userApi) UpdateProfile(r *ghttp.Request) {
 	var (
-		req *model.UserUpdateProfileReq
+		req *internal.UserUpdateProfileReq
 	)
 	if err := r.Parse(&req); err != nil {
 		response.JsonExit(r, 1, err.Error())

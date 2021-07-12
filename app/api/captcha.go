@@ -1,7 +1,7 @@
 package api
 
 import (
-	"focus/app/model"
+	"focus/app/cnt"
 	"focus/app/service"
 	"github.com/gogf/gf/net/ghttp"
 )
@@ -18,5 +18,5 @@ type captchaApi struct{}
 // @router  /captcha [GET]
 // @success 200 {file} body "验证码二进制内容"
 func (a *captchaApi) Index(r *ghttp.Request) {
-	service.Captcha.NewAndStore(r, model.CaptchaDefaultName)
+	service.Captcha.NewAndStore(r, cnt.CaptchaDefaultName)
 }

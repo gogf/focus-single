@@ -1,6 +1,7 @@
 package api
 
 import (
+	"focus/app/api/internal"
 	"focus/app/model"
 	"focus/app/service"
 	"focus/library/response"
@@ -17,7 +18,7 @@ type fileApi struct{}
 // @produce json
 // @param   file formData file true "文件域"
 // @router  /file/upload [POST]
-// @success 200 {object} model.FileUploadRes "请求结果"
+// @success 200 {object} internal.FileUploadRes "请求结果"
 func (a *fileApi) Upload(r *ghttp.Request) {
 	file := r.GetUploadFile("file")
 	if file == nil {
@@ -30,7 +31,7 @@ func (a *fileApi) Upload(r *ghttp.Request) {
 	if err != nil {
 		response.JsonExit(r, 1, err.Error())
 	}
-	response.JsonExit(r, 0, "", &model.FileUploadRes{
+	response.JsonExit(r, 0, "", &internal.FileUploadRes{
 		Name: uploadResult.Name,
 		Url:  uploadResult.Url,
 	})

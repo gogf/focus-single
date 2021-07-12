@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"fmt"
+	"focus/app/cnt"
 	"focus/app/dao"
 	"focus/app/model"
 	"github.com/gogf/gf/crypto/gmd5"
@@ -233,7 +234,7 @@ func (s *userService) UpdateProfile(ctx context.Context, input model.UserUpdateP
 // 禁用指定用户
 func (s *userService) Disable(ctx context.Context, id uint) error {
 	_, err := dao.User.Ctx(ctx).
-		Data(dao.User.C.Status, model.UserStatusDisabled).
+		Data(dao.User.C.Status, cnt.UserStatusDisabled).
 		Where(dao.User.C.Id, id).
 		Update()
 	return err

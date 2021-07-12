@@ -1,7 +1,7 @@
 package api
 
 import (
-	"focus/app/model"
+	"focus/app/api/internal"
 	"focus/app/service"
 	"focus/library/response"
 	"github.com/gogf/gf/net/ghttp"
@@ -21,7 +21,7 @@ type interactApi struct{}
 // @success 200 {object} response.JsonRes "请求结果"
 func (a *interactApi) Zan(r *ghttp.Request) {
 	var (
-		req *model.InteractZanReq
+		req *internal.InteractZanReq
 	)
 	if err := r.Parse(&req); err != nil {
 		response.JsonExit(r, 1, err.Error())
@@ -41,7 +41,7 @@ func (a *interactApi) Zan(r *ghttp.Request) {
 // @success 200 {object} response.JsonRes "请求结果"
 func (a *interactApi) CancelZan(r *ghttp.Request) {
 	var (
-		req *model.InteractCancelZanReq
+		req *internal.InteractCancelZanReq
 	)
 	if err := r.Parse(&req); err != nil {
 		response.JsonExit(r, 1, err.Error())
@@ -61,7 +61,7 @@ func (a *interactApi) CancelZan(r *ghttp.Request) {
 // @success 200 {object} response.JsonRes "请求结果"
 func (a *interactApi) Cai(r *ghttp.Request) {
 	var (
-		req *model.InteractCaiReq
+		req *internal.InteractCaiReq
 	)
 	if err := r.Parse(&req); err != nil {
 		response.JsonExit(r, 1, err.Error())
@@ -81,7 +81,7 @@ func (a *interactApi) Cai(r *ghttp.Request) {
 // @success 200 {object} response.JsonRes "请求结果"
 func (a *interactApi) CancelCai(r *ghttp.Request) {
 	var (
-		req *model.InteractCancelCaiReq
+		req *internal.InteractCancelCaiReq
 	)
 	if err := r.Parse(&req); err != nil {
 		response.JsonExit(r, 1, err.Error())

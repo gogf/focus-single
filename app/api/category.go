@@ -1,7 +1,7 @@
 package api
 
 import (
-	"focus/app/model"
+	"focus/app/api/internal"
 	"focus/app/service"
 	"focus/library/response"
 	"github.com/gogf/gf/net/ghttp"
@@ -20,7 +20,7 @@ type categoryApi struct{}
 // @success 200 {array} model.CategoryTreeItem "分类列表"
 func (a *categoryApi) Tree(r *ghttp.Request) {
 	var (
-		req *model.CategoryGetTreeReq
+		req *internal.CategoryGetTreeReq
 	)
 	if err := r.Parse(&req); err != nil {
 		response.JsonExit(r, 1, err.Error())

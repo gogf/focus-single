@@ -1,6 +1,8 @@
 package api
 
 import (
+	"focus/app/api/internal"
+	"focus/app/cnt"
 	"focus/app/model"
 	"focus/app/service"
 	"focus/library/response"
@@ -26,17 +28,17 @@ func (a *registerApi) Index(r *ghttp.Request) {
 // @description 注册成功后自动登录。前端页面引导跳转
 // @tags    前台-注册
 // @produce json
-// @param   entity body model.UserRegisterReq true "请求参数" required
+// @param   entity body internal.UserRegisterReq true "请求参数" required
 // @router  /register/do [POST]
 // @success 200 {object} response.JsonRes "请求结果"
 func (a *registerApi) Do(r *ghttp.Request) {
 	var (
-		req *model.UserRegisterReq
+		req *internal.UserRegisterReq
 	)
 	if err := r.Parse(&req); err != nil {
 		response.JsonExit(r, 1, err.Error())
 	}
-	if !service.Captcha.VerifyAndClear(r, model.CaptchaDefaultName, req.Captcha) {
+	if !service.Captcha.VerifyAndClear(r, cnt.CaptchaDefaultName, req.Captcha) {
 		response.JsonExit(r, 1, "请输入正确的验证码")
 	}
 	if err := service.User.Register(r.Context(), req.UserRegisterInput); err != nil {

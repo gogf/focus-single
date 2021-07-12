@@ -1,6 +1,7 @@
 package service
 
 import (
+	"focus/app/cnt"
 	"focus/app/model"
 	"focus/library/response"
 	"github.com/gogf/gf/frame/g"
@@ -31,7 +32,7 @@ func (s *middlewareService) Ctx(r *ghttp.Request) {
 	Context.Init(r, customCtx)
 	if userEntity := Session.GetUser(r.Context()); userEntity != nil {
 
-		adminId := g.Cfg().GetUint("setting.adminId", model.DefaultAdminId)
+		adminId := g.Cfg().GetUint("setting.adminId", cnt.DefaultAdminId)
 		customCtx.User = &model.ContextUser{
 			Id:       userEntity.Id,
 			Passport: userEntity.Passport,
@@ -53,7 +54,7 @@ func (s *middlewareService) Auth(r *ghttp.Request) {
 	user := Session.GetUser(r.Context())
 	if user == nil {
 		Session.SetNotice(r.Context(), &model.SessionNotice{
-			Type:    model.SessionNoticeTypeWarn,
+			Type:    cnt.SessionNoticeTypeWarn,
 			Content: "未登录或会话已过期，请您登录后再继续",
 		})
 		// 只有GET请求才支持保存当前URL，以便后续登录后再跳转回来。

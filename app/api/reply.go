@@ -1,6 +1,7 @@
 package api
 
 import (
+	"focus/app/api/internal"
 	"focus/app/model"
 	"focus/app/service"
 	"focus/library/response"
@@ -16,12 +17,12 @@ type replyApi struct{}
 // @description 客户端AJAX提交，客户端
 // @tags    前台-回复
 // @produce json
-// @param   entity body model.ReplyDoCreateReq true "请求参数" required
+// @param   entity body internal.ReplyDoCreateReq true "请求参数" required
 // @router  /reply/do-create [POST]
 // @success 200 {object} response.JsonRes "请求结果"
 func (a *replyApi) DoCreate(r *ghttp.Request) {
 	var (
-		req *model.ReplyDoCreateReq
+		req *internal.ReplyDoCreateReq
 	)
 	if err := r.Parse(&req); err != nil {
 		response.JsonExit(r, 1, err.Error())
@@ -36,7 +37,7 @@ func (a *replyApi) DoCreate(r *ghttp.Request) {
 // 回复列表
 func (a *replyApi) Index(r *ghttp.Request) {
 	var (
-		req *model.ReplyGetListReq
+		req *internal.ReplyGetListReq
 	)
 	if err := r.Parse(&req); err != nil {
 		response.JsonExit(r, 1, err.Error())
@@ -56,7 +57,7 @@ func (a *replyApi) Index(r *ghttp.Request) {
 // @success 200 {object} response.JsonRes "请求结果"
 func (a *replyApi) DoDelete(r *ghttp.Request) {
 	var (
-		req *model.ReplyDoDeleteReq
+		req *internal.ReplyDoDeleteReq
 	)
 	if err := r.ParseForm(&req); err != nil {
 		response.JsonExit(r, 1, err.Error())

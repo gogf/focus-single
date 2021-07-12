@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"focus/app/cnt"
 	"focus/app/dao"
 	"focus/app/model"
 	"github.com/gogf/gf/errors/gerror"
@@ -33,7 +34,7 @@ func (s *fileService) Upload(ctx context.Context, input model.FileUploadInput) (
 	if err != nil {
 		return nil, err
 	}
-	if count >= model.FileMaxUploadCountMinute {
+	if count >= cnt.FileMaxUploadCountMinute {
 		return nil, gerror.New("您上传得太频繁，请稍后再操作")
 	}
 	dateDirName := gtime.Now().Format("Ymd")

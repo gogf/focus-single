@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"focus/app/cnt"
 	"focus/app/dao"
 	"focus/app/model"
 	"github.com/gogf/gf/database/gdb"
@@ -29,7 +30,7 @@ func (s *interactService) Zan(ctx context.Context, targetType string, targetId u
 			UserId:     customCtx.User.Id,
 			TargetId:   targetId,
 			TargetType: targetType,
-			Type:       model.InteractTypeZan,
+			Type:       cnt.InteractTypeZan,
 		}).FieldsEx(dao.Interact.C.Id).InsertIgnore()
 		if err != nil {
 			return err
@@ -37,7 +38,7 @@ func (s *interactService) Zan(ctx context.Context, targetType string, targetId u
 		if n, _ := r.RowsAffected(); n == 0 {
 			return gerror.New("您已经赞过啦")
 		}
-		return s.updateCount(ctx, model.InteractTypeZan, targetType, targetId, 1)
+		return s.updateCount(ctx, cnt.InteractTypeZan, targetType, targetId, 1)
 	})
 }
 
@@ -52,7 +53,7 @@ func (s *interactService) CancelZan(ctx context.Context, targetType string, targ
 			dao.Interact.C.UserId:     Context.Get(ctx).User.Id,
 			dao.Interact.C.TargetId:   targetId,
 			dao.Interact.C.TargetType: targetType,
-			dao.Interact.C.Type:       model.InteractTypeZan,
+			dao.Interact.C.Type:       cnt.InteractTypeZan,
 		}).Delete()
 		if err != nil {
 			return err
@@ -60,7 +61,7 @@ func (s *interactService) CancelZan(ctx context.Context, targetType string, targ
 		if n, _ := r.RowsAffected(); n == 0 {
 			return nil
 		}
-		return s.updateCount(ctx, model.InteractTypeZan, targetType, targetId, -1)
+		return s.updateCount(ctx, cnt.InteractTypeZan, targetType, targetId, -1)
 	})
 }
 
@@ -71,7 +72,7 @@ func (s *interactService) DidIZan(ctx context.Context, targetType string, target
 		return false, err
 	}
 	for _, v := range list {
-		if v.TargetId == targetId && v.TargetType == targetType && v.Type == model.InteractTypeZan {
+		if v.TargetId == targetId && v.TargetType == targetType && v.Type == cnt.InteractTypeZan {
 			return true, nil
 		}
 	}
@@ -89,7 +90,7 @@ func (s *interactService) Cai(ctx context.Context, targetType string, targetId u
 			UserId:     customCtx.User.Id,
 			TargetId:   targetId,
 			TargetType: targetType,
-			Type:       model.InteractTypeCai,
+			Type:       cnt.InteractTypeCai,
 		}).FieldsEx(dao.Interact.C.Id).InsertIgnore()
 		if err != nil {
 			return err
@@ -97,7 +98,7 @@ func (s *interactService) Cai(ctx context.Context, targetType string, targetId u
 		if n, _ := r.RowsAffected(); n == 0 {
 			return gerror.New("您已经踩过啦")
 		}
-		return s.updateCount(ctx, model.InteractTypeCai, targetType, targetId, 1)
+		return s.updateCount(ctx, cnt.InteractTypeCai, targetType, targetId, 1)
 	})
 }
 
@@ -112,7 +113,7 @@ func (s *interactService) CancelCai(ctx context.Context, targetType string, targ
 			dao.Interact.C.UserId:     Context.Get(ctx).User.Id,
 			dao.Interact.C.TargetId:   targetId,
 			dao.Interact.C.TargetType: targetType,
-			dao.Interact.C.Type:       model.InteractTypeCai,
+			dao.Interact.C.Type:       cnt.InteractTypeCai,
 		}).Delete()
 		if err != nil {
 			return err
@@ -120,7 +121,7 @@ func (s *interactService) CancelCai(ctx context.Context, targetType string, targ
 		if n, _ := r.RowsAffected(); n == 0 {
 			return nil
 		}
-		return s.updateCount(ctx, model.InteractTypeCai, targetType, targetId, -1)
+		return s.updateCount(ctx, cnt.InteractTypeCai, targetType, targetId, -1)
 	})
 }
 
@@ -131,7 +132,7 @@ func (s *interactService) DidICai(ctx context.Context, targetType string, target
 		return false, err
 	}
 	for _, v := range list {
-		if v.TargetId == targetId && v.TargetType == targetType && v.Type == model.InteractTypeCai {
+		if v.TargetId == targetId && v.TargetType == targetType && v.Type == cnt.InteractTypeCai {
 			return true, nil
 		}
 	}
@@ -169,9 +170,9 @@ func (s *interactService) updateCount(ctx context.Context, interactType int, tar
 		var err error
 		switch targetType {
 		// 内容赞踩
-		case model.InteractTargetTypeContent:
+		case cnt.InteractTargetTypeContent:
 			switch interactType {
-			case model.InteractTypeZan:
+			case cnt.InteractTypeZan:
 				_, err = dao.Content.Ctx(ctx).
 					Where(dao.Content.C.Id, targetId).
 					WhereGTE(dao.Content.C.ZanCount, 0).
@@ -180,7 +181,7 @@ func (s *interactService) updateCount(ctx context.Context, interactType int, tar
 					return err
 				}
 
-			case model.InteractTypeCai:
+			case cnt.InteractTypeCai:
 				_, err = dao.Content.Ctx(ctx).
 					Where(dao.Content.C.Id, targetId).
 					WhereGTE(dao.Content.C.CaiCount, 0).
@@ -190,9 +191,9 @@ func (s *interactService) updateCount(ctx context.Context, interactType int, tar
 				}
 			}
 		// 评论赞踩
-		case model.InteractTargetTypeReply:
+		case cnt.InteractTargetTypeReply:
 			switch interactType {
-			case model.InteractTypeZan:
+			case cnt.InteractTypeZan:
 				_, err = dao.Reply.Ctx(ctx).
 					Where(dao.Content.C.Id, targetId).
 					WhereGTE(dao.Content.C.ZanCount, 0).
@@ -201,7 +202,7 @@ func (s *interactService) updateCount(ctx context.Context, interactType int, tar
 					return err
 				}
 
-			case model.InteractTypeCai:
+			case cnt.InteractTypeCai:
 				_, err = dao.Reply.Ctx(ctx).
 					Where(dao.Content.C.Id, targetId).
 					WhereGTE(dao.Content.C.CaiCount, 0).

@@ -1,6 +1,8 @@
 package api
 
 import (
+	"focus/app/api/internal"
+	"focus/app/cnt"
 	"focus/app/model"
 	"focus/app/service"
 	"focus/library/response"
@@ -34,12 +36,12 @@ func (a *loginApi) Index(r *ghttp.Request) {
 // @success 200 {object} response.JsonRes "执行结果"
 func (a *loginApi) Do(r *ghttp.Request) {
 	var (
-		req *model.UserLoginReq
+		req *internal.UserLoginReq
 	)
 	if err := r.Parse(&req); err != nil {
 		response.JsonExit(r, 1, err.Error())
 	}
-	if !service.Captcha.VerifyAndClear(r, model.CaptchaDefaultName, req.Captcha) {
+	if !service.Captcha.VerifyAndClear(r, cnt.CaptchaDefaultName, req.Captcha) {
 		response.JsonExit(r, 1, "请输入正确的验证码")
 	}
 	if err := service.User.Login(r.Context(), req.UserLoginInput); err != nil {

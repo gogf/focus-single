@@ -2,6 +2,7 @@ package api
 
 import (
 	"focus/app/api/internal"
+	"focus/app/cnt"
 	"focus/app/model"
 	"focus/app/service"
 	"github.com/gogf/gf/net/ghttp"
@@ -30,7 +31,7 @@ func (a *articleApi) Index(r *ghttp.Request) {
 			Error: err.Error(),
 		})
 	}
-	req.Type = model.ContentTypeArticle
+	req.Type = cnt.ContentTypeArticle
 	if getListRes, err := service.Content.GetList(r.Context(), req.ContentGetListInput); err != nil {
 		service.View.Render500(r, model.View{
 			Error: err.Error(),
@@ -74,7 +75,7 @@ func (a *articleApi) Detail(r *ghttp.Request) {
 			})
 		}
 		service.View.Render(r, model.View{
-			ContentType: model.ContentTypeArticle,
+			ContentType: cnt.ContentTypeArticle,
 			Data:        getDetailRes,
 			Title: service.View.GetTitle(r.Context(), &model.ViewGetTitleInput{
 				ContentType: getDetailRes.Content.Type,

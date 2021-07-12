@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"focus/app/cnt"
 	"focus/app/model"
 	"github.com/gogf/gf/net/ghttp"
 	"github.com/gogf/gf/os/gtime"
@@ -97,9 +98,9 @@ func (s *viewBuildIn) IsNew(gt *gtime.Time) bool {
 // 根据性别字段内容返回性别的font。
 func (s *viewBuildIn) GenderFont(gender int) string {
 	switch gender {
-	case model.UserGenderMale:
+	case cnt.UserGenderMale:
 		return "&#xe651;"
-	case model.UserGenderFemale:
+	case cnt.UserGenderFemale:
 		return "&#xe636;"
 	default:
 		return "&#xead2;"
@@ -109,9 +110,9 @@ func (s *viewBuildIn) GenderFont(gender int) string {
 // 根据性别字段内容返回性别。
 func (s *viewBuildIn) Gender(gender int) string {
 	switch gender {
-	case model.UserGenderMale:
+	case cnt.UserGenderMale:
 		return "男"
-	case model.UserGenderFemale:
+	case cnt.UserGenderFemale:
 		return "女"
 	default:
 		return "未知"
@@ -121,11 +122,11 @@ func (s *viewBuildIn) Gender(gender int) string {
 // 根据性别字段内容返回性别。
 func (s *viewBuildIn) ContentTypeName(contentType string) string {
 	switch contentType {
-	case model.ContentTypeArticle:
+	case cnt.ContentTypeArticle:
 		return "文章"
-	case model.ContentTypeAsk:
+	case cnt.ContentTypeAsk:
 		return "问答"
-	case model.ContentTypeTopic:
+	case cnt.ContentTypeTopic:
 		return "主题"
 	default:
 		return "未知"
@@ -195,7 +196,7 @@ func (s *viewBuildIn) Version() string {
 	if gmode.IsDevelop() {
 		rand = gconv.String(gtime.TimestampMilli())
 	} else {
-		rand = VERSION
+		rand = cnt.Version
 	}
 	return rand
 }

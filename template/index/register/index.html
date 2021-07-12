@@ -1,0 +1,143 @@
+<div class="row">
+    <div class="col-md-6 offset-md-3 gf-register">
+        <div class="card">
+            <div class="card-header">
+                <span class="iconfont">&#xe666;</span> 用户注册
+            </div>
+            <div class="card-body">
+                <form id="registerForm" action="/register/do" method="post">
+                    <div class="form-group row">
+                        <label for="passport" class="col-sm-3 col-form-label required text-right">账号</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" minlength="3" maxlength="20"  name="passport" placeholder="请输入账号" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="nickname" class="col-sm-3 col-form-label required text-right">昵称</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" minlength="2" maxlength="20" name="nickname" placeholder="请输入昵称" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="password" class="col-sm-3 col-form-label required text-right">密码</label>
+                        <div class="col-sm-9">
+                            <input type="password" class="form-control" minlength="6" maxlength="20"  id="password" name="password" placeholder="请输入密码" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="password2" class="col-sm-3 col-form-label required text-right">确认密码</label>
+                        <div class="col-sm-9">
+                            <input type="password" class="form-control" minlength="6" maxlength="20" name="password2" placeholder="请再次输入密码" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="code" class="col-sm-3 col-form-label required text-right">验证码</label>
+                        <div class="col-sm-9">
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" minlength="4" maxlength="4"  name="captcha" placeholder="请输入正确的验证码" required>
+                                <div class="input-group-append">
+                                    <span class="input-group-text" style="cursor: pointer;padding: 0;">
+                                        <img id="code-img" class="captcha" loading="lazy" onclick="gf.reloadCaptcha()">
+                                    </span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-sm-3 offset-md-3">
+                            <button type="submit" class="btn btn-primary btn-block">注册</button>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+jQuery(function($) {
+    gf.reloadCaptcha();
+    // footer悬浮
+    $("footer").addClass("fixed-bottom");
+
+    $('#registerForm').validate({
+        errorElement: 'div',
+        errorClass: 'validation-error-block',
+        focusInvalid: true,
+        rules: {
+            password2: {
+                equalTo: "#password"
+            },
+        },
+        messages: {
+            passport: {
+                required: "请输入账号"
+            },
+            password: {
+                required: "请输入密码"
+            },
+            password2: {
+                required: "请确认密码",
+                equalTo: "输入的新密码两次不同"
+            },
+            nickname: {
+                required: "请确认昵称"
+            },
+            captcha: {
+                required: "请确认验证码"
+            }
+        },
+        submitHandler: function(form) {
+            $('button[type=submit]').attr('disabled', 'true');
+
+            // 传输加密
+            let passport  = $('[name="passport"]').val();
+            let password  = $('[name="password"]').val();
+            let password2 = $('[name="password2"]').val();
+            $('[name="password"]').val(hex_md5(passport + password));
+            $('[name="password2"]').val(hex_md5(passport + password2));
+
+            jQuery(form).ajaxSubmit({
+                dataType: 'json',
+                success:  function (r, textStatus) {
+                    if (r.code == 0) {
+                        swal({
+                            title:   "注册成功",
+                            text:    "页面将自动跳转到注册前页面",
+                            icon:    "success",
+                            timer:   2000,
+                            buttons: false
+                        }).then((value) => {
+                            if (r.redirect != "") {
+                                window.location.href = r.redirect;
+                            } else {
+                                window.location.href = "/";
+                            }
+                        });
+                    } else {
+                        if (r.message != "") {
+                            swal({
+                                text:   r.message,
+                                icon:   "warning",
+                                button: "确定"
+                            });
+                        }
+                        $('[name="captcha"]').val('');
+                        $('[name="password"]').val(password);
+                        $('[name="password2"]').val(password2);
+                        gf.reloadCaptcha()
+                    }
+                }
+            });
+            $('button[type=submit]').removeAttr('disabled');
+        },
+        errorPlacement: function (error, element) {
+            element.addClass("is-invalid")
+            error.appendTo(element.parent());
+        }
+    });
+});
+</script>

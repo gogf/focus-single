@@ -1,0 +1,193 @@
+<link rel="stylesheet" href="/plugin/vditor/dist/index.css"/>
+<script src="/plugin/vditor/dist/index.min.js" defer></script>
+
+<div class="col-sm-10 offset-md-1 gf-publish">
+    <div class="card">
+        <div class="card-header">
+            发布内容
+        </div>
+        <div class="card-body">
+            <form id="contentForm" action="/content/do-create" method="post">
+                <input type="hidden" value="{{.ContentType}}" name="type">
+                <div class="form-group row">
+                    <label class="col-sm-1 col-form-label required">标题</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" value="" name="title" placeholder="请输入标题">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-1 col-form-label required">栏目</label>
+                    <div class="col-sm-10">
+                        <div class="form-group">
+                            <select class="form-control" name="categoryId">
+                                {{range $index, $item := .BuildIn.CategoryTree .ContentType}}
+                                <option value="{{$item.Id}}">{{$item.Name}}</option>
+                                {{end}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-1 col-form-label required">内容</label>
+                    <div class="col-sm-10">
+                        <textarea name="content" style="display: none"></textarea>
+                        <div id="vditor"></div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-3 offset-md-1">
+                        <button type="submit" class="btn btn-primary btn-block">发布</button>
+                    </div>
+                </div>
+
+                <div class="form-group row"></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+<script type="text/javascript">
+jQuery(function($) {
+    // 编辑器初始化
+    let editor = new Vditor('vditor', {
+        cdn:'/plugin/vditor/',
+        theme : 'classic',
+        height: 400,
+        icon  : 'ant',
+        mode  : 'wysiwyg',
+        cache : {enable: false},
+        placeholder: "请输入内容",
+        toolbar: [
+            "emoji",
+            "headings",
+            "bold",
+            "italic",
+            "strike",
+            "link",
+            "|",
+            "list",
+            "ordered-list",
+            "check",
+            "outdent",
+            "indent",
+            "|",
+            "quote",
+            "line",
+            "code",
+            "inline-code",
+            "insert-before",
+            "insert-after",
+            "|",
+            "upload",
+            "table",
+            "|",
+            "undo",
+            "redo",
+            "|",
+            "fullscreen",
+            "edit-mode",
+            "outline",
+            "preview"
+        ],
+        upload: {
+            accept:       'image/*',       // 附件格式
+            url:          '/file/upload',  // 上传路径
+            linkToImgUrl: '/file/upload',  // 粘贴图片上传
+            max:          8 * 1024 * 1024, // 最大上传文件大小（8MB）
+            filename(name) {
+                return name.replace(/[^(a-zA-Z0-9\u4e00-\u9fa5\.)]/g, '').replace(/[\?\\/:|<>\*\[\]\(\)\$%\{\}@~]/g, '').replace('/\\s/g', '')
+            },
+            // 格式化上传返回
+            format(file, response) {
+                const {code, data, msg} = JSON.parse(response)
+                return JSON.stringify({msg, code, data: {errFiles: [], succMap: {"image.png": data.Url}}})
+            }
+        },
+        preview: {
+            maxWidth: 1920
+        },
+    });
+    // 表单校验
+    $('#contentForm').validate({
+        errorElement: 'div',
+        errorClass: 'validation-error-block',
+        focusInvalid: true,
+        rules: {
+            title: {
+                required: true
+            },
+            categoryId: {
+                required: true
+            }
+        },
+        messages: {
+            title: {
+                required: "请输入标题"
+            },
+            categoryId: {
+                required: "请选择栏目"
+            }
+        },
+        submitHandler: function(form) {
+            let submit = $('button[type=submit]')
+            if (submit.attr('disabled') == 'true') {
+                swal({
+                    text:   "请勿重复提交",
+                    icon:   "warning",
+                    button: "确定",
+                });
+                return
+            }
+            // 将编辑器的内容设置到content输入域中
+            let value = editor.getValue()
+            if (value.length < 10) {
+                swal({
+                    text:   "请输入内容",
+                    icon:   "warning",
+                    button: "确定",
+                });
+                return
+            }
+            $('textarea[name=content]').val(value)
+
+            submit.attr('disabled', 'true');
+            $(form).ajaxSubmit({
+                dataType: 'json',
+                success:  function (r, textStatus) {
+                    if (r.code == 0) {
+                        swal({
+                            title:   "发布成功",
+                            text:    "内容发布成功",
+                            icon:    "success",
+                            buttons: ["继续撰写", "查看详情"]
+                        }).then((value) => {
+                            if (value) {
+                                window.location.href = "/{{.ContentType}}/" + r.data.content_id
+                            } else {
+                                window.location.reload()
+                            }
+                        });
+                    } else {
+                        swal({
+                            text:   r.message,
+                            icon:   "warning",
+                            button: "确定",
+                        });
+                    }
+                }
+            });
+            submit.removeAttr('disabled');
+        },
+        errorPlacement: function (error, element) {
+            element.addClass("is-invalid")
+            error.appendTo(element.parent());
+        }
+    });
+});
+</script>
+
+
+
+

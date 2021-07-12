@@ -1,0 +1,347 @@
+<link rel="stylesheet" href="/plugin/prism/prism.css">
+<script src="/plugin/prism/prism.js"></script>
+<link rel="stylesheet" href="/plugin/vditor/dist/index.css"/>
+<script src="/plugin/vditor/dist/index.min.js" defer></script>
+<div class="row gf-content">
+    <div class="col-md-9">
+        <div class="gf-content-show">
+            {{if .BreadCrumb}}
+            <nav aria-label="breadcrumb" class="gf-content-breadcrumb ">
+                <ol class="breadcrumb">
+                    {{range $index, $item := .BreadCrumb}}
+                    <li class="breadcrumb-item {{if not $item.Url}}active{{end}}">
+                        {{if $item.Url}}
+                        <a href="{{$item.Url}}">{{$item.Name}}</a>
+                        {{else}}
+                        {{$item.Name}}
+                        {{end}}
+                    </li>
+                    {{end}}
+                </ol>
+            </nav>
+            {{end}}
+
+            <h2 class="gf-title">
+                {{.Data.Content.Title}}
+            </h2>
+            <div class="gf-detail-info">
+                <span class="icon iconfont">&#xe660;</span>
+                {{.Data.Content.ViewCount}} &nbsp; / &nbsp;
+                <span class="icon iconfont">&#xe6ab;</span>
+                {{.Data.Content.ReplyCount}} &nbsp; / &nbsp;
+
+                <a href="javascript:void(0);" data-type="content"
+                   onclick="javascript:gf.content.zan(this, {{.Data.Content.Id}})">
+                    {{if .BuildIn.DidIZan "content" .Data.Content.Id}}
+                    <span class="icon iconfont icon-zan-done"></span>
+                    {{else}}
+                    <span class="icon iconfont icon-zan"></span>
+                    {{end}}
+                    <span class="number">{{.Data.Content.ZanCount}}</span>
+                </a>
+
+                &nbsp; / &nbsp;
+
+                <a href="javascript:void(0);" data-type="content"
+                   onclick="javascript:gf.content.cai(this, {{.Data.Content.Id}})">
+                    {{if .BuildIn.DidICai "content" .Data.Content.Id}}
+                    <span class="icon iconfont icon-cai-done"></span>
+                    {{else}}
+                    <span class="icon iconfont icon-cai"></span>
+                    {{end}}
+                    <span class="number">{{.Data.Content.CaiCount}}</span>
+                </a>
+                &nbsp; / &nbsp;
+                发布于 {{.Data.Content.CreatedAt | .BuildIn.FormatTime}}
+
+                {{if .Context.User}}
+                {{if eq .Data.Content.UserId .Context.User.Id}}
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="/content/update?id={{.Data.Content.Id}}">编辑</a>
+                {{end}}
+                {{end}}
+            </div>
+            <div class="gf-content markdown-body" id="gf-content">{{.Data.Content.Content}}</div>
+        </div>
+
+        <div class="gf-comment-list">
+            <ul class="list-group">
+                <li class="list-group-item comment-num">共 {{.Data.Content.ReplyCount}} 条回复</li>
+                {{if not .Context.User}}
+                <li class="list-group-item">
+                    需要<a href="/login" class="btn btn-link">登录</a>
+                    后方可回复, 如果你还没有账号请点击这里<a href="/register" class="btn btn btn-link">注册</a>。
+                </li>
+                {{end}}
+            </ul>
+        </div>
+
+        <div class="gf-comment-editor">
+            <div id="vditor"></div>
+            <div style="background-color: white;padding: 10px;margin-bottom: 10px;" class="text-right">
+                <button id="reply-btn" data-reply-id="0" class="btn btn-primary btn-submit" type="submit">提交</button>
+            </div>
+        </div>
+
+    </div>
+    <div class="col-md-3">
+        <div class="gf-content-user">
+            <div>
+                <a href="/user/{{.Data.User.Id}}">
+                    <img class="gf-content-user-img image-border circle-image topic-list-author-avatar"
+                         src="{{.Data.User.Avatar}}">
+                </a>
+            </div>
+            <div class="gf-user-detail">
+                <h3>
+                    <a href="/user/{{.Data.User.Id}}">
+                        {{.Data.User.Nickname}}
+                    </a>
+                    <span class="icon iconfont">{{.BuildIn.GenderFont .Data.User.Gender}}</span>
+                </h3>
+            </div>
+        </div>
+        <div class="card gf-card gf-content-toc sticky-top" style="display: none;">
+            <div class="card-header"><span class="icon iconfont">&#xe647;</span> 内容目录</div>
+            <div id="gf-content-toc"></div>
+        </div>
+
+        {{include "index/index/page_link.html" .}}
+    </div>
+</div>
+<script type="application/javascript">
+    gf.content = {
+        // 赞
+        zan: function (elem, id) {
+            {{if .Context.User}}
+            gf.interact.checkZan(elem, id);
+            {{else}}
+            swal({
+                text:   "请登录后再做操作",
+                icon: "warning",
+                button: "确定"
+            });
+            {{end}}
+        },
+        // 踩
+        cai: function (elem, id) {
+            {{if .Context.User}}
+            gf.interact.checkCai(elem, id);
+            {{else}}
+            swal({
+                text:   "请登录后再做操作",
+                icon: "warning",
+                button: "确定"
+            });
+            {{end}}
+        },
+        adopted: function (id) {
+            jQuery.ajax({
+                type: 'POST',
+                url: '/content/adopt-reply',
+                data: {
+                    id: "{{.Data.Content.Id}}",
+                    reply_id: id,
+                },
+                success: function (r) {
+                    if (r.code === 0) {
+                        swal({text: "采纳成功", type: "success", button: "确定"}).then(
+                        function(){
+                            location.reload(); // 刷新页面同步回复统计
+                        });
+                    } else {
+                        swal({text: r.message, icon: "warning", button: "确定",});
+                    }
+                },
+                error: function (html) {
+                }
+            });
+        },
+        delete: function (id) {
+            swal({
+                title:   "删除回复",
+                text:    "您确定删除回复信息吗？",
+                icon:    "warning",
+                buttons: ["取消", "确定"]
+            }).then((value) => {
+
+                jQuery.ajax({
+                    type: 'POST',
+                    url: '/reply/do-delete',
+                    data: {
+                        id: id,
+                    },
+                    success: function (r) {
+                        if (r.code === 0) {
+                            swal({text: "删除成功", type: "success", button: "确定"}).then(
+                                function(){
+                                    location.reload(); // 刷新页面同步回复统计
+                                });
+                        } else {
+                            swal({text: r.message, icon: "warning", button: "确定",});
+                        }
+                    },
+                    error: function (html) {
+                    }
+                });
+
+            });
+
+        },
+        reply: function (id) {
+            $("#reply-btn").attr({"data-reply-id":id});
+            $("#reply-btn").html("回复#"+id);
+            $("#reply-btn").focus();
+        },
+        loadReply:function () {
+            jQuery.ajax({
+                type: 'GET',
+                url: '/reply/index',
+                data: {
+                    size: 30,
+                    page: 1,
+                    target_id: "{{.Data.Content.Id}}",
+                    target_type: "{{.Data.Content.Type}}",
+                    target_user_id: "{{.Data.Content.UserId}}",
+                },
+                success: function (r) {
+                    $('.reply-list').remove();
+                    $('.comment-num').after(r);
+
+                    // 采纳展示，如有有已经被采纳，那么其他全部隐藏
+                    $("[id^='adopted_btn_']").hide();
+                    if("{{.Data.Content.AdoptedReplyId}}"=="0"){
+                        // 只有作者可以采纳
+                        {{if .Context.User}}
+                        {{if eq .Context.User.Id .Data.Content.UserId }}
+                        $("[id^='adopted_btn_']").show();
+                        {{ end }}
+                        {{end}}
+                    }else{
+                        $("#adopted_it_{{.Data.Content.AdoptedReplyId}}").show();
+                    }
+                    
+                },
+                error: function (html) {
+                }
+            });
+        }
+    }
+    $(function () {
+        // 解析Markdown
+        $('.markdown-body').each(function (i, block) {
+            if ($(block).attr("parsed") == undefined) {
+                $(block).html(marked($(block).html()))
+                $(block).find('pre code').each(function (i, block) {
+                    Prism.highlightElement(block);
+                });
+                $(block).attr("parsed", "true")
+            }
+        });
+        // 内容目录
+        new Toc('gf-content', {
+            'level': 4,
+            'class': 'toc',
+            'targetId': 'gf-content-toc'
+        });
+        // 仅有内容时才展示
+        if ($('#gf-content-toc').text() != "undefined") {
+            $('.gf-content-toc').show()
+        }
+
+        let editor = new Vditor('vditor', {
+            cdn: '/plugin/vditor/',
+            theme: 'classic',
+            height: 300,
+            icon: 'ant',
+            cache: {enable: false},
+            placeholder: "~请开始你的表演...",
+            toolbar: [
+                'emoji',
+                'headings',
+                'bold',
+                'italic',
+                'strike',
+                '|',
+                'line',
+                'quote',
+                'list',
+                'ordered-list',
+                'check',
+                'outdent',
+                'indent',
+                'code',
+                'inline-code',
+                'insert-after',
+                'insert-before',
+                'undo',
+                'redo',
+                'upload',
+                'link',
+                'table',
+                'fullscreen'
+            ],
+            upload: {
+                // 附件格式
+                accept: 'image/*',
+                // 上传路径
+                url: '/file/upload',
+                // 粘贴图片上传
+                linkToImgUrl: '/file/upload',
+                filename(name) {
+                    return name.replace(/[^(a-zA-Z0-9\u4e00-\u9fa5\.)]/g, '').replace(/[\?\\/:|<>\*\[\]\(\)\$%\{\}@~]/g, '').replace('/\\s/g', '')
+                },
+                // 格式化上传返回
+                format(file, response) {
+                    const {code, data, msg} = JSON.parse(response)
+                    return JSON.stringify({msg, code, data: {errFiles: [], succMap: {"image.png": data.Url}}})
+                }
+            },
+            preview: {
+                maxWidth: 1920
+            },
+        });
+
+        $('.btn-submit').on('click', function () {
+
+            {{if not .Context.User}}
+            swal({
+                text:   "请登录后再做操作",
+                icon: "warning",
+                button: "确定"
+            });
+            return;
+            {{end}}
+
+            if (!editor.getHTML()) return;
+            $('button[type=submit]').attr('disabled', 'true');
+            var pid=$("#reply-btn").attr("data-reply-id");
+            jQuery.ajax({
+                type: 'POST',
+                url: '/reply/do-create',
+                data: {
+                    parent_id: pid,
+                    content: editor.getHTML(),
+                    target_id: "{{.Data.Content.Id}}",
+                    target_type: "{{.Data.Content.Type}}",
+                },
+                success: function (r) {
+                    $('button[type=submit]').removeAttr('disabled');
+                    if (r.code === 0) {
+                        swal({text: "评论成功", type: "success", button: "确定"}).then(
+                        function(){
+                            location.reload(); // 刷新页面同步回复统计
+                        });
+                        editor.setValue("", true)
+                    } else {
+                        swal({text: r.message, icon: "warning", button: "确定",});
+                    }
+                },
+                error: function (html) {
+                }
+            });
+        })
+
+        gf.content.loadReply();
+    })
+</script>

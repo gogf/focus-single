@@ -1,0 +1,27 @@
+<div class="row gf-list">
+    <div class="col-md-2 offset-md-1">
+        {{include "index/user/user_menu.html" .}}
+    </div>
+    <div class="col-md-8">
+        <div class="card gf-person">
+            <div class="card-header">
+                <span class="iconfont">&#xe6b3;</span> 我的主题
+            </div>
+            <div class="card-body">
+                <ul class="list-group">
+                    {{if .Data.Stats.topic}}
+                        {{include "index/user/user_content_list.html" .}}
+                    {{else}}
+                    <li class="list-group-item gf-list-item">
+                        <a href="/content/create?type=topic" class="btn btn-primary btn-block">还没有主题，赶紧来发布吧</a>
+                    </li>
+                    {{end}}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script>
+    $("#user-topic").addClass("active")
+</script>

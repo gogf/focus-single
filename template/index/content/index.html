@@ -1,0 +1,63 @@
+<style>
+
+</style>
+<!--- main --->
+<div class="row gf-list">
+    <div class="col-md-9">
+        <ul class="list-group">
+            <li class="list-group-item">
+                <a class="btn btn-link {{if not $.Query.cate}}text-primary{{else}}text-secondary{{end}} top-node-btn btn-sm" href="/{{.ContentType}}?sort={{.Query.sort}}">全部</a>
+                {{range $index, $item := .BuildIn.CategoryTree .ContentType}}
+                <a class="btn btn-link {{if eq $.Query.cate $item.Id}}text-primary{{else}}text-secondary{{end}} top-node-btn btn-sm" href="/{{$.ContentType}}?cate={{$item.Id}}&sort={{$.Query.sort}}">{{$item.Name}}</a>
+                {{end}}
+                <div class="float-right">
+                <a class="btn btn-link {{if eq .Query.sort 0}}text-primary{{else}}text-secondary{{end}} top-node-btn btn-sm" href="/{{$.ContentType}}?cate={{.Query.cate}}&sort=0">最新</a>
+                <a class="btn btn-link {{if eq .Query.sort 1}}text-primary{{else}}text-secondary{{end}} top-node-btn btn-sm" href="/{{$.ContentType}}?cate={{.Query.cate}}&sort=1">活跃</a>
+                <a class="btn btn-link {{if eq .Query.sort 2}}text-primary{{else}}text-secondary{{end}} top-node-btn btn-sm" href="/{{$.ContentType}}?cate={{.Query.cate}}&sort=2">热度</a>
+                </div>
+            </li>
+
+            {{range $index, $item := .Data.List}}
+            <li class="list-group-item gf-list-item">
+                <div class="gf-list-item-img">
+                    <img src="{{$item.User.Avatar}}" style="height: 36px;width:36px;">
+                </div>
+                <div class="gf-list-item-text">
+                    <div class="float-left">
+                        <span class="badge badge-primary">{{$item.Category.Name}}</span>
+                        <span class="gf-list-item-title">
+                            <a  href="/{{$item.Category.ContentType}}/{{$item.Content.Id}}" target="_blank" style="color: #222;">{{$item.Content.Title}}</a>
+                        </span>
+                    </div>
+                    <div class="float-right">
+                        <span style="font-size: 12px;color: #ccc;text-align: right;">
+                            <span class="icon iconfont">&#xe660;</span> {{$item.Content.ViewCount}}
+                            &nbsp;&nbsp;|&nbsp;&nbsp;
+                            <span class="icon iconfont">&#xe6ab;</span> {{$item.Content.ReplyCount}}
+                            &nbsp;&nbsp;|&nbsp;&nbsp;
+                        </span>
+                        <span style="font-size: 12px;color: #ccc;">{{$item.Content.CreatedAt | $.BuildIn.FormatTime}}</span>
+                    </div>
+                </div>
+            </li>
+            {{end}}
+
+            {{if gt .Data.Total .Data.Size}}
+            <li class="list-group-item gf-list-item">
+                <ul class="pagination">
+                    {{.BuildIn.Page .Data.Total .Data.Size }}
+                </ul>
+            </li>
+            {{end}}
+        </ul>
+    </div>
+
+    <div class="col-md-3">
+
+        <div class="card gf-card" style="background: #fff;padding: 10px;">
+            <a class="btn btn-primary" href="/content/create?type={{.ContentType}}">发布内容</a>
+        </div>
+
+        {{include "index/index/page_link.html" .}}
+    </div>
+</div>

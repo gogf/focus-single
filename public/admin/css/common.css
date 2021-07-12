@@ -1,0 +1,68 @@
+
+.modal-body, .modal-body input {
+    font-size:15px;
+}
+
+.modal-footer button {
+    /*padding:5px 12px 5px 12px !important;*/
+}
+
+.btn-gf {
+    padding:5px 12px 5px 12px;
+}
+
+.required-mark{
+    color:red;
+}
+.nav-sidebar .nav-link p {
+    transition: none !important;
+    -webkit-animation-name: none !important;
+    animation-name: none !important;
+    -webkit-animation-fill-mode: none !important;
+    animation-fill-mode: none !important;
+}
+
+.table thead th {
+    font-size:15px;
+    padding: .75rem .75rem .75rem 0;
+    border-bottom: 1px solid #dee2e6 !important;
+}
+
+.table tbody td {
+    font-size: 15px;
+    padding: .75rem .75rem .75rem 0;
+    border-top: none !important;
+    border-bottom: 1px solid #dee2e6 !important;
+}
+
+.pagination {
+    margin-top:20px;
+}
+
+section.content {
+    padding-top:10px !important;
+}
+
+.brand-link {
+    color: rgba(255,255,255,.9) !important;
+}
+
+.nav-treeview a, .nav-treeview a:visited, .nav-treeview a:active {
+    padding-left:25px;
+    font-size:15px;
+}
+
+.brand-link img {
+    width: 34px !important;
+}
+
+.user-panel img {
+    width: 34px !important;
+}
+
+/*************** 表单校验 *********************/
+.validation-error-block {
+    color: red;
+    padding: 2px 0 0 12px;
+    width: 100%;
+}

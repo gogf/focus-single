@@ -1,0 +1,89 @@
+<style>
+
+</style>
+<!--- main --->
+<div class="row gf-list">
+    <div class="col-md-9">
+        <ul class="list-group">
+            <li class="list-group-item">
+                <div class="float-left">
+                    <span class="icon iconfont">&#xe637;</span> 为您找到 <b>{{.Data.Total}}</b> 条关于 <span class="badge badge-light" style="padding:5px;">{{.Query.key}}</span> 的内容
+                </div>
+                <div class="float-right">
+                <a class="btn btn-link {{if eq .Query.sort 0}}text-primary{{else}}text-secondary{{end}} top-node-btn btn-sm" href="/search?key={{.Query.key}}&type={{.Query.type}}&sort=0">最新</a>
+                <a class="btn btn-link {{if eq .Query.sort 1}}text-primary{{else}}text-secondary{{end}} top-node-btn btn-sm" href="/search?key={{.Query.key}}&type={{.Query.type}}&sort=1">活跃</a>
+                <a class="btn btn-link {{if eq .Query.sort 2}}text-primary{{else}}text-secondary{{end}} top-node-btn btn-sm" href="/search?key={{.Query.key}}&type={{.Query.type}}&sort=2">热度</a>
+                </div>
+            </li>
+
+            {{range $index, $item := .Data.List}}
+            <li class="list-group-item gf-list-item">
+                <div class="gf-list-item-img">
+                    <img src="{{$item.User.Avatar}}" style="height: 36px;width:36px;">
+                </div>
+                <div class="gf-list-item-text">
+                    <div class="float-left">
+                        <span class="badge badge-primary">{{$item.Category.Name}}</span>
+                        <span class="gf-list-item-title">
+                            <a href="/{{$item.Category.ContentType}}/{{$item.Content.Id}}" target="_blank">{{$item.Content.Title}}</a>
+                        </span>
+                    </div>
+                    <div class="float-right">
+                        <span style="font-size: 12px;color: #ccc;text-align: right;">
+                            <span class="icon iconfont">&#xe660;</span> {{$item.Content.ViewCount}}
+                            &nbsp;&nbsp;|&nbsp;&nbsp;
+                            <span class="icon iconfont">&#xe6ab;</span> {{$item.Content.ReplyCount}}
+                            &nbsp;&nbsp;|&nbsp;&nbsp;
+                        </span>
+                        <span style="font-size: 12px;color: #ccc;">{{$item.Content.CreatedAt | $.BuildIn.FormatTime}}</span>
+                    </div>
+                </div>
+            </li>
+            {{end}}
+
+            {{if gt .Data.Total .Data.Size}}
+            <li class="list-group-item gf-list-item">
+                <ul class="pagination">
+                    {{.BuildIn.Page .Data.Total .Data.Size }}
+                </ul>
+            </li>
+            {{end}}
+        </ul>
+    </div>
+
+
+
+
+
+    <div class="col-md-3">
+        <div class="card gf-card" style="margin: 0">
+            <div class="card-header">所有话题</div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item gf-list-item">
+                    <a href="/search?key={{.Query.key}}"><span class="icon iconfont">&#xe622;</span> 综合</a>
+                    <span class="badge badge-primary" style="float: right;">{{.Data.Total}}</span>
+                </li>
+                {{if .Data.Stats.topic}}
+                <li class="list-group-item gf-list-item" id="search-topic">
+                    <a href="/search?key={{.Query.key}}&type=topic"><span class="icon iconfont">&#xe6b3;</span> 主题</a>
+                    <span class="badge badge-primary" style="float: right;">{{.Data.Stats.topic}}</span>
+                </li>
+                {{end}}
+
+                {{if .Data.Stats.article}}
+                <li class="list-group-item gf-list-item" id="search-article">
+                    <a href="/search?key={{.Query.key}}&type=article"><span class="icon iconfont">&#xe61c;</span> 文章</a>
+                    <span class="badge badge-primary" style="float: right;">{{.Data.Stats.article}}</span>
+                </li>
+                {{end}}
+
+                {{if .Data.Stats.ask}}
+                <li class="list-group-item gf-list-item" id="search-ask">
+                    <a href="/search?key={{.Query.key}}&type=ask"><span class="icon iconfont">&#xe717;</span> 问答</a>
+                    <span class="badge badge-primary" style="float: right;">{{.Data.Stats.ask}}</span>
+                </li>
+                {{end}}
+            </ul>
+        </div>
+    </div>
+</div>

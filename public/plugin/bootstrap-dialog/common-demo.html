@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="../bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="bootstrap-dialog.css">
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="../jquery/jquery-3.5.1.min.js"></script>
+    <script src="../bootstrap/popper.min.js"></script>
+    <script src="../bootstrap/bootstrap.min.js"></script>
+
+    <!-- dialog -->
+    <script src="bootstrap-dialog.js"></script>
+    <script src="bootstrap-dialog-common.js?=1"></script>
+
+    <title>gf bbs</title>
+</head>
+
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <button class="btn btn-primary" onclick="BootstrapDialog.alert('提示1')">提示1</button>
+    </div>
+    <div class="row">
+        <button class="btn btn-primary" onclick="dialog.Alert('提示');">dialog提示</button>
+    </div>
+    <div class="row">
+        <button class="btn btn-primary" onclick="dialog.Succeed('成功');">dialog成功</button>
+    </div>
+    <div class="row">
+        <button class="btn btn-primary" onclick="dialog.Error('错误');">dialog错误</button>
+    </div>
+    <div class="row">
+        <button class="btn btn-primary"
+                onclick="dialog.Confirm('确认',function() { alert('确认');},function() {alert('取消');});">dialog确认
+        </button>
+    </div>
+</div>
+</body>
+
+</html>

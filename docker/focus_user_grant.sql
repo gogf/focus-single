@@ -1,0 +1,1 @@
+grant all privileges on focus.* to 'focus'@'%';

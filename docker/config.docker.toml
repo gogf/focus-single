@@ -1,0 +1,54 @@
+# 配置文件的键名命名方式统一使用小驼峰。
+# HTTP Server.
+[server]
+    address             = ":8199"
+    serverRoot          = "public"
+    dumpRouterMap       = false
+    routeOverWrite      = true
+    accessLogEnabled    = true
+    accessLogPattern    = "access-{Ymd}.log"
+    sessionPath         = "temp/sessions"    # Session文件存储目录
+    logPath             = "logs/server"      # Server日志文件存储目录
+
+# 数据库连接配置
+[database]
+    [database.logger]
+        path   = "logs/sql" # SQL执行日志存储目录
+        level  = "all"
+        stdout = true
+    [database.default]
+        link   = "mysql:focus:Focus123@tcp(mysql8:3306)/focus"
+        debug  = true
+
+# 内容设置
+[setting]
+    title       = "Focus聚焦社区 - Beta!"
+    keywords    = "Go,MVC,Cookie,Session,ORM,golang,cache,goframe,go frame,gf,go框架,web框架,高性能"
+    description = "模块化、高性能、生产级的Go基础开发框架。实现了比较完善的基础设施建设，包括常用的核心开发组件， 如：缓存、日志、文件、时间、队列、数组、集合、字符串、定时器、命令行、文件锁、内存锁、对象池、连接池、资源管理、数据校验、数据编码、文件监控、 定时任务、数据库ORM、TCP/UDP组件、进程管理/通信、并发安全容器等等。 并提供了Web服务开发的系列核心组件，如：Router、Cookie、Session、Middleware、服务注册、配置管理、模板引擎等等， 支持热重启、热更新、多域名、多端口、多服务、HTTPS、Rewrite等特性。"
+
+# 文件上传设置
+[upload]
+    path = "upload"
+
+# Logger configurations.
+[logger]
+    path   = "logs/default"
+    level  = "all"
+    stdout = true
+
+# 模板引擎配置
+[viewer]
+    indexLayout     = "index/index.html"
+    adminHomeLayout = "admin/home.html"
+    adminLayout     = "admin/index.html"
+
+# 工具相关配置
+[gfcli]
+    # 工具编译配置
+    [gfcli.build]
+        name     = "focus"
+        arch     = "amd64"
+        system   = "linux"
+        pack     = "public,template"
+        mod      = ""
+        cgo      = 0

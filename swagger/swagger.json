@@ -1,0 +1,1433 @@
+{
+    "schemes": [
+        "http",
+        "https"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "GoFrame社区API",
+        "title": "GoFrame社区API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "paths": {
+        "/": {
+            "get": {
+                "produces": [
+                    "text/html"
+                ],
+                "tags": [
+                    "前台-首页"
+                ],
+                "summary": "展示站点首页",
+                "responses": {
+                    "200": {
+                        "description": "页面HTML",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/article": {
+            "get": {
+                "produces": [
+                    "text/html"
+                ],
+                "tags": [
+                    "前台-文章"
+                ],
+                "summary": "展示文章首页",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "栏目ID",
+                        "name": "cate",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "分页号码",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "分页数量",
+                        "name": "size",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "排序方式",
+                        "name": "sort",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "页面HTML",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/article/detail/{id}": {
+            "get": {
+                "produces": [
+                    "text/html"
+                ],
+                "tags": [
+                    "前台-文章"
+                ],
+                "summary": "展示文章详情",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "文章ID",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "页面HTML",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/ask": {
+            "get": {
+                "produces": [
+                    "text/html"
+                ],
+                "tags": [
+                    "前台-问答"
+                ],
+                "summary": "展示问答首页",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "栏目ID",
+                        "name": "cate",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "分页号码",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "分页数量",
+                        "name": "size",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "排序方式",
+                        "name": "sort",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "页面HTML",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/ask/detail/{id}": {
+            "get": {
+                "produces": [
+                    "text/html"
+                ],
+                "tags": [
+                    "前台-问答"
+                ],
+                "summary": "展示问答详情",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "问答ID",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "页面HTML",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/captcha": {
+            "get": {
+                "description": "注意直接返回的是图片二进制内容。",
+                "produces": [
+                    "image/png"
+                ],
+                "tags": [
+                    "前台-验证码"
+                ],
+                "summary": "获取默认的验证码",
+                "responses": {
+                    "200": {
+                        "description": "验证码二进制内容",
+                        "schema": {
+                            "type": "file"
+                        }
+                    }
+                }
+            }
+        },
+        "/category/tree": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "前台-分类"
+                ],
+                "summary": "获取分类列表，构造成树形结构返回",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "分类类型:topic, ask, article, reply，当传递空时表示获取所有栏目",
+                        "name": "contentType",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "分类列表",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.CategoryTreeItem"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/content/adopt-reply": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "前台-内容"
+                ],
+                "summary": "采纳回复",
+                "parameters": [
+                    {
+                        "description": "请求参数",
+                        "name": "entity",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/internal.ContentAdoptReplyReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "请求结果",
+                        "schema": {
+                            "$ref": "#/definitions/response.JsonRes"
+                        }
+                    }
+                }
+            }
+        },
+        "/content/create": {
+            "get": {
+                "produces": [
+                    "text/html"
+                ],
+                "tags": [
+                    "前台-内容"
+                ],
+                "summary": "展示创建内容页面",
+                "responses": {
+                    "200": {
+                        "description": "页面HTML",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/content/do-create": {
+            "post": {
+                "description": "客户端AJAX提交，客户端",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "前台-内容"
+                ],
+                "summary": "创建内容",
+                "parameters": [
+                    {
+                        "description": "请求参数",
+                        "name": "entity",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/internal.ContentDoCreateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "请求结果",
+                        "schema": {
+                            "$ref": "#/definitions/model.ContentCreateOutput"
+                        }
+                    }
+                }
+            }
+        },
+        "/content/do-delete": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "前台-内容"
+                ],
+                "summary": "删除内容",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "内容ID",
+                        "name": "id",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "请求结果",
+                        "schema": {
+                            "$ref": "#/definitions/response.JsonRes"
+                        }
+                    }
+                }
+            }
+        },
+        "/content/do-update": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "前台-内容"
+                ],
+                "summary": "修改内容",
+                "parameters": [
+                    {
+                        "description": "请求参数",
+                        "name": "entity",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/internal.ContentDoUpdateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "请求结果",
+                        "schema": {
+                            "$ref": "#/definitions/response.JsonRes"
+                        }
+                    }
+                }
+            }
+        },
+        "/content/update": {
+            "get": {
+                "produces": [
+                    "text/html"
+                ],
+                "tags": [
+                    "前台-内容"
+                ],
+                "summary": "展示修改内容页面",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "问答ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "页面HTML",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/file/upload": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "前台-文件"
+                ],
+                "summary": "上传文件",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "文件域",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "请求结果",
+                        "schema": {
+                            "$ref": "#/definitions/model.FileUploadRes"
+                        }
+                    }
+                }
+            }
+        },
+        "/interact/cai": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "前台-交互"
+                ],
+                "summary": "踩",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "内容ID",
+                        "name": "id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "内容类型:content,reply",
+                        "name": "type",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "请求结果",
+                        "schema": {
+                            "$ref": "#/definitions/response.JsonRes"
+                        }
+                    }
+                }
+            }
+        },
+        "/interact/cancel-cai": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "前台-交互"
+                ],
+                "summary": "取消踩",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "内容ID",
+                        "name": "id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "内容类型:content,reply",
+                        "name": "type",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "请求结果",
+                        "schema": {
+                            "$ref": "#/definitions/response.JsonRes"
+                        }
+                    }
+                }
+            }
+        },
+        "/interact/cancel-zan": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "前台-交互"
+                ],
+                "summary": "取消赞",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "内容ID",
+                        "name": "id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "内容类型:content,reply",
+                        "name": "type",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "请求结果",
+                        "schema": {
+                            "$ref": "#/definitions/response.JsonRes"
+                        }
+                    }
+                }
+            }
+        },
+        "/interact/zan": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "前台-交互"
+                ],
+                "summary": "赞",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "内容ID",
+                        "name": "id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "内容类型:content,reply",
+                        "name": "type",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "请求结果",
+                        "schema": {
+                            "$ref": "#/definitions/response.JsonRes"
+                        }
+                    }
+                }
+            }
+        },
+        "/login": {
+            "get": {
+                "produces": [
+                    "text/html"
+                ],
+                "tags": [
+                    "前台-登录"
+                ],
+                "summary": "展示登录页面",
+                "responses": {
+                    "200": {
+                        "description": "页面HTML",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/login/do": {
+            "post": {
+                "description": "前面5次不需要验证码，同一个IP登录失败5次之后将会启用验证码校验。\n注意提交的密码是明文。\n登录成功后前端引导页面跳转。",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "前台-登录"
+                ],
+                "summary": "提交登录",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "账号",
+                        "name": "passport",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "密码",
+                        "name": "password",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "验证码",
+                        "name": "verify_code",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "执行结果",
+                        "schema": {
+                            "$ref": "#/definitions/response.JsonRes"
+                        }
+                    }
+                }
+            }
+        },
+        "/register": {
+            "get": {
+                "produces": [
+                    "text/html"
+                ],
+                "tags": [
+                    "前台-注册"
+                ],
+                "summary": "展示注册页面",
+                "responses": {
+                    "200": {
+                        "description": "页面HTML",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/register/do": {
+            "post": {
+                "description": "注意提交的密码是明文。\n注册成功后自动登录。前端页面引导跳转",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "前台-注册"
+                ],
+                "summary": "执行注册提交处理",
+                "parameters": [
+                    {
+                        "description": "请求参数",
+                        "name": "entity",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.UserRegisterReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "请求结果",
+                        "schema": {
+                            "$ref": "#/definitions/response.JsonRes"
+                        }
+                    }
+                }
+            }
+        },
+        "/reply/do-create": {
+            "post": {
+                "description": "客户端AJAX提交，客户端",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "前台-回复"
+                ],
+                "summary": "创建回复",
+                "parameters": [
+                    {
+                        "description": "请求参数",
+                        "name": "entity",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.ReplyDoCreateReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "请求结果",
+                        "schema": {
+                            "$ref": "#/definitions/response.JsonRes"
+                        }
+                    }
+                }
+            }
+        },
+        "/reply/do-delete": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "前台-回复"
+                ],
+                "summary": "删除回复",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "回复ID",
+                        "name": "id",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "请求结果",
+                        "schema": {
+                            "$ref": "#/definitions/response.JsonRes"
+                        }
+                    }
+                }
+            }
+        },
+        "/search": {
+            "get": {
+                "produces": [
+                    "text/html"
+                ],
+                "tags": [
+                    "前台-搜索"
+                ],
+                "summary": "搜索页面",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "关键字",
+                        "name": "key",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "栏目ID",
+                        "name": "cate",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "分页号码",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "分页数量",
+                        "name": "size",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "排序方式",
+                        "name": "sort",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "页面HTML",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/topic": {
+            "get": {
+                "produces": [
+                    "text/html"
+                ],
+                "tags": [
+                    "前台-主题"
+                ],
+                "summary": "展示主题首页",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "栏目ID",
+                        "name": "cate",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "分页号码",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "分页数量",
+                        "name": "size",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "排序方式",
+                        "name": "sort",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "页面HTML",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/topic/detail/{id}": {
+            "get": {
+                "produces": [
+                    "text/html"
+                ],
+                "tags": [
+                    "前台-主题"
+                ],
+                "summary": "展示主题详情",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "主题ID",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "页面HTML",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/article": {
+            "get": {
+                "produces": [
+                    "text/html"
+                ],
+                "tags": [
+                    "前台-用户"
+                ],
+                "summary": "我的文章页面",
+                "responses": {
+                    "200": {
+                        "description": "页面HTML",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/ask": {
+            "get": {
+                "produces": [
+                    "text/html"
+                ],
+                "tags": [
+                    "前台-用户"
+                ],
+                "summary": "我的问答页面",
+                "responses": {
+                    "200": {
+                        "description": "页面HTML",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/avatar": {
+            "get": {
+                "produces": [
+                    "text/html"
+                ],
+                "tags": [
+                    "前台-用户"
+                ],
+                "summary": "修改头像页面",
+                "responses": {
+                    "200": {
+                        "description": "页面HTML",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/logout": {
+            "get": {
+                "description": "注销成功后前端引导页面跳转到首页。",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "前台-用户"
+                ],
+                "summary": "注销退出",
+                "responses": {
+                    "200": {
+                        "description": "执行结果",
+                        "schema": {
+                            "$ref": "#/definitions/response.JsonRes"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/message": {
+            "get": {
+                "produces": [
+                    "text/html"
+                ],
+                "tags": [
+                    "前台-用户"
+                ],
+                "summary": "我的消息页面",
+                "responses": {
+                    "200": {
+                        "description": "页面HTML",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/password": {
+            "get": {
+                "produces": [
+                    "text/html"
+                ],
+                "tags": [
+                    "前台-用户"
+                ],
+                "summary": "修改密码页面",
+                "responses": {
+                    "200": {
+                        "description": "页面HTML",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/profile": {
+            "get": {
+                "produces": [
+                    "text/html"
+                ],
+                "tags": [
+                    "前台-用户"
+                ],
+                "summary": "展示个人资料页面",
+                "responses": {
+                    "200": {
+                        "description": "页面HTML",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/topic": {
+            "get": {
+                "produces": [
+                    "text/html"
+                ],
+                "tags": [
+                    "前台-用户"
+                ],
+                "summary": "我的主题页面",
+                "responses": {
+                    "200": {
+                        "description": "页面HTML",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/update-avatar": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "前台-更新头像"
+                ],
+                "summary": "AJAX保存个人资料",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "文件域",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "请求参数",
+                        "name": "nickname",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "请求结果",
+                        "schema": {
+                            "$ref": "#/definitions/response.JsonRes"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/update-password": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "前台-用户"
+                ],
+                "summary": "AJAX保存个人资料",
+                "parameters": [
+                    {
+                        "description": "请求参数",
+                        "name": "entity",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.UserPasswordReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "请求结果",
+                        "schema": {
+                            "$ref": "#/definitions/response.JsonRes"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/update-profile": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "前台-用户"
+                ],
+                "summary": "AJAX保存个人资料",
+                "parameters": [
+                    {
+                        "description": "请求参数",
+                        "name": "entity",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.UserUpdateProfileReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "请求结果",
+                        "schema": {
+                            "$ref": "#/definitions/response.JsonRes"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/{id}": {
+            "get": {
+                "produces": [
+                    "text/html"
+                ],
+                "tags": [
+                    "前台-用户"
+                ],
+                "summary": "用户主页",
+                "parameters": [
+                    {
+                        "description": "请求参数",
+                        "name": "entity",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.UserGetListInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "页面HTML",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "internal.ContentAdoptReplyReq": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "description": "采纳回复时ID不能为空",
+                    "type": "integer"
+                },
+                "replyId": {
+                    "description": "采纳回复时回复ID不能为空",
+                    "type": "integer"
+                }
+            }
+        },
+        "internal.ContentDoCreateReq": {
+            "type": "object",
+            "properties": {
+                "brief": {
+                    "description": "摘要",
+                    "type": "string"
+                },
+                "categoryId": {
+                    "description": "栏目ID",
+                    "type": "integer"
+                },
+                "content": {
+                    "description": "内容",
+                    "type": "string"
+                },
+                "referer": {
+                    "description": "内容来源，例如github/gitee",
+                    "type": "string"
+                },
+                "tags": {
+                    "description": "标签名称列表，以JSON存储",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "thumb": {
+                    "description": "缩略图",
+                    "type": "string"
+                },
+                "title": {
+                    "description": "标题",
+                    "type": "string"
+                },
+                "type": {
+                    "description": "内容模型",
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "internal.ContentDoUpdateReq": {
+            "type": "object",
+            "properties": {
+                "brief": {
+                    "description": "摘要",
+                    "type": "string"
+                },
+                "categoryId": {
+                    "description": "栏目ID",
+                    "type": "integer"
+                },
+                "content": {
+                    "description": "内容",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "修改时ID不能为空",
+                    "type": "integer"
+                },
+                "referer": {
+                    "description": "内容来源，例如github/gitee",
+                    "type": "string"
+                },
+                "tags": {
+                    "description": "标签名称列表，以JSON存储",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "thumb": {
+                    "description": "缩略图",
+                    "type": "string"
+                },
+                "title": {
+                    "description": "标题",
+                    "type": "string"
+                },
+                "type": {
+                    "description": "内容模型",
+                    "type": "string"
+                }
+            }
+        },
+        "model.CategoryTreeItem": {
+            "type": "object",
+            "properties": {
+                "brief": {
+                    "description": "简述",
+                    "type": "string"
+                },
+                "content": {
+                    "description": "详细介绍",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "分类ID，自增主键",
+                    "type": "integer"
+                },
+                "indent": {
+                    "description": "缩进字符串，包含：\u0026nbsp;, \" │\", \" ├\", \" └\"",
+                    "type": "string"
+                },
+                "items": {
+                    "description": "子级数据项",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.CategoryTreeItem"
+                    }
+                },
+                "name": {
+                    "description": "分类名称",
+                    "type": "string"
+                },
+                "parent_id": {
+                    "description": "父级分类ID，用于层级管理",
+                    "type": "integer"
+                },
+                "thumb": {
+                    "description": "封面图",
+                    "type": "string"
+                }
+            }
+        },
+        "model.ContentCreateOutput": {
+            "type": "object",
+            "properties": {
+                "content_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.FileUploadRes": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "description": "文件名称",
+                    "type": "string"
+                },
+                "url": {
+                    "description": "访问URL，可能只是URI",
+                    "type": "string"
+                }
+            }
+        },
+        "model.ReplyDoCreateReq": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "description": "回复内容",
+                    "type": "string"
+                },
+                "parentId": {
+                    "description": "回复对应的上一级回复ID(没有的话默认为0)",
+                    "type": "integer"
+                },
+                "targetId": {
+                    "description": "对应内容ID",
+                    "type": "integer"
+                },
+                "targetType": {
+                    "description": "评论类型: topic, ask, article, reply",
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.UserGetListInput": {
+            "type": "object",
+            "properties": {
+                "categoryId": {
+                    "description": "栏目ID",
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "page": {
+                    "description": "分页号码",
+                    "type": "integer"
+                },
+                "size": {
+                    "description": "分页数量，最大50",
+                    "type": "integer"
+                },
+                "sort": {
+                    "description": "排序类型(0:最新, 默认。1:活跃, 2:热度)",
+                    "type": "integer"
+                },
+                "type": {
+                    "description": "内容模型",
+                    "type": "string"
+                },
+                "userId": {
+                    "description": "要查询的用户ID",
+                    "type": "integer"
+                }
+            }
+        },
+        "model.UserPasswordReq": {
+            "type": "object",
+            "properties": {
+                "newPassword": {
+                    "description": "新密码",
+                    "type": "string"
+                },
+                "oldPassword": {
+                    "description": "原密码",
+                    "type": "string"
+                }
+            }
+        },
+        "model.UserRegisterReq": {
+            "type": "object",
+            "properties": {
+                "captcha": {
+                    "description": "验证码",
+                    "type": "string"
+                },
+                "nickname": {
+                    "description": "昵称",
+                    "type": "string"
+                },
+                "passport": {
+                    "description": "账号",
+                    "type": "string"
+                },
+                "password": {
+                    "description": "密码",
+                    "type": "string"
+                }
+            }
+        },
+        "model.UserUpdateProfileReq": {
+            "type": "object",
+            "properties": {
+                "avatar": {
+                    "description": "头像地址",
+                    "type": "string"
+                },
+                "gender": {
+                    "description": "性别 0: 未设置 1: 男 2: 女",
+                    "type": "integer"
+                },
+                "id": {
+                    "description": "用户ID",
+                    "type": "integer"
+                },
+                "nickname": {
+                    "description": "昵称",
+                    "type": "string"
+                }
+            }
+        },
+        "response.JsonRes": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "错误码((0:成功, 1:失败, \u003e1:错误码))",
+                    "type": "integer"
+                },
+                "data": {
+                    "description": "返回数据(业务接口定义具体数据结构)",
+                    "type": "object"
+                },
+                "message": {
+                    "description": "提示信息",
+                    "type": "string"
+                },
+                "redirect": {
+                    "description": "引导客户端跳转到指定路由",
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,79 @@
+<div class="row gf-list">
+    <div class="col-md-2 offset-md-1">
+        {{include "index/user/user_menu.html" .}}
+    </div>
+    <div class="col-md-8">
+        <div class="card gf-person">
+            <div class="card-header">
+                <span class="iconfont">&#xe601;</span> 修改头像
+            </div>
+            <div class="card-body">
+
+                <form id="avatarForm" enctype="multipart/form-data" action="/user/update-avatar" method="post">
+                    <input type="hidden" class="form-control" name="nickname" value="{{ .Data.Nickname}}">
+                    <div id="image-preview-div">
+                        <img id="preview-img" class="avatar-preview-img image-border img-thumbnail"
+                             src="{{ .Data.Avatar}}" style="max-width: 200px;">
+                    </div>
+                    <div class="form-group">
+                        <label for="avatarFile">请选择图片</label>
+                        <input name="file" type="file" accept="image/png, image/jpeg" class="form-control-file"
+                               id="avatarFile" required>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-3">
+                            <button type="submit" class="btn btn-primary">上传头像</button>
+                        </div>
+                    </div>
+                </form>
+                <div class="alert alert-warning" role="alert">
+                    <b><i class="icon info"></i> 请注意：</b><br>
+                    请上传正常的人物头像，真人或卡通皆可。<br>
+                    上传闪烁、奇异、违法、色情头像，情节严重者将会被禁言处理。
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script>
+    jQuery(function ($) {
+
+        $("#user-avatar").addClass("active");
+
+        $('#avatarForm').validate({
+            errorElement: 'div',
+            errorClass: 'validation-error-block',
+            focusInvalid: true,
+            submitHandler: function (form) {
+                $('button[type=submit]').attr('disabled', 'true');
+                jQuery(form).ajaxSubmit({
+                    success: function (r, textStatus) {
+                        if (r.code == 0) {
+                            swal({
+                                text: "上传成功",
+                                icon: "success",
+                                button: "确定"
+                            }).then((value) => {
+                                window.location.href = "/user/avatar";
+                            });
+                        } else {
+                            if (r.message != "") {
+                                swal({
+                                    text: r.message,
+                                    icon: "warning",
+                                    button: "确定"
+                                });
+                            }
+                        }
+                    }
+                });
+                $('button[type=submit]').removeAttr('disabled');
+            },
+            errorPlacement: function (error, element) {
+                element.addClass("is-invalid")
+                error.appendTo(element.parent());
+            }
+        });
+    });
+</script>

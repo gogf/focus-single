@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    {{include "index/header.html" .}}
+</head>
+
+<body>
+<div class="container-fluid">
+    <!-- menu -->
+    {{include "index/navbar.html" .}}
+
+    <!--- main --->
+    <main>
+        {{include "index/message.html" .}}
+        {{include .MainTpl .}}
+    </main>
+
+    <!--- footer --->
+    {{include "index/footer.html" .}}
+</div>
+</body>
+
+</html>
+
+
+

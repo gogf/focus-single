@@ -1,0 +1,79 @@
+<!--- nav --->
+<nav class="navbar navbar-expand-lg navbar-light bg-light gf-topnav">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#gf-navbar-toggle" aria-controls="gf-navbar-toggle" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <a class="navbar-brand " href="/">
+        <img src="/images/logo.png" width="30" height="30">
+    </a>
+
+    <div class="collapse navbar-collapse" id="gf-navbar-toggle">
+        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+            {{range $index, $item := .BuildIn.TopMenus}}
+            <li class="nav-item {{if $item.Active }}active{{end}} {{if $item.Items}}dropdown{{end}}">
+                {{if $item.Items}}
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{$item.Name}}</a>
+                <div class="dropdown-menu">
+                    {{range $index, $subItem := $item.Items}}
+                    <a class="dropdown-item" href="{{$subItem.Url}}" target="{{$subItem.Target}}">{{$subItem.Name}}</a>
+                    {{end}}
+                </div>
+                {{else}}
+                <a class="nav-link" href="{{$item.Url}}" target="{{$item.Target}}">{{$item.Name}} </a>
+                {{end}}
+            </li>
+            {{end}}
+            <li class="nav-item">
+                <form class="form-inline search-form" method="get" action="/search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="请输入搜索内容" name="key" value="{{.Query.key}}">
+                    </div>
+                </form>
+            </li>
+        </ul>
+
+        {{if .Context.User}}
+        <div id="logon" class="btn-group">
+            <div class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="icon iconfont">&#xe647;</span>
+                    发布
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                    <a class="dropdown-item" href="/content/create?type=article"><span class="icon iconfont">&#xe61c;</span> 发布文章</a>
+                    <a class="dropdown-item" href="/content/create?type=topic"><span class="icon iconfont">&#xe6b3;</span> 发布主题</a>
+                    <a class="dropdown-item" href="/content/create?type=ask"><span class="icon iconfont">&#xe717;</span> 发布问答</a>
+                </div>
+            </div>
+            <div class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <img class="nav-avatar" src="{{.Context.User.Avatar}}">
+                    {{.Context.User.Nickname}}
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                    <a class="dropdown-item" href="/user/{{.Context.User.Id}}"><span class="iconfont">&#xe647;</span> 个人中心</a>
+                    <a class="dropdown-item" href="/user/profile"><span class="iconfont">&#xe68c;</span> 编辑资料</a>
+                    <a class="dropdown-item" href="javascript:gf.user.logout()"><span class="iconfont">&#xe6c9;</span> 退出</a>
+                </div>
+            </div>
+        </div>
+        {{else}}
+        <div id="noLogon" class="btn-group" role="group" aria-label="First group">
+            <a class="btn btn-link" href="/register">
+                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-plus" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                          d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                </svg> 注册
+            </a>
+            <a class="btn btn-link" href="/login">
+                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-bar-right" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                          d="M6 8a.5.5 0 0 0 .5.5h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L12.293 7.5H6.5A.5.5 0 0 0 6 8zm-2.5 7a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 1 0v13a.5.5 0 0 1-.5.5z" />
+                </svg> 登录
+            </a>
+        </div>
+        {{end}}
+    </div>
+</nav>
+

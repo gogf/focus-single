@@ -1,0 +1,164 @@
+<div class="row gf-list">
+    <div class="col-md-2">
+        <div class="card gf-card">
+            <div class="card-header">Ta的创作</div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item gf-list-item"><span class="icon iconfont">&#xe622;</span> <a
+                            href="/user/{{ .Data.User.Id}}">全部资料</a></li>
+                <li class="list-group-item gf-list-item"><span class="icon iconfont">&#xe61c;</span> <a
+                            href="/user/{{ .Data.User.Id}}?type=article">Ta的文章</a> <span class="badge badge-primary"
+                                                                                         style="float: right;">{{or .Data.Stats.article 0}}</span>
+                </li>
+                <li class="list-group-item gf-list-item"><span class="icon iconfont">&#xe6b3;</span> <a
+                            href="/user/{{ .Data.User.Id}}?type=topic">Ta的主题</a> <span class="badge badge-primary"
+                                                                                       style="float: right;">{{or .Data.Stats.topic 0}}</span>
+                </li>
+                <li class="list-group-item gf-list-item"><span class="icon iconfont">&#xe717;</span> <a
+                            href="/user/{{ .Data.User.Id}}?type=ask">Ta的问答</a> <span class="badge badge-primary"
+                                                                                     style="float: right;">{{or .Data.Stats.ask 0}}</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="col-md-7">
+        <ul class="list-group">
+            <li class="list-group-item gf-list-item">
+                社区 原创者的天地
+            </li>
+
+            {{if .ContentType}}
+                <li class="list-group-item">
+                    <a class="btn btn-link {{if not $.Query.cate}}text-primary{{else}}text-secondary{{end}} top-node-btn btn-sm"
+                       href="/user/{{.Data.User.Id}}?type={{.ContentType}}&sort={{.Query.sort}}">全部</a>
+                    {{range $index, $item := .BuildIn.CategoryTree .ContentType}}
+                        <a class="btn btn-link {{if eq $.Query.cate $item.Id}}text-primary{{else}}text-secondary{{end}} top-node-btn btn-sm"
+                           href="/user/{{$.Data.User.Id}}?type={{$.ContentType}}&cate={{$item.Id}}&sort={{$.Query.sort}}">{{$item.Name}}</a>
+                    {{end}}
+                    <div class="float-right">
+                        <a class="btn btn-link {{if eq .Query.sort 0}}text-primary{{else}}text-secondary{{end}} top-node-btn btn-sm"
+                           href="/user/{{.Data.User.Id}}?type={{.ContentType}}&cate={{.Query.cate}}&sort=0">最新</a>
+                        <a class="btn btn-link {{if eq .Query.sort 1}}text-primary{{else}}text-secondary{{end}} top-node-btn btn-sm"
+                           href="/user/{{.Data.User.Id}}?type={{.ContentType}}&cate={{.Query.cate}}&sort=1">活跃</a>
+                        <a class="btn btn-link {{if eq .Query.sort 2}}text-primary{{else}}text-secondary{{end}} top-node-btn btn-sm"
+                           href="/user/{{.Data.User.Id}}?type={{.ContentType}}&cate={{.Query.cate}}&sort=2">热度</a>
+                    </div>
+                </li>
+            {{else}}
+                <li class="list-group-item">
+                    <div class="float-right">
+                        <a class="btn btn-link {{if eq .Query.sort 0}}text-primary{{else}}text-secondary{{end}} top-node-btn btn-sm"
+                           href="/user/{{.Data.User.Id}}?type={{.ContentType}}&cate={{.Query.cate}}&sort=0">最新</a>
+                        <a class="btn btn-link {{if eq .Query.sort 1}}text-primary{{else}}text-secondary{{end}} top-node-btn btn-sm"
+                           href="/user/{{.Data.User.Id}}?type={{.ContentType}}&cate={{.Query.cate}}&sort=1">活跃</a>
+                        <a class="btn btn-link {{if eq .Query.sort 2}}text-primary{{else}}text-secondary{{end}} top-node-btn btn-sm"
+                           href="/user/{{.Data.User.Id}}?type={{.ContentType}}&cate={{.Query.cate}}&sort=2">热度</a>
+                    </div>
+                </li>
+            {{end}}
+
+            {{if .Data.Content}}
+                {{range $index, $item := .Data.Content.List}}
+                    <li class="list-group-item gf-list-item">
+                        <div class="gf-list-item-img">
+                            <img src="{{$item.User.Avatar}}" style="height: 36px;width:36px;">
+                        </div>
+                        <div class="gf-list-item-text">
+                            <div class="float-left">
+                                <span class="badge badge-primary">{{$item.Category.Name}}</span>
+                                <span class="gf-list-item-title">
+                            <a href="/{{$item.Category.ContentType}}/{{$item.Content.Id}}"
+                               style="color: #222;">{{$item.Content.Title}}</a>
+                        </span>
+                            </div>
+                            <div class="float-right">
+                                <span style="font-size: 12px;color: #ccc;text-align: right;">
+                                    <span class="icon iconfont">&#xe660;</span> {{$item.Content.ViewCount}}
+                                    &nbsp;&nbsp;|&nbsp;&nbsp;
+                                    <span class="icon iconfont">&#xe6ab;</span> {{$item.Content.ReplyCount}}
+                                    &nbsp;&nbsp;|&nbsp;&nbsp;
+                                </span>
+                                <span style="font-size: 12px;color: #ccc;">{{$item.Content.CreatedAt | $.BuildIn.FormatTime}}</span>
+
+                                {{if $.Context.User}}
+                                {{if eq $.Data.User.Id $.Context.User.Id}}
+                                <span style="font-size: 12px;color: #ccc;text-align: right;">
+                                &nbsp;|&nbsp;&nbsp; <a href="/content/update?id={{$item.Content.Id}}" ><span class="icon iconfont"
+                                                                             style="color: darkred;">&#xe780;</span></a>
+                                &nbsp;|&nbsp;&nbsp; <a href="javascript:void(0);"
+                                                       onclick="gf.content.delete({{$item.Content.Id}},'/user/{{$.Data.User.Id}}?type={{$item.Category.ContentType}}')"><span
+                                                class="icon iconfont" style="color: black;">&#xe63c;</span></a>
+                                </span>
+                                {{end}}
+                                {{end}}
+                            </div>
+                        </div>
+                    </li>
+                {{end}}
+
+                {{if gt .Data.Content.Total .Data.Content.Size}}
+                    <li class="list-group-item gf-list-item">
+                        <ul class="pagination">
+                            {{.BuildIn.Page .Data.Content.Total .Data.Content.Size }}
+                        </ul>
+                    </li>
+                {{end}}
+            {{else}}
+            <li class="list-group-item gf-list-item">
+                <i style="font-size: 14px;padding-left: 20px;">作者什么也没留下来~！~</i>
+            </li>
+            {{end}}
+
+        </ul>
+    </div>
+
+    <div class="col-md-3">
+
+        <div class="gf-user">
+            <div class="gf-user-title">
+                资料卡
+            </div>
+            <div>
+                <a href="/user/{{.Data.User.Id}}">
+                    <img class="gf-user-img image-border circle-image topic-list-author-avatar"
+                         src="{{.Data.User.Avatar}}">
+                </a>
+            </div>
+            <div class="row gf-user-statistics">
+                <div class="col">
+                    <div>文章</div>
+                    <div>{{or .Data.Stats.article 0}}</div>
+                </div>
+                <div class="col">
+                    <div>粉丝</div>
+                    <div>0</div>
+                </div>
+                <div class="col">
+                    <div>喜欢</div>
+                    <div>0</div>
+                </div>
+            </div>
+            <div class="gf-user-detail">
+                <h3>{{.Data.User.Nickname}} <span class="icon iconfont">&#xe646;</span></h3>
+                <p><span class="icon iconfont">{{.BuildIn.GenderFont .Data.User.Gender}}</span> {{.BuildIn.Gender .Data.User.Gender}}</p>
+                <!--
+                <p><span class="icon iconfont">&#xe638;</span> 北京</p>
+                <p><span class="icon iconfont">&#xe60c;</span> author.baidu.com/home</p>
+                <p><span class="icon iconfont">&#xe645;</span> 24小时前</p>
+                -->
+            </div>
+            <div>
+                <div class="row" style="margin:10px 0;">
+                    <button style="width: 100%;" class="btn btn-outline-secondary" type="submit" onclick="alert('暂未开放')"><span
+                                class="icon iconfont">&#xe666</span> 关注
+                    </button>
+                </div>
+                <div class="row" style="margin:10px 0;">
+                    <button style="width: 100%;" class="btn btn-outline-secondary" type="submit" onclick="alert('暂未开放')"><span
+                                class="icon iconfont">&#xe61c;</span> 私信
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

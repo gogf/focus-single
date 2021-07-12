@@ -1,0 +1,47 @@
+# docker pull golang:1.15.7-alpine
+# docker pull mysql:8.0.23
+version: '3.7'
+services:
+  mysql8:
+    image: mysql:8.0.23
+    restart: always
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_ROOT_PASSWORD: 'RootFocus123'
+      # 初始化数据库(后续的初始化sql会在这个库执行)
+      MYSQL_DATABASE: focus
+      # 初始化用户(不能是root 会报错, 后续需要给新用户赋予权限)
+      MYSQL_USER: focus
+      # 用户密码
+      MYSQL_PASSWORD: Focus123
+
+    volumes:
+      # 数据挂载
+      - $PWD/docker/mysql/data/:/var/lib/mysql/
+      # 配置挂载
+      - $PWD/docker/mysql/conf/:/etc/mysql/conf.d/
+      # 初始化目录挂载
+      - $PWD/docker/focus_user_grant.sql:/docker-entrypoint-initdb.d/focus_user_grant.sql
+      - $PWD/document/focus.sql:/docker-entrypoint-initdb.d/focus.sql
+    command:
+      # 将mysql8.0默认密码策略 修改为 原先 策略 (mysql8.0对其默认策略做了更改 会导致密码无法匹配)
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_general_ci
+      --explicit_defaults_for_timestamp=true
+      --lower_case_table_names=1
+    ports:
+      - 3306:3306
+      - 33060:33060
+
+  focus:
+    build: $PWD  # 指定 Dockerfile 所在路径
+    volumes:
+    #   - $PWD/config/:/app/config/
+      # 日志
+      - $PWD/logs/:/app/logs/
+    ports:    # 指定端口映射
+      - "8199:8199"
+    depends_on:
+      - mysql8
+

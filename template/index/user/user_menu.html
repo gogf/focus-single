@@ -1,0 +1,30 @@
+<div class="card gf-card" style="margin: 0">
+    <div class="card-header">我的资料</div>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item gf-list-item" id="user-profile"><a
+                    href="/user/profile"><span class="icon iconfont">&#xe622;</span> 基本资料</a>
+        </li>
+        <li class="list-group-item gf-list-item" id="user-avatar"><a
+                    href="/user/avatar"><span class="icon iconfont">&#xe601;</span> 修改头像</a>
+        </li>
+        <li class="list-group-item gf-list-item" id="user-passwd"><a
+                    href="/user/password"><span class="icon iconfont">&#xe61f;</span> 修改密码</a>
+        </li>
+        <li class="list-group-item gf-list-item" id="user-article"><a
+                    href="/user/article"><span class="icon iconfont">&#xe61c;</span> 我的文章</a> <span
+                    class="badge badge-primary" style="float: right;">{{or .Data.Stats.article 0}}</span>
+        </li>
+        <li class="list-group-item gf-list-item" id="user-topic"><a
+                    href="/user/topic"><span class="icon iconfont">&#xe6b3;</span> 我的主题</a> <span
+                    class="badge badge-primary" style="float: right;">{{or .Data.Stats.topic 0}}</span>
+        </li>
+        <li class="list-group-item gf-list-item" id="user-ask"><a
+                    href="/user/ask"><span class="icon iconfont">&#xe717;</span> 我的问答</a> <span
+                    class="badge badge-primary" style="float: right;">{{or .Data.Stats.ask 0}}</span>
+        </li>
+        <li class="list-group-item gf-list-item" id="user-message"><a
+                    href="/user/message?type=1"><span class="icon iconfont">&#xe60e;</span> 我的消息</a> <span
+                    class="badge badge-primary" style="float: right;">{{or .Data.Stats.message 0}}</span>
+        </li>
+    </ul>
+</div>

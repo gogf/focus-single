@@ -1,0 +1,452 @@
+/** 系统重置 **/
+
+:after, :before {
+    -webkit-box-sizing: inherit;
+    box-sizing: inherit;
+}
+
+
+.red {
+    color: red
+}
+
+.float-left {
+    float: left;
+}
+
+.float-right {
+    float: right;
+}
+
+.container-fluid {
+    padding: 0 !important;
+}
+
+body {
+    color: #636b6f;
+    background: #e5e5e5;
+}
+
+main .row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+.badge {
+    background-color: #ecf5ff;
+    border-color: #d9ecff;
+    display: inline-block;
+    padding: 0 10px;
+    font-size: 12px;
+    color: #409EFF;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 4px;
+    box-sizing: border-box;
+    white-space: nowrap;
+}
+
+.badge-success {
+    padding: 5px !important;
+    color: #67c23a !important;
+    background-color: #f0f9eb !important;
+    border-color: #e1f3d8 !important;
+}
+
+.badge-primary {
+    padding: 5px !important;
+    color: #409EFF !important;
+    background-color: #ecf5ff !important;
+    border-color: #d9ecff !important;
+}
+
+.captcha {
+    height: calc(2.1rem + 2px);
+    border-radius: 2px;
+    cursor: pointer;
+}
+
+.top-message {
+    margin-bottom: 0;
+    margin-top: 10px;
+}
+
+code[class*="language-"], pre[class*="language-"] {
+    font-size: 14px !important;
+}
+
+.icon-zan:before {
+    content: "\e6a2";
+}
+
+.icon-zan-done:before {
+    content: "\e6a1";
+}
+
+.icon-cai:before {
+    content: "\e690";
+}
+
+.icon-cai-done:before {
+    content: "\e68f";
+}
+
+.nav-avatar {
+    height: 25px;
+}
+
+/**************** 分页样式 ************************/
+
+.pagination span.disabled {
+    color: #beb0a6;
+}
+
+.pagination span.active {
+    z-index: 3;
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+
+/*************** 表单校验 *********************/
+.validation-error-block {
+    color: red;
+    padding: 2px 0 0 12px;
+    width: 100%;
+}
+
+/**************** 定制 ************************/
+
+.gf-content-new {
+    color: red;
+    font-style: italic;
+}
+
+.gf-card {
+    margin: 15px 0;
+}
+
+.gf-card li:after {
+    visibility: hidden;
+    position: absolute;
+    content: "";
+    top: 100%;
+    left: 50%;
+    -webkit-transform: translateX(-50%) translateY(-50%) rotate(45deg);
+    transform: translateX(-50%) translateY(-50%) rotate(45deg);
+    background: none;
+    margin: .5px 0 0;
+    width: .57142857em;
+    height: .57142857em;
+    border: none;
+    border-bottom: 1px solid #d4d4d5;
+    border-right: 1px solid #d4d4d5;
+    z-index: 2;
+    -webkit-transition: background .1s ease;
+    transition: background .1s ease;
+}
+
+.gf-card li a {
+    text-decoration: none;
+    color: #000
+}
+
+.gf-card li.active {
+    z-index: 2;
+    color: #000;
+    background-color: rgba(0, 0, 0, .05);
+    border-color: #F5F7FA;
+}
+
+.gf-card li.active:after {
+    visibility: visible;
+    position: absolute;
+    top: 50%;
+    right: 0;
+    bottom: auto;
+    left: auto;
+    background-color: #f2f2f2;
+    -webkit-transform: translateX(50%) translateY(-50%) rotate(45deg);
+    transform: translateX(50%) translateY(-50%) rotate(45deg);
+    margin: 0 -.5px 0 0;
+    border: none;
+    border-top: 1px solid #d4d4d5;
+    border-right: 1px solid #d4d4d5;
+}
+
+.gf-card {
+    margin: 0 0 15px 0;
+}
+
+
+.gf-topnav {
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .1), 0 1px 2px 0 rgba(0, 0, 0, .06);
+    background: #fff;
+    /*border-top: 4px solid #007bff;*/
+}
+
+.gf-topnav li.active {
+    border-bottom: 2px solid #007bff;
+}
+
+#logon {
+
+}
+
+#logon .dropdown-menu {
+    min-width: 8rem !important;
+    left: -15px !important;
+}
+
+.search-form {
+    margin-left: 20px;
+}
+
+/**************** 文章列表 ************************/
+
+.gf-list {
+    margin-bottom: 80px;
+    margin-top: 10px;
+}
+
+.gf-list .gf-list-item:hover {
+    background-color: #F5F7FA;
+}
+
+.gf-list .gf-list-item a {
+    text-decoration: none;
+}
+
+.gf-list .gf-list-item .gf-list-item-img {
+    width: 45px;
+    float: left;
+}
+
+.gf-list .gf-list-item .gf-list-item-li {
+    width: 93%;
+    float: left;
+    padding-top: 5px;
+    padding-left: 5px;
+}
+
+.gf-list .gf-list-item .gf-list-item-text {
+    width: 93%;
+    float: left;
+    padding-top: 5px;
+    padding-left: 5px;
+}
+
+.gf-list-item-title {
+    font-size: 16px;
+    line-height: 130%;
+    text-shadow: 0 1px 0 #fff;
+}
+
+.gf-list-item-title a, .gf-list-item-title a:visited, .gf-list-item-title a:active {
+    color: #222;
+}
+
+.gf-list .sponsor-link img {
+    width: 200px;
+    margin-left: 10px;
+}
+
+.gf-list .friendly-link img {
+    width: 200px;
+    margin-left: 10px;
+}
+
+/**************** 文章内容样式 ************************/
+
+.gf-content-show {
+    background-color: white;
+    padding: 15px;
+    margin: 10px 0 10px 0;
+    border-radius: 4px;
+}
+
+.gf-content-breadcrumb {
+    border-bottom: 1px solid #eaecef;
+    line-height: 0;
+    margin-bottom: 10px;
+    padding: 10px 0 8px 0;
+}
+
+.breadcrumb {
+    background-color: white !important;
+    padding: 0 0 0 5px;
+}
+
+.breadcrumb a, .breadcrumb a:visited, .breadcrumb a:active {
+    color: #24292e;
+}
+
+.breadcrumb a:hover {
+    color: #007bff;
+}
+
+.gf-content-show .gf-title {
+    margin-left: 5px;
+    margin-top: 25px;
+    padding: 0;
+    color: #24292e;
+}
+
+.gf-content-show .gf-detail {
+    padding: 5px;
+}
+
+.gf-detail-info {
+    color: gray;
+    font-size: 14px;
+    margin: 5px 0 20px 0;
+    padding: 5px;
+}
+
+.gf-detail-info a, .gf-detail-info a:visited, .gf-detail-info a:active,.reply-operating a, .reply-operating a:visited, .reply-operating a:active {
+    color: #24292e;
+}
+
+.gf-detail-info a:hover, .reply-operating a:hover {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.gf-content-show .gf-content {
+    padding: 5px;
+    font-family: "Microsoft YaHei", BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+.gf-comment-list {
+    background-color: white;
+    margin: 10px 0 10px 0;
+    border-radius: 4px;
+}
+
+.gf-comment-editor {
+    border-radius: 4px;
+}
+
+.gf-content-user {
+    text-align: center;
+    background-color: white;
+    padding: 10px;
+    border-radius: 4px;
+    margin: 10px 0 10px 0;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, .1);
+}
+
+.gf-content-user-img {
+    width: 100%;
+    border-radius: inherit;
+    border: none;
+    cursor: pointer;
+}
+
+.gf-content-toc {
+    line-height: 2;
+}
+
+#gf-content-toc {
+    padding-top: 10px;
+}
+
+/**************** 编辑器 ************************/
+.vditor-preview__action {
+    display: none;
+}
+
+.vditor-sv {
+    font-family: mononoki, Consolas, Liberation Mono, Menlo, Courier, monospace, Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji, Segoe UI Symbol, Android Emoji, EmojiSymbols !important;
+    font-size: 14px !important;
+}
+
+/**************** 发布页样式 ************************/
+
+.gf-publish {
+    margin-bottom: 80px;
+    margin-top: 20px;
+}
+
+
+/**************** 注册页样式 ************************/
+
+.gf-register,
+.gf-login {
+    margin-bottom: 60px;
+    margin-top: 10px;
+}
+
+
+/**************** 资料卡样式 ************************/
+
+.gf-user {
+    background-color: white;
+    padding: 10px;
+    border-radius: 4px;
+    margin: 0 0 10px 0;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, .1);
+}
+
+.gf-user .gf-user-title {
+    border-bottom: 1px solid #ebeef5;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.gf-user .gf-user-img {
+    width: 100%;
+    border-radius: inherit;
+    border: none;
+    cursor: pointer;
+}
+
+.gf-user .gf-user-statistics {
+    border-bottom: 1px solid #ebeef5;
+    text-align: center;
+    color: gray;
+    margin: 10px 0px;
+    padding: 10px;
+}
+
+.gf-user .gf-user-detail {
+    border-bottom: 1px solid #ebeef5;
+    margin: 10px;
+    padding: 10px;
+}
+
+.gf-user .gf-user-detail h3 {
+    margin-bottom: 10px;
+}
+
+.gf-user .gf-user-detail p {
+    margin-top: 10px;
+}
+
+.gf-user-detail a, .gf-user-detail a:visited, .gf-user-detail a:active {
+    color: #24292e;
+}
+
+.gf-user-detail a:hover {
+    color: #007bff;
+}
+
+footer .list-group-item {
+    background-color: #1b1c1d !important;
+    border-color: #1b1c1d !important;
+}
+
+/**************** 个人中心样式 ************************/
+.gf-person {
+}
+
+.gf-person .gf-list-item {
+    border: 0px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+#avatarForm #avatarFile {
+    padding: .67861429em 1em;
+    border: 1px solid rgba(34, 36, 38, .15);
+}

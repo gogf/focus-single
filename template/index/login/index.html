@@ -1,0 +1,114 @@
+
+
+<div class="row">
+    <div class="col-md-6 offset-md-3 gf-login">
+        <div class="card">
+            <div class="card-header">
+                <span class="iconfont">&#xe6c9;</span> 用户登录
+            </div>
+            <div class="card-body">
+                <form id="loginForm" action="/login/do" method="post">
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label required text-right">账号：</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" minlength="3" maxlength="20" name="passport" placeholder="请输入账号" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label required text-right">密码：</label>
+                        <div class="col-sm-9">
+                            <input type="password" class="form-control" minlength="6" maxlength="20" name="password" placeholder="请输入密码" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label required text-right">验证码</label>
+                        <div class="col-sm-9">
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" minlength="4" maxlength="4"  name="captcha" placeholder="请输入正确的验证码" required>
+                                <div class="input-group-append">
+                                    <span class="input-group-text" style="cursor: pointer;padding: 0;">
+                                        <img id="code-img" class="captcha" loading="lazy" onclick="gf.reloadCaptcha()">
+                                    </span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-3 offset-md-3">
+                            <button type="submit" class="btn btn-primary btn-block">登录</button>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+jQuery(function($) {
+    gf.reloadCaptcha()
+
+    // footer悬浮
+    $("footer").addClass("fixed-bottom");
+
+    $('#loginForm').validate({
+        errorElement: 'div',
+        errorClass: 'validation-error-block',
+        focusInvalid: true,
+        messages: {
+            passport: {
+                required: "请输入账号"
+            },
+            password: {
+                required: "请输入密码"
+            },
+            captcha: {
+                required: "请确认验证码"
+            }
+        },
+        submitHandler: function(form) {
+            $('button[type=submit]').attr('disabled', 'true');
+
+            let passport = $('[name="passport"]').val();
+            let password = $('[name="password"]').val();
+            $('[name="password"]').val(hex_md5(passport + password));
+
+            jQuery(form).ajaxSubmit({
+                dataType: 'json',
+                success:  function (r, textStatus) {
+                    if (r.code == 0) {
+                        swal({
+                            title:   "登录成功",
+                            text:    "页面将自动跳转到登录前页面",
+                            icon:    "success",
+                            timer:   2000,
+                            buttons: false
+                        }).then((value) => {
+                            if (r.redirect != "") {
+                                window.location.href = r.redirect;
+                            } else {
+                                window.location.href = "/";
+                            }
+                        });
+                    } else {
+                        swal({
+                            text:   r.message,
+                            icon:   "warning",
+                            button: "确定",
+                        });
+                        $('[name="password"]').val('');
+                        gf.reloadCaptcha()
+                    }
+                }
+            });
+            $('button[type=submit]').removeAttr('disabled');
+        },
+        errorPlacement: function (error, element) {
+            element.addClass("is-invalid")
+            error.appendTo(element.parent());
+        }
+    });
+});
+</script>

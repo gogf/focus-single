@@ -1,0 +1,101 @@
+<div class="row gf-list">
+    <div class="col-md-2 offset-md-1">
+        {{include "index/user/user_menu.html" .}}
+    </div>
+    <div class="col-md-8">
+        <div class="card gf-person">
+            <div class="card-header">
+                <span class="iconfont">&#xe60e;</span> 我的消息 {{.Query.target_type}}
+            </div>
+            <div class="card-body">
+                <ul class="list-group">
+                    <li class="list-group-item gf-list-item">
+                        <a class="btn btn-link text-primary top-node-btn btn-sm"
+                           href="/user/message?type=1">内容回复</a>
+                        <a class="btn btn-link {{if not $.Query.type}}text-primary{{else}}text-secondary{{end}} top-node-btn btn-sm"
+                           href="javascript:alert('敬请期待');">个人私信</a>
+                        <a class="btn btn-link {{if not $.Query.type}}text-primary{{else}}text-secondary{{end}} top-node-btn btn-sm"
+                           href="javascript:alert('敬请期待');">系统消息</a>
+                    </li>
+
+
+                    {{range $index, $item := .Data.List}}
+                    <li class="list-group-item gf-list-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1"><img class="nav-avatar" src="{{$item.User.Avatar}}" style="height: 36px;width:36px;"> {{$item.User.Nickname }}</h5>
+                            <small>{{$item.Reply.CreatedAt | $.BuildIn.FormatTime}}</small>
+                        </div>
+
+                        <div class="gf-list-item-text">
+                            <div class="float-left">
+                                <span class="badge badge-primary float-left">{{$item.Category.Name}}</span>
+                                <a href="/{{$item.Reply.TargetType}}/{{$item.Reply.TargetId}}"
+                                   class="d-inline-block text-truncate float-left" style="max-width: 400px;margin-left: 10px;" style="color: #222;" title="{{$item.Reply.Content}}">{{$item.Content.Title}} </a>
+                                <span  class="d-inline-block float-left">&nbsp;&nbsp;回复内容:&nbsp;&nbsp;</span>
+                                <span  class="d-inline-block text-truncate float-left" style="max-width: 400px;">{{$item.Reply.Content}}</span>
+
+                            </div>
+                            <div class="float-right">
+                            <span style="font-size: 12px;color: #ccc;text-align: right;">
+                                <span class="icon iconfont icon-cai"></span> {{$item.Reply.CaiCount}}
+                                &nbsp;&nbsp;|&nbsp;&nbsp;
+                                <span class="icon iconfont icon-zan"></span> {{$item.Reply.ZanCount}}
+                                &nbsp;&nbsp;|&nbsp;&nbsp;
+                            &nbsp;   <a href="javascript:gf.content.delete({{ $item.Reply.Id }});"><span
+                                        class="icon iconfont" style="color: black;">&#xe63c;</span></a>
+                            </span>
+                            </div>
+                        </div>
+                    </li>
+                    {{end}}
+
+                    {{if gt .Data.Total .Data.Size}}
+                    <li class="list-group-item gf-list-item">
+                        <ul class="pagination">
+                            {{.BuildIn.Page .Data.Total .Data.Size }}
+                        </ul>
+                    </li>
+                    {{end}}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script>
+    $("#user-message").addClass("active");
+
+    gf.content = {
+        delete: function (id) {
+            swal({
+                title:   "删除回复",
+                text:    "您确定删除回复信息吗？",
+                icon:    "warning",
+                buttons: ["取消", "确定"]
+            }).then((value) => {
+
+                jQuery.ajax({
+                    type: 'POST',
+                    url: '/reply/do-delete',
+                    data: {
+                        id: id,
+                    },
+                    success: function (r) {
+                        if (r.code === 0) {
+                            swal({text: "删除成功", type: "success", button: "确定"}).then(
+                                function(){
+                                    location.reload(); // 刷新页面同步回复统计
+                                });
+                        } else {
+                            swal({text: r.message, icon: "warning", button: "确定",});
+                        }
+                    },
+                    error: function (html) {
+                    }
+                });
+
+            });
+
+        }
+    }
+</script>

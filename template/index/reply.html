@@ -1,0 +1,54 @@
+{{range $index, $item := .Data.List}}
+    <li class="list-group-item reply-list" id="reply_{{ $item.Reply.Id }}">
+        <div class="reply" style="padding: 5px;width: 100%;">
+            <div class="reply-avatar" style="width: 100%;">
+                <a href="/user/{{$item.User.Id }}">
+                    <img class="img-thumbnail"
+                         src="{{$item.User.Avatar }}"
+                         style="max-width:40px;border-radius: 120px;" alt="">
+                </a>
+                <a href="" class="text-dark font-weight-bold">{{$item.User.Nickname }}</a> <span
+                        class="text-success">#{{ $item.Reply.Id }}</span> · <span
+                        class="text-secondary">{{$item.Reply.CreatedAt | $.BuildIn.FormatTime}}</span>
+                    {{if $item.Reply.ParentId}}
+                        回复<a href="#reply_{{$item.Reply.ParentId}}"><span>#{{$item.Reply.ParentId}}</span></a>
+                    {{end}}
+                <span class="badge badge-success" id="adopted_it_{{ $item.Reply.Id }}" style="display: none;">已采纳</span>
+                <a class="adopted_btn_{{ $item.Reply.UserId }}" id="adopted_btn_{{ $item.Reply.Id }}" href="javascript:gf.content.adopted({{ $item.Reply.Id }});" class="text-secondary" style="font-size: 14px;">采纳</a>
+            </div>
+            <div class="reply-content" style="padding: 5px;word-wrap:break-word;">
+                {{$item.Reply.Content}}
+            </div>
+            <div class="reply-operating" style="padding: 5px">
+                <a href="javascript:void(0);" data-type="reply" onclick="javascript:gf.content.zan(this, {{$item.Reply.Id}})">
+                    {{if $.BuildIn.DidIZan "reply" $item.Reply.Id}}
+                    <span class="icon iconfont icon-zan-done"></span>
+                    {{else}}
+                    <span class="icon iconfont icon-zan"></span>
+                    {{end}}
+                    <span class="number">{{ $item.Reply.ZanCount }}</span>
+                </a>
+                &nbsp; / &nbsp;
+                <a href="javascript:void(0);" data-type="reply" onclick="javascript:gf.content.cai(this, {{$item.Reply.Id}})">
+                    {{if $.BuildIn.DidICai "reply" $item.Reply.Id}}
+                    <span class="icon iconfont icon-cai-done"></span>
+                    {{else}}
+                    <span class="icon iconfont icon-cai"></span>
+                    {{end}}
+                    <span class="number">{{ $item.Reply.CaiCount }}</span>
+                </a>
+                
+                {{if $.Context.User}}
+                &nbsp; / &nbsp;
+                <a href="javascript:gf.content.reply({{ $item.Reply.Id }});" class="text-secondary" style="font-size: 14px;">回复</a>
+                    {{if eq $.Context.User.Id $item.Reply.UserId }}
+                    &nbsp; / &nbsp;
+                    <a href="javascript:gf.content.delete({{ $item.Reply.Id }});" class="text-secondary" style="font-size: 14px;">删除</a>
+                    {{end}}
+                {{end}}
+                
+            </div>
+           
+        </div>
+    </li>
+{{end}}

@@ -1,0 +1,34 @@
+<style type="text/css">
+    <!--
+    #error {
+        position: absolute;
+        width: 99%;
+        height: 30%;
+        margin: 0 auto;
+        text-align: center;
+        z-index: 1;
+        top: 390px;
+        text-align: center;
+        margin: 0 auto;
+    }
+
+    #error div {
+        width: 500px;
+        text-align: center;
+        margin: 0 auto;
+    }
+
+    #error p {
+        font-weight: bold;
+    }
+
+    -->
+</style>
+<div style="width: 100%; margin: 0 auto; text-align: center;">
+    <img alt="" src="/images/error/error_500.png">
+</div>
+<div id="error">
+    <div>
+        <p>{{ .Error}}</p>
+    </div>
+</div>

@@ -1,10 +1,10 @@
 package api
 
 import (
+	"context"
 	"focus/app/api/internal"
 	"focus/app/model"
 	"focus/app/service"
-	"github.com/gogf/gf/net/ghttp"
 )
 
 // 搜索管理
@@ -22,23 +22,14 @@ type searchApi struct{}
 // @param   sort query string false "排序方式"
 // @router  /search [GET]
 // @success 200 {string} html "页面HTML"
-func (a *searchApi) Index(r *ghttp.Request) {
-	var (
-		req *internal.ContentSearchReq
-	)
-	if err := r.Parse(&req); err != nil {
-		service.View.Render500(r, model.View{
-			Error: err.Error(),
-		})
-	}
-	if searchRes, err := service.Content.Search(r.Context(), req.ContentSearchInput); err != nil {
-		service.View.Render500(r, model.View{
-			Error: err.Error(),
-		})
+func (a *searchApi) Index(ctx context.Context, req *internal.ContentSearchReq) error {
+	if searchRes, err := service.Content.Search(ctx, req.ContentSearchInput); err != nil {
+		return err
 	} else {
-		service.View.Render(r, model.View{
+		service.View.Render(ctx, model.View{
 			Data:  searchRes,
-			Title: service.View.GetTitle(r.Context(), &model.ViewGetTitleInput{}),
+			Title: service.View.GetTitle(ctx, &model.ViewGetTitleInput{}),
 		})
+		return nil
 	}
 }

@@ -1,12 +1,13 @@
 package api
 
 import (
+	"context"
 	"focus/app/api/internal"
 	"focus/app/cnt"
 	"focus/app/model"
 	"focus/app/service"
-	"focus/library/response"
-	"github.com/gogf/gf/net/ghttp"
+	"github.com/gogf/gf/errors/gerror"
+	"github.com/gogf/gf/frame/g"
 )
 
 // 注册控制器
@@ -19,8 +20,8 @@ type registerApi struct{}
 // @produce html
 // @router  /register [GET]
 // @success 200 {string} html "页面HTML"
-func (a *registerApi) Index(r *ghttp.Request) {
-	service.View.Render(r, model.View{})
+func (a *registerApi) Index(ctx context.Context) {
+	service.View.Render(ctx, model.View{})
 }
 
 // @summary 执行注册提交处理
@@ -31,27 +32,17 @@ func (a *registerApi) Index(r *ghttp.Request) {
 // @param   entity body internal.UserRegisterReq true "请求参数" required
 // @router  /register/do [POST]
 // @success 200 {object} response.JsonRes "请求结果"
-func (a *registerApi) Do(r *ghttp.Request) {
-	var (
-		req *internal.UserRegisterReq
-	)
-	if err := r.Parse(&req); err != nil {
-		response.JsonExit(r, 1, err.Error())
+func (a *registerApi) Do(ctx context.Context, req *internal.UserRegisterReq) error {
+	if !service.Captcha.VerifyAndClear(g.RequestFromCtx(ctx), cnt.CaptchaDefaultName, req.Captcha) {
+		return gerror.NewCode(gerror.CodeBusinessValidationFailed, "请输入正确的验证码")
 	}
-	if !service.Captcha.VerifyAndClear(r, cnt.CaptchaDefaultName, req.Captcha) {
-		response.JsonExit(r, 1, "请输入正确的验证码")
-	}
-	if err := service.User.Register(r.Context(), req.UserRegisterInput); err != nil {
-		response.JsonExit(r, 1, err.Error())
+	if err := service.User.Register(ctx, req.UserRegisterInput); err != nil {
+		return err
 	} else {
 		// 自动登录
-		err := service.User.Login(r.Context(), model.UserLoginInput{
+		return service.User.Login(ctx, model.UserLoginInput{
 			Passport: req.Passport,
 			Password: req.Password,
 		})
-		if err != nil {
-			response.JsonExit(r, 1, err.Error())
-		}
-		response.JsonExit(r, 0, "")
 	}
 }

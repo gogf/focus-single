@@ -1,9 +1,9 @@
 package api
 
 import (
+	"context"
 	"focus/app/cnt"
 	"focus/app/service"
-	"github.com/gogf/gf/net/ghttp"
 )
 
 // 图形验证码
@@ -17,6 +17,6 @@ type captchaApi struct{}
 // @produce png
 // @router  /captcha [GET]
 // @success 200 {file} body "验证码二进制内容"
-func (a *captchaApi) Index(r *ghttp.Request) {
-	service.Captcha.NewAndStore(r, cnt.CaptchaDefaultName)
+func (a *captchaApi) Index(ctx context.Context) {
+	service.Captcha.NewAndStore(ctx, cnt.CaptchaDefaultName)
 }

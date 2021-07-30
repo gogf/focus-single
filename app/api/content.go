@@ -1,11 +1,10 @@
 package api
 
 import (
+	"context"
 	"focus/app/api/internal"
 	"focus/app/model"
 	"focus/app/service"
-	"focus/library/response"
-	"github.com/gogf/gf/net/ghttp"
 )
 
 // 内容管理
@@ -18,16 +17,8 @@ type contentApi struct{}
 // @produce html
 // @router  /content/create [GET]
 // @success 200 {string} html "页面HTML"
-func (a *contentApi) Create(r *ghttp.Request) {
-	var (
-		req *internal.ContentCreateReq
-	)
-	if err := r.Parse(&req); err != nil {
-		service.View.Render500(r, model.View{
-			Error: err.Error(),
-		})
-	}
-	service.View.Render(r, model.View{
+func (a *contentApi) Create(ctx context.Context, req *internal.ContentCreateReq) {
+	service.View.Render(ctx, model.View{
 		ContentType: req.Type,
 	})
 }
@@ -39,18 +30,8 @@ func (a *contentApi) Create(r *ghttp.Request) {
 // @param   entity body internal.ContentDoCreateReq true "请求参数" required
 // @router  /content/do-create [POST]
 // @success 200 {object} model.ContentCreateOutput "请求结果"
-func (a *contentApi) DoCreate(r *ghttp.Request) {
-	var (
-		req *internal.ContentDoCreateReq
-	)
-	if err := r.ParseForm(&req); err != nil {
-		response.JsonExit(r, 1, err.Error())
-	}
-	if res, err := service.Content.Create(r.Context(), req.ContentCreateInput); err != nil {
-		response.JsonExit(r, 1, err.Error())
-	} else {
-		response.JsonExit(r, 0, "", res)
-	}
+func (a *contentApi) DoCreate(ctx context.Context, req *internal.ContentDoCreateReq) (output model.ContentCreateOutput, err error) {
+	return service.Content.Create(ctx, req.ContentCreateInput)
 }
 
 // @summary 展示修改内容页面
@@ -59,23 +40,16 @@ func (a *contentApi) DoCreate(r *ghttp.Request) {
 // @param   id query int true "问答ID"
 // @router  /content/update [GET]
 // @success 200 {string} html "页面HTML"
-func (a *contentApi) Update(r *ghttp.Request) {
-	var (
-		req *internal.ContentUpdateReq
-	)
-	if err := r.Parse(&req); err != nil {
-		service.View.Render500(r, model.View{
-			Error: err.Error(),
-		})
-	}
-	if getDetailRes, err := service.Content.GetDetail(r.Context(), req.Id); err != nil {
-		service.View.Render500(r)
+func (a *contentApi) Update(ctx context.Context, req *internal.ContentUpdateReq) error {
+	if getDetailRes, err := service.Content.GetDetail(ctx, req.Id); err != nil {
+		return err
 	} else {
-		service.View.Render(r, model.View{
+		service.View.Render(ctx, model.View{
 			ContentType: getDetailRes.Content.Type,
 			Data:        getDetailRes,
 		})
 	}
+	return nil
 }
 
 // @summary 修改内容
@@ -84,18 +58,8 @@ func (a *contentApi) Update(r *ghttp.Request) {
 // @param   entity body internal.ContentDoUpdateReq true "请求参数" required
 // @router  /content/do-update [POST]
 // @success 200 {object} response.JsonRes "请求结果"
-func (a *contentApi) DoUpdate(r *ghttp.Request) {
-	var (
-		req *internal.ContentDoUpdateReq
-	)
-	if err := r.ParseForm(&req); err != nil {
-		response.JsonExit(r, 1, err.Error())
-	}
-	if err := service.Content.Update(r.Context(), req.ContentUpdateInput); err != nil {
-		response.JsonExit(r, 1, err.Error())
-	} else {
-		response.JsonExit(r, 0, "")
-	}
+func (a *contentApi) DoUpdate(ctx context.Context, req *internal.ContentDoUpdateReq) error {
+	return service.Content.Update(ctx, req.ContentUpdateInput)
 }
 
 // @summary 删除内容
@@ -104,18 +68,8 @@ func (a *contentApi) DoUpdate(r *ghttp.Request) {
 // @param   id formData int true "内容ID"
 // @router  /content/do-delete [POST]
 // @success 200 {object} response.JsonRes "请求结果"
-func (a *contentApi) DoDelete(r *ghttp.Request) {
-	var (
-		req *internal.ContentDoDeleteReq
-	)
-	if err := r.ParseForm(&req); err != nil {
-		response.JsonExit(r, 1, err.Error())
-	}
-	if err := service.Content.Delete(r.Context(), req.Id); err != nil {
-		response.JsonExit(r, 1, err.Error())
-	} else {
-		response.JsonExit(r, 0, "")
-	}
+func (a *contentApi) DoDelete(ctx context.Context, req *internal.ContentDoDeleteReq) error {
+	return service.Content.Delete(ctx, req.Id)
 }
 
 // @summary 采纳回复
@@ -124,16 +78,6 @@ func (a *contentApi) DoDelete(r *ghttp.Request) {
 // @param   entity body internal.ContentAdoptReplyReq true "请求参数" required
 // @router  /content/adopt-reply [POST]
 // @success 200 {object} response.JsonRes "请求结果"
-func (a *contentApi) AdoptReply(r *ghttp.Request) {
-	var (
-		req *internal.ContentAdoptReplyReq
-	)
-	if err := r.ParseForm(&req); err != nil {
-		response.JsonExit(r, 1, err.Error())
-	}
-	if err := service.Content.AdoptReply(r.Context(), req.Id, req.ReplyId); err != nil {
-		response.JsonExit(r, 1, err.Error())
-	} else {
-		response.JsonExit(r, 0, "")
-	}
+func (a *contentApi) AdoptReply(ctx context.Context, req *internal.ContentAdoptReplyReq) error {
+	return service.Content.AdoptReply(ctx, req.Id, req.ReplyId)
 }

@@ -1,12 +1,13 @@
 package api
 
 import (
+	"context"
 	"focus/app/api/internal"
 	"focus/app/cnt"
 	"focus/app/model"
 	"focus/app/service"
-	"focus/library/response"
-	"github.com/gogf/gf/net/ghttp"
+	"github.com/gogf/gf/errors/gerror"
+	"github.com/gogf/gf/frame/g"
 )
 
 var User = userApi{}
@@ -19,17 +20,8 @@ type userApi struct{}
 // @param   entity body model.UserGetListInput true "请求参数" required
 // @router  /user/{id} [GET]
 // @success 200 {string} html "页面HTML"
-func (a *userApi) Index(r *ghttp.Request) {
-	var (
-		req *internal.UserGetListReq
-	)
-	if err := r.Parse(&req); err != nil {
-		service.View.Render500(r, model.View{
-			Error: err.Error(),
-		})
-	}
-
-	a.getContentList(r, req.Type, req.Id)
+func (a *userApi) Index(ctx context.Context, req *internal.UserGetListReq) error {
+	return a.getContentList(ctx, req)
 }
 
 // @summary 展示个人资料页面
@@ -37,19 +29,18 @@ func (a *userApi) Index(r *ghttp.Request) {
 // @produce html
 // @router  /user/profile [GET]
 // @success 200 {string} html "页面HTML"
-func (a *userApi) Profile(r *ghttp.Request) {
-	if getProfile, err := service.User.GetProfile(r.Context()); err != nil {
-		service.View.Render500(r, model.View{
-			Error: err.Error(),
-		})
+func (a *userApi) Profile(ctx context.Context) error {
+	if getProfile, err := service.User.GetProfile(ctx); err != nil {
+		return err
 	} else {
 		title := "用户 " + getProfile.Nickname + " 资料"
-		service.View.Render(r, model.View{
+		service.View.Render(ctx, model.View{
 			Title:       title,
 			Keywords:    title,
 			Description: title,
 			Data:        getProfile,
 		})
+		return nil
 	}
 }
 
@@ -58,19 +49,18 @@ func (a *userApi) Profile(r *ghttp.Request) {
 // @produce html
 // @router  /user/avatar [GET]
 // @success 200 {string} html "页面HTML"
-func (a *userApi) Avatar(r *ghttp.Request) {
-	if getProfile, err := service.User.GetProfile(r.Context()); err != nil {
-		service.View.Render500(r, model.View{
-			Error: err.Error(),
-		})
+func (a *userApi) Avatar(ctx context.Context) error {
+	if getProfile, err := service.User.GetProfile(ctx); err != nil {
+		return err
 	} else {
 		title := "用户 " + getProfile.Nickname + " 头像"
-		service.View.Render(r, model.View{
+		service.View.Render(ctx, model.View{
 			Title:       title,
 			Keywords:    title,
 			Description: title,
 			Data:        getProfile,
 		})
+		return nil
 	}
 }
 
@@ -79,19 +69,18 @@ func (a *userApi) Avatar(r *ghttp.Request) {
 // @produce html
 // @router  /user/password [GET]
 // @success 200 {string} html "页面HTML"
-func (a *userApi) Password(r *ghttp.Request) {
-	if getProfile, err := service.User.GetProfile(r.Context()); err != nil {
-		service.View.Render500(r, model.View{
-			Error: err.Error(),
-		})
+func (a *userApi) Password(ctx context.Context) error {
+	if getProfile, err := service.User.GetProfile(ctx); err != nil {
+		return err
 	} else {
 		title := "用户 " + getProfile.Nickname + " 修改密码"
-		service.View.Render(r, model.View{
+		service.View.Render(ctx, model.View{
 			Title:       title,
 			Keywords:    title,
 			Description: title,
 			Data:        getProfile,
 		})
+		return nil
 	}
 }
 
@@ -100,8 +89,9 @@ func (a *userApi) Password(r *ghttp.Request) {
 // @produce html
 // @router  /user/article [GET]
 // @success 200 {string} html "页面HTML"
-func (a *userApi) Article(r *ghttp.Request) {
-	a.getContentList(r, cnt.ContentTypeArticle, service.Context.Get(r.Context()).User.Id)
+func (a *userApi) Article(ctx context.Context, req *internal.UserGetListReq) error {
+	req.Type = cnt.ContentTypeArticle
+	return a.getContentList(ctx, req)
 }
 
 // @summary 我的主题页面
@@ -109,8 +99,9 @@ func (a *userApi) Article(r *ghttp.Request) {
 // @produce html
 // @router  /user/topic [GET]
 // @success 200 {string} html "页面HTML"
-func (a *userApi) Topic(r *ghttp.Request) {
-	a.getContentList(r, cnt.ContentTypeTopic, service.Context.Get(r.Context()).User.Id)
+func (a *userApi) Topic(ctx context.Context, req *internal.UserGetListReq) error {
+	req.Type = cnt.ContentTypeTopic
+	return a.getContentList(ctx, req)
 }
 
 // @summary 我的问答页面
@@ -118,36 +109,27 @@ func (a *userApi) Topic(r *ghttp.Request) {
 // @produce html
 // @router  /user/ask [GET]
 // @success 200 {string} html "页面HTML"
-func (a *userApi) Ask(r *ghttp.Request) {
-	a.getContentList(r, cnt.ContentTypeAsk, service.Context.Get(r.Context()).User.Id)
+func (a *userApi) Ask(ctx context.Context, req *internal.UserGetListReq) error {
+	req.Type = cnt.ContentTypeAsk
+	return a.getContentList(ctx, req)
 }
 
 // 获取内容列表 参数contentType,用户信息
-func (a *userApi) getContentList(r *ghttp.Request, contentType string, userId uint) {
-	var (
-		req *internal.UserGetListReq
-	)
-	if err := r.Parse(&req); err != nil {
-		service.View.Render500(r, model.View{
-			Error: err.Error(),
-		})
-	}
-	req.Type = contentType
-	req.UserId = userId
-	if output, err := service.User.GetList(r.Context(), req.UserGetListInput); err != nil {
-		service.View.Render500(r, model.View{
-			Error: err.Error(),
-		})
+func (a *userApi) getContentList(ctx context.Context, req *internal.UserGetListReq) error {
+	req.UserId = service.Context.Get(ctx).User.Id
+	if output, err := service.User.GetList(ctx, req.UserGetListInput); err != nil {
+		return err
 	} else {
-		title := service.View.GetTitle(r.Context(), &model.ViewGetTitleInput{
+		title := service.View.GetTitle(ctx, &model.ViewGetTitleInput{
 			ContentType: req.Type,
 			CategoryId:  req.CategoryId,
 		})
-		service.View.Render(r, model.View{
+		service.View.Render(ctx, model.View{
 			ContentType: req.Type,
 			Data:        output,
 			Title:       title,
 		})
+		return nil
 	}
 }
 
@@ -156,24 +138,16 @@ func (a *userApi) getContentList(r *ghttp.Request, contentType string, userId ui
 // @produce html
 // @router  /user/message [GET]
 // @success 200 {string} html "页面HTML"
-func (a *userApi) Message(r *ghttp.Request) {
-	var (
-		req *internal.UserGetMessageListReq
-	)
-	if err := r.Parse(&req); err != nil {
-		response.JsonExit(r, 1, err.Error())
-	}
-	if getListRes, err := service.User.GetMessageList(r.Context(), req.UserGetMessageListInput); err != nil {
-		service.View.Render500(r, model.View{
-			Error: err.Error(),
-		})
+func (a *userApi) Message(ctx context.Context, req *internal.UserGetMessageListReq) error {
+	if getListRes, err := service.User.GetMessageList(ctx, req.UserGetMessageListInput); err != nil {
+		return err
 	} else {
-		service.View.Render(r, model.View{
+		service.View.Render(ctx, model.View{
 			ContentType: req.TargetType,
 			Data:        getListRes,
 		})
+		return nil
 	}
-
 }
 
 // @summary AJAX保存个人资料
@@ -182,18 +156,8 @@ func (a *userApi) Message(r *ghttp.Request) {
 // @param   entity body internal.UserPasswordReq true "请求参数" required
 // @router  /user/update-password [POST]
 // @success 200 {object} response.JsonRes "请求结果"
-func (a *userApi) UpdatePassword(r *ghttp.Request) {
-	var (
-		req *internal.UserPasswordReq
-	)
-	if err := r.Parse(&req); err != nil {
-		response.JsonExit(r, 1, err.Error())
-	}
-	if err := service.User.UpdatePassword(r.Context(), req.UserPasswordInput); err != nil {
-		response.JsonExit(r, 1, err.Error())
-	} else {
-		response.JsonExit(r, 0, "")
-	}
+func (a *userApi) UpdatePassword(ctx context.Context, req *internal.UserPasswordReq) error {
+	return service.User.UpdatePassword(ctx, req.UserPasswordInput)
 }
 
 // @summary AJAX保存个人资料
@@ -203,36 +167,25 @@ func (a *userApi) UpdatePassword(r *ghttp.Request) {
 // @param   nickname formData string true "请求参数" required
 // @router  /user/update-avatar [POST]
 // @success 200 {object} response.JsonRes "请求结果"
-func (a *userApi) UpdateAvatar(r *ghttp.Request) {
-	file := r.GetUploadFile("file")
-	if file == nil {
-		response.JsonExit(r, 1, "请选择需要上传的文件")
-	}
-	uploadResult, err := service.File.Upload(
-		r.Context(),
-		model.FileUploadInput{
-			File:       file,
-			RandomName: true,
-		},
-	)
-	if err != nil {
-		response.JsonExit(r, 1, err.Error())
-	}
-
+func (a *userApi) UpdateAvatar(ctx context.Context, req *internal.UserUpdateProfileReq) error {
 	var (
-		req *internal.UserUpdateProfileReq
+		request = g.RequestFromCtx(ctx)
+		file    = request.GetUploadFile("file")
 	)
-	if err := r.Parse(&req); err != nil {
-		response.JsonExit(r, 1, err.Error())
+	if file == nil {
+		return gerror.NewCode(gerror.CodeMissingParameter, "请选择需要上传的文件")
+	}
+	uploadResult, err := service.File.Upload(ctx, model.FileUploadInput{
+		File:       file,
+		RandomName: true,
+	})
+	if err != nil {
+		return err
 	}
 	if uploadResult != nil {
 		req.Avatar = uploadResult.Url
 	}
-	if err := service.User.UpdateAvatar(r.Context(), req.UserUpdateProfileInput); err != nil {
-		response.JsonExit(r, 1, err.Error())
-	} else {
-		response.JsonExit(r, 0, "")
-	}
+	return service.User.UpdateAvatar(ctx, req.UserUpdateProfileInput)
 }
 
 // @summary AJAX保存个人资料
@@ -241,18 +194,8 @@ func (a *userApi) UpdateAvatar(r *ghttp.Request) {
 // @param   entity body internal.UserUpdateProfileReq true "请求参数" required
 // @router  /user/update-profile [POST]
 // @success 200 {object} response.JsonRes "请求结果"
-func (a *userApi) UpdateProfile(r *ghttp.Request) {
-	var (
-		req *internal.UserUpdateProfileReq
-	)
-	if err := r.Parse(&req); err != nil {
-		response.JsonExit(r, 1, err.Error())
-	}
-	if err := service.User.UpdateProfile(r.Context(), req.UserUpdateProfileInput); err != nil {
-		response.JsonExit(r, 1, err.Error())
-	} else {
-		response.JsonExit(r, 0, "")
-	}
+func (a *userApi) UpdateProfile(ctx context.Context, req *internal.UserUpdateProfileReq) error {
+	return service.User.UpdateProfile(ctx, req.UserUpdateProfileInput)
 }
 
 // @summary 注销退出
@@ -261,12 +204,11 @@ func (a *userApi) UpdateProfile(r *ghttp.Request) {
 // @produce json
 // @router  /user/logout [GET]
 // @success 200 {object} response.JsonRes "执行结果"
-func (a *userApi) Logout(r *ghttp.Request) {
-	if err := service.User.Logout(r.Context()); err != nil {
-		service.View.Render500(r, model.View{
-			Error: err.Error(),
-		})
+func (a *userApi) Logout(ctx context.Context) error {
+	if err := service.User.Logout(ctx); err != nil {
+		return err
 	} else {
-		r.Response.RedirectTo(service.Middleware.GetLoginUrl())
+		g.RequestFromCtx(ctx).Response.RedirectTo(service.Middleware.LoginUrl)
+		return nil
 	}
 }

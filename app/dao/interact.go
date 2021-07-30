@@ -16,13 +16,9 @@ type interactDao struct {
 
 var (
 	// Interact is globally public accessible object for table gf_interact operations.
-	Interact interactDao
-)
-
-func init() {
 	Interact = interactDao{
 		internal.NewInteractDao(),
 	}
-}
+)
 
 // Fill with you ideas below.

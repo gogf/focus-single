@@ -1,11 +1,11 @@
 package api
 
 import (
+	"context"
 	"focus/app/api/internal"
 	"focus/app/model"
 	"focus/app/service"
-	"focus/library/response"
-	"github.com/gogf/gf/net/ghttp"
+	"github.com/gogf/gf/frame/g"
 )
 
 // 回复控制器
@@ -20,32 +20,20 @@ type replyApi struct{}
 // @param   entity body internal.ReplyDoCreateReq true "请求参数" required
 // @router  /reply/do-create [POST]
 // @success 200 {object} response.JsonRes "请求结果"
-func (a *replyApi) DoCreate(r *ghttp.Request) {
-	var (
-		req *internal.ReplyDoCreateReq
-	)
-	if err := r.Parse(&req); err != nil {
-		response.JsonExit(r, 1, err.Error())
-	}
-	if err := service.Reply.Create(r.Context(), req.ReplyCreateInput); err != nil {
-		response.JsonExit(r, 1, err.Error())
-	} else {
-		response.JsonExit(r, 0, "")
-	}
+func (a *replyApi) DoCreate(ctx context.Context, req *internal.ReplyDoCreateReq) error {
+	return service.Reply.Create(ctx, req.ReplyCreateInput)
 }
 
-// 回复列表
-func (a *replyApi) Index(r *ghttp.Request) {
-	var (
-		req *internal.ReplyGetListReq
-	)
-	if err := r.Parse(&req); err != nil {
-		response.JsonExit(r, 1, err.Error())
-	}
-	if getListRes, err := service.Reply.GetList(r.Context(), req.ReplyGetListInput); err != nil {
-		response.JsonExit(r, 1, err.Error())
+// 获取回复列表
+func (a *replyApi) Index(ctx context.Context, req *internal.ReplyGetListReq) (string, error) {
+	if getListRes, err := service.Reply.GetList(ctx, req.ReplyGetListInput); err != nil {
+		return "", err
 	} else {
-		service.View.RenderTpl(r, "index/reply.html", model.View{Data: getListRes})
+		request := g.RequestFromCtx(ctx)
+		service.View.RenderTpl(ctx, "index/reply.html", model.View{Data: getListRes})
+		tplContent := request.Response.BufferString()
+		request.Response.ClearBuffer()
+		return tplContent, nil
 	}
 }
 
@@ -55,16 +43,6 @@ func (a *replyApi) Index(r *ghttp.Request) {
 // @param   id formData int true "回复ID"
 // @router  /reply/do-delete [POST]
 // @success 200 {object} response.JsonRes "请求结果"
-func (a *replyApi) DoDelete(r *ghttp.Request) {
-	var (
-		req *internal.ReplyDoDeleteReq
-	)
-	if err := r.ParseForm(&req); err != nil {
-		response.JsonExit(r, 1, err.Error())
-	}
-	if err := service.Reply.Delete(r.Context(), req.Id); err != nil {
-		response.JsonExit(r, 1, err.Error())
-	} else {
-		response.JsonExit(r, 0, "")
-	}
+func (a *replyApi) DoDelete(ctx context.Context, req *internal.ReplyDoDeleteReq) error {
+	return service.Reply.Delete(ctx, req.Id)
 }

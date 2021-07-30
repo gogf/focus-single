@@ -1,11 +1,11 @@
 package api
 
 import (
+	"context"
 	"focus/app/api/internal"
 	"focus/app/cnt"
 	"focus/app/model"
 	"focus/app/service"
-	"github.com/gogf/gf/net/ghttp"
 )
 
 // 主题管理
@@ -22,30 +22,21 @@ type topicApi struct{}
 // @param   sort query string false "排序方式"
 // @router  /topic [GET]
 // @success 200 {string} html "页面HTML"
-func (a *topicApi) Index(r *ghttp.Request) {
-	var (
-		req *internal.ContentGetListReq
-	)
-	if err := r.Parse(&req); err != nil {
-		service.View.Render500(r, model.View{
-			Error: err.Error(),
-		})
-	}
+func (a *topicApi) Index(ctx context.Context, req *internal.ContentGetListReq) error {
 	req.Type = cnt.ContentTypeTopic
-	if getListRes, err := service.Content.GetList(r.Context(), req.ContentGetListInput); err != nil {
-		service.View.Render500(r, model.View{
-			Error: err.Error(),
-		})
+	if getListRes, err := service.Content.GetList(ctx, req.ContentGetListInput); err != nil {
+		return err
 	} else {
-		title := service.View.GetTitle(r.Context(), &model.ViewGetTitleInput{
+		title := service.View.GetTitle(ctx, &model.ViewGetTitleInput{
 			ContentType: req.Type,
 			CategoryId:  req.CategoryId,
 		})
-		service.View.Render(r, model.View{
+		service.View.Render(ctx, model.View{
 			ContentType: req.Type,
 			Data:        getListRes,
 			Title:       title,
 		})
+		return nil
 	}
 }
 
@@ -55,35 +46,29 @@ func (a *topicApi) Index(r *ghttp.Request) {
 // @param   id path int false "主题ID"
 // @router  /topic/detail/{id} [GET]
 // @success 200 {string} html "页面HTML"
-func (a *topicApi) Detail(r *ghttp.Request) {
-	var (
-		data *internal.ContentDetailReq
-	)
-	if err := r.Parse(&data); err != nil {
-		service.View.Render500(r, model.View{
-			Error: err.Error(),
-		})
-	}
-	if getDetailRes, err := service.Content.GetDetail(r.Context(), data.Id); err != nil {
-		service.View.Render500(r)
+func (a *topicApi) Detail(ctx context.Context, req *internal.ContentDetailReq) error {
+	if getDetailRes, err := service.Content.GetDetail(ctx, req.Id); err != nil {
+		return err
 	} else {
 		if getDetailRes == nil {
-			service.View.Render404(r)
+			service.View.Render404(ctx)
+			return nil
 		}
-		service.Content.AddViewCount(r.Context(), data.Id, 1)
-		service.View.Render(r, model.View{
+		service.Content.AddViewCount(ctx, req.Id, 1)
+		service.View.Render(ctx, model.View{
 			ContentType: cnt.ContentTypeTopic,
 			Data:        getDetailRes,
-			Title: service.View.GetTitle(r.Context(), &model.ViewGetTitleInput{
+			Title: service.View.GetTitle(ctx, &model.ViewGetTitleInput{
 				ContentType: getDetailRes.Content.Type,
 				CategoryId:  getDetailRes.Content.CategoryId,
 				CurrentName: getDetailRes.Content.Title,
 			}),
-			BreadCrumb: service.View.GetBreadCrumb(r.Context(), &model.ViewGetBreadCrumbInput{
+			BreadCrumb: service.View.GetBreadCrumb(ctx, &model.ViewGetBreadCrumbInput{
 				ContentId:   getDetailRes.Content.Id,
 				ContentType: getDetailRes.Content.Type,
 				CategoryId:  getDetailRes.Content.CategoryId,
 			}),
 		})
+		return nil
 	}
 }

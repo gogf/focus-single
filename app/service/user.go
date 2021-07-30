@@ -85,15 +85,15 @@ func (s *userService) EncryptPassword(passport, password string) string {
 // 注意password参数传入的是按照相同加密算法加密过后的密码字符串。
 func (s *userService) GetUserByPassportAndPassword(ctx context.Context, passport, password string) (user *model.User, err error) {
 	err = dao.User.Ctx(ctx).Where(g.Map{
-		dao.User.C.Passport: passport,
-		dao.User.C.Password: password,
+		dao.User.Columns.Passport: passport,
+		dao.User.Columns.Password: password,
 	}).Scan(&user)
 	return
 }
 
 // 检测给定的账号是否唯一
 func (s *userService) CheckPassportUnique(ctx context.Context, passport string) error {
-	n, err := dao.User.Ctx(ctx).Where(dao.User.C.Passport, passport).Count()
+	n, err := dao.User.Ctx(ctx).Where(dao.User.Columns.Passport, passport).Count()
 	if err != nil {
 		return err
 	}
@@ -105,7 +105,7 @@ func (s *userService) CheckPassportUnique(ctx context.Context, passport string) 
 
 // 检测给定的昵称是否唯一
 func (s *userService) CheckNicknameUnique(ctx context.Context, nickname string) error {
-	n, err := dao.User.Ctx(ctx).Where(dao.User.C.Nickname, nickname).Count()
+	n, err := dao.User.Ctx(ctx).Where(dao.User.Columns.Nickname, nickname).Count()
 	if err != nil {
 		return err
 	}
@@ -145,8 +145,8 @@ func (s *userService) UpdatePassword(ctx context.Context, input model.UserPasswo
 	return dao.User.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		oldPassword := s.EncryptPassword(Context.Get(ctx).User.Passport, input.OldPassword)
 		n, err := dao.User.Ctx(ctx).
-			Where(dao.User.C.Password, oldPassword).
-			Where(dao.User.C.Id, Context.Get(ctx).User.Id).
+			Where(dao.User.Columns.Password, oldPassword).
+			Where(dao.User.Columns.Id, Context.Get(ctx).User.Id).
 			Count()
 		if err != nil {
 			return err
@@ -156,8 +156,8 @@ func (s *userService) UpdatePassword(ctx context.Context, input model.UserPasswo
 		}
 		newPassword := s.EncryptPassword(Context.Get(ctx).User.Passport, input.NewPassword)
 		_, err = dao.User.Ctx(ctx).Data(g.Map{
-			dao.User.C.Password: newPassword,
-		}).Where(dao.User.C.Id, Context.Get(ctx).User.Id).Update()
+			dao.User.Columns.Password: newPassword,
+		}).Where(dao.User.Columns.Id, Context.Get(ctx).User.Id).Update()
 		return err
 	})
 }
@@ -190,7 +190,7 @@ func (s *userService) UpdateAvatar(ctx context.Context, input model.UserUpdatePr
 		)
 		_, err = dao.User.Ctx(ctx).Data(model.UserUpdateAvatarInput{
 			Avatar: input.Avatar,
-		}).Where(dao.User.C.Id, userId).Update()
+		}).Where(dao.User.Columns.Id, userId).Update()
 		// 更新登录session Avatar
 		if err == nil && user.Avatar != input.Avatar {
 			sessionUser := Session.GetUser(ctx)
@@ -210,8 +210,8 @@ func (s *userService) UpdateProfile(ctx context.Context, input model.UserUpdateP
 			userId = user.Id
 		)
 		n, err := dao.User.Ctx(ctx).
-			Where(dao.User.C.Nickname, input.Nickname).
-			WhereNot(dao.User.C.Id, userId).
+			Where(dao.User.Columns.Nickname, input.Nickname).
+			WhereNot(dao.User.Columns.Id, userId).
 			Count()
 		if err != nil {
 			return err
@@ -219,7 +219,7 @@ func (s *userService) UpdateProfile(ctx context.Context, input model.UserUpdateP
 		if n > 0 {
 			return gerror.Newf(`昵称"%s"已被占用`, input.Nickname)
 		}
-		_, err = dao.User.Ctx(ctx).OmitEmpty().Data(input).Where(dao.User.C.Id, userId).Update()
+		_, err = dao.User.Ctx(ctx).OmitEmpty().Data(input).Where(dao.User.Columns.Id, userId).Update()
 		// 更新登录session Nickname
 		if err == nil && user.Nickname != input.Nickname {
 			sessionUser := Session.GetUser(ctx)
@@ -234,8 +234,8 @@ func (s *userService) UpdateProfile(ctx context.Context, input model.UserUpdateP
 // 禁用指定用户
 func (s *userService) Disable(ctx context.Context, id uint) error {
 	_, err := dao.User.Ctx(ctx).
-		Data(dao.User.C.Status, cnt.UserStatusDisabled).
-		Where(dao.User.C.Id, id).
+		Data(dao.User.Columns.Status, cnt.UserStatusDisabled).
+		Where(dao.User.Columns.Id, id).
 		Update()
 	return err
 }
@@ -296,11 +296,11 @@ func (s *userService) GetMessageList(ctx context.Context, input model.UserGetMes
 // 获取文章数量
 func (s *userService) GetUserStats(ctx context.Context, userId uint) (map[string]int, error) {
 	// 文章统计
-	m := dao.Content.Ctx(ctx).Fields(dao.Content.C.Type, "count(*) total")
+	m := dao.Content.Ctx(ctx).Fields(dao.Content.Columns.Type, "count(*) total")
 	if userId > 0 && !s.IsAdminShow(ctx, userId) {
-		m = m.Where(dao.Content.C.UserId, userId)
+		m = m.Where(dao.Content.Columns.UserId, userId)
 	}
-	statsModel := m.Group(dao.Content.C.Type)
+	statsModel := m.Group(dao.Content.Columns.Type)
 	statsAll, err := statsModel.All()
 	if err != nil {
 		return nil, err
@@ -312,7 +312,7 @@ func (s *userService) GetUserStats(ctx context.Context, userId uint) (map[string
 	// 回复统计
 	replyModel := dao.Reply.Ctx(ctx).Fields("count(*) total")
 	if userId > 0 && !s.IsAdminShow(ctx, userId) {
-		replyModel = replyModel.Where(dao.Reply.C.UserId, userId)
+		replyModel = replyModel.Where(dao.Reply.Columns.UserId, userId)
 	}
 	record, err := replyModel.One()
 	if err != nil {

@@ -35,28 +35,31 @@ func Run() {
 	// 前台系统自定义错误页面
 	s.BindStatusHandler(401, func(r *ghttp.Request) {
 		if !gstr.HasPrefix(r.URL.Path, "/admin") {
-			service.View.Render401(r)
+			service.View.Render401(r.Context())
 		}
 	})
 	s.BindStatusHandler(403, func(r *ghttp.Request) {
 		if !gstr.HasPrefix(r.URL.Path, "/admin") {
-			service.View.Render403(r)
+			service.View.Render403(r.Context())
 		}
 	})
 	s.BindStatusHandler(404, func(r *ghttp.Request) {
 		if !gstr.HasPrefix(r.URL.Path, "/admin") {
-			service.View.Render404(r)
+			service.View.Render404(r.Context())
 		}
 	})
 	s.BindStatusHandler(500, func(r *ghttp.Request) {
 		if !gstr.HasPrefix(r.URL.Path, "/admin") {
-			service.View.Render500(r)
+			service.View.Render500(r.Context())
 		}
 	})
 
 	// 前台系统路由注册
 	s.Group("/", func(group *ghttp.RouterGroup) {
-		group.Middleware(service.Middleware.Ctx)
+		group.Middleware(
+			service.Middleware.Ctx,
+			service.Middleware.ResponseHandler,
+		)
 		group.ALLMap(g.Map{
 			"/":            api.Index,          // 首页
 			"/login":       api.Login,          // 登录

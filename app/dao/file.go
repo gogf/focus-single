@@ -16,13 +16,9 @@ type fileDao struct {
 
 var (
 	// File is globally public accessible object for table gf_file operations.
-	File fileDao
-)
-
-func init() {
 	File = fileDao{
 		internal.NewFileDao(),
 	}
-}
+)
 
 // Fill with you ideas below.

@@ -29,6 +29,6 @@ func (s *settingService) Get(ctx context.Context, key string) (string, error) {
 
 // 查询KV，返回泛型，便于转换。
 func (s *settingService) GetVar(ctx context.Context, key string) (*g.Var, error) {
-	v, err := dao.Setting.Ctx(ctx).Fields(dao.Setting.C.V).Where(dao.Setting.C.K, key).Value()
+	v, err := dao.Setting.Ctx(ctx).Fields(dao.Setting.Columns.V).Where(dao.Setting.Columns.K, key).Value()
 	return v, err
 }

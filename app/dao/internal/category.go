@@ -5,21 +5,20 @@
 package internal
 
 import (
+	"context"
 	"github.com/gogf/gf/database/gdb"
 	"github.com/gogf/gf/frame/g"
-	"github.com/gogf/gf/frame/gmvc"
 )
 
 // CategoryDao is the manager for logic model data accessing and custom defined data operations functions management.
 type CategoryDao struct {
-	gmvc.M                 // M is the core and embedded struct that inherits all chaining operations from gdb.Model.
-	C      categoryColumns // C is the short type for Columns, which contains all the column names of Table for convenient usage.
-	DB     gdb.DB          // DB is the raw underlying database management object.
-	Table  string          // Table is the underlying table name of the DAO.
+	Table   string          // Table is the underlying table name of the DAO.
+	Group   string          // Group is the database configuration group name of current DAO.
+	Columns CategoryColumns // Columns is the short type for Columns, which contains all the column names of Table for convenient usage.
 }
 
 // CategoryColumns defines and stores column names for table gf_category.
-type categoryColumns struct {
+type CategoryColumns struct {
 	Id          string // 分类ID，自增主键
 	ContentType string // 内容类型：topic, ask, article, reply
 	Key         string // 栏目唯一键名，用于程序部分场景硬编码，一般不会用得到
@@ -34,26 +33,47 @@ type categoryColumns struct {
 	UpdatedAt   string // 修改时间
 }
 
+//  categoryColumns holds the columns for table gf_category.
+var categoryColumns = CategoryColumns{
+	Id:          "id",
+	ContentType: "content_type",
+	Key:         "key",
+	ParentId:    "parent_id",
+	UserId:      "user_id",
+	Name:        "name",
+	Sort:        "sort",
+	Thumb:       "thumb",
+	Brief:       "brief",
+	Content:     "content",
+	CreatedAt:   "created_at",
+	UpdatedAt:   "updated_at",
+}
+
 // NewCategoryDao creates and returns a new DAO object for table data access.
 func NewCategoryDao() *CategoryDao {
-	columns := categoryColumns{
-		Id:          "id",
-		ContentType: "content_type",
-		Key:         "key",
-		ParentId:    "parent_id",
-		UserId:      "user_id",
-		Name:        "name",
-		Sort:        "sort",
-		Thumb:       "thumb",
-		Brief:       "brief",
-		Content:     "content",
-		CreatedAt:   "created_at",
-		UpdatedAt:   "updated_at",
-	}
 	return &CategoryDao{
-		C:     columns,
-		M:     g.DB("default").Model("gf_category").Safe(),
-		DB:    g.DB("default"),
-		Table: "gf_category",
+		Group:   "default",
+		Table:   "gf_category",
+		Columns: categoryColumns,
 	}
+}
+
+// DB retrieves and returns the underlying raw database management object of current DAO.
+func (dao *CategoryDao) DB() gdb.DB {
+	return g.DB(dao.Group)
+}
+
+// Ctx creates and returns the Model for current DAO, It automatically sets the context for current operation.
+func (dao *CategoryDao) Ctx(ctx context.Context) *gdb.Model {
+	return dao.DB().Model(dao.Table).Safe().Ctx(ctx)
+}
+
+// Transaction wraps the transaction logic using function f.
+// It rollbacks the transaction and returns the error from function f if it returns non-nil error.
+// It commits the transaction and returns nil if function f returns nil.
+//
+// Note that, you should not Commit or Rollback the transaction in function f
+// as it is automatically handled by this function.
+func (dao *CategoryDao) Transaction(ctx context.Context, f func(ctx context.Context, tx *gdb.TX) error) (err error) {
+	return dao.Ctx(ctx).Transaction(ctx, f)
 }

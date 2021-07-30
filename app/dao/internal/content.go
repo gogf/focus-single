@@ -5,21 +5,20 @@
 package internal
 
 import (
+	"context"
 	"github.com/gogf/gf/database/gdb"
 	"github.com/gogf/gf/frame/g"
-	"github.com/gogf/gf/frame/gmvc"
 )
 
 // ContentDao is the manager for logic model data accessing and custom defined data operations functions management.
 type ContentDao struct {
-	gmvc.M                // M is the core and embedded struct that inherits all chaining operations from gdb.Model.
-	C      contentColumns // C is the short type for Columns, which contains all the column names of Table for convenient usage.
-	DB     gdb.DB         // DB is the raw underlying database management object.
-	Table  string         // Table is the underlying table name of the DAO.
+	Table   string         // Table is the underlying table name of the DAO.
+	Group   string         // Group is the database configuration group name of current DAO.
+	Columns ContentColumns // Columns is the short type for Columns, which contains all the column names of Table for convenient usage.
 }
 
 // ContentColumns defines and stores column names for table gf_content.
-type contentColumns struct {
+type ContentColumns struct {
 	Id             string // 自增ID
 	Key            string // 唯一键名，用于程序硬编码，一般不常用
 	Type           string // 内容模型: topic, ask, article等，具体由程序定义
@@ -42,34 +41,55 @@ type contentColumns struct {
 	UpdatedAt      string // 修改时间
 }
 
+//  contentColumns holds the columns for table gf_content.
+var contentColumns = ContentColumns{
+	Id:             "id",
+	Key:            "key",
+	Type:           "type",
+	CategoryId:     "category_id",
+	UserId:         "user_id",
+	AdoptedReplyId: "adopted_reply_id",
+	Title:          "title",
+	Content:        "content",
+	Sort:           "sort",
+	Brief:          "brief",
+	Thumb:          "thumb",
+	Tags:           "tags",
+	Referer:        "referer",
+	Status:         "status",
+	ReplyCount:     "reply_count",
+	ViewCount:      "view_count",
+	ZanCount:       "zan_count",
+	CaiCount:       "cai_count",
+	CreatedAt:      "created_at",
+	UpdatedAt:      "updated_at",
+}
+
 // NewContentDao creates and returns a new DAO object for table data access.
 func NewContentDao() *ContentDao {
-	columns := contentColumns{
-		Id:             "id",
-		Key:            "key",
-		Type:           "type",
-		CategoryId:     "category_id",
-		UserId:         "user_id",
-		AdoptedReplyId: "adopted_reply_id",
-		Title:          "title",
-		Content:        "content",
-		Sort:           "sort",
-		Brief:          "brief",
-		Thumb:          "thumb",
-		Tags:           "tags",
-		Referer:        "referer",
-		Status:         "status",
-		ReplyCount:     "reply_count",
-		ViewCount:      "view_count",
-		ZanCount:       "zan_count",
-		CaiCount:       "cai_count",
-		CreatedAt:      "created_at",
-		UpdatedAt:      "updated_at",
-	}
 	return &ContentDao{
-		C:     columns,
-		M:     g.DB("default").Model("gf_content").Safe(),
-		DB:    g.DB("default"),
-		Table: "gf_content",
+		Group:   "default",
+		Table:   "gf_content",
+		Columns: contentColumns,
 	}
+}
+
+// DB retrieves and returns the underlying raw database management object of current DAO.
+func (dao *ContentDao) DB() gdb.DB {
+	return g.DB(dao.Group)
+}
+
+// Ctx creates and returns the Model for current DAO, It automatically sets the context for current operation.
+func (dao *ContentDao) Ctx(ctx context.Context) *gdb.Model {
+	return dao.DB().Model(dao.Table).Safe().Ctx(ctx)
+}
+
+// Transaction wraps the transaction logic using function f.
+// It rollbacks the transaction and returns the error from function f if it returns non-nil error.
+// It commits the transaction and returns nil if function f returns nil.
+//
+// Note that, you should not Commit or Rollback the transaction in function f
+// as it is automatically handled by this function.
+func (dao *ContentDao) Transaction(ctx context.Context, f func(ctx context.Context, tx *gdb.TX) error) (err error) {
+	return dao.Ctx(ctx).Transaction(ctx, f)
 }

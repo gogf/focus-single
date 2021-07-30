@@ -16,13 +16,9 @@ type contentDao struct {
 
 var (
 	// Content is globally public accessible object for table gf_content operations.
-	Content contentDao
-)
-
-func init() {
 	Content = contentDao{
 		internal.NewContentDao(),
 	}
-}
+)
 
 // Fill with you ideas below.

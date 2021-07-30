@@ -16,13 +16,9 @@ type categoryDao struct {
 
 var (
 	// Category is globally public accessible object for table gf_category operations.
-	Category categoryDao
-)
-
-func init() {
 	Category = categoryDao{
 		internal.NewCategoryDao(),
 	}
-}
+)
 
 // Fill with you ideas below.

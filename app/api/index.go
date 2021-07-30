@@ -1,10 +1,10 @@
 package api
 
 import (
+	"context"
 	"focus/app/api/internal"
 	"focus/app/model"
 	"focus/app/service"
-	"github.com/gogf/gf/net/ghttp"
 )
 
 // 首页接口
@@ -17,24 +17,15 @@ type indexApi struct{}
 // @produce html
 // @router  / [GET]
 // @success 200 {string} html "页面HTML"
-func (a *indexApi) Index(r *ghttp.Request) {
-	var (
-		req *internal.ContentGetListReq
-	)
-	if err := r.Parse(&req); err != nil {
-		service.View.Render500(r, model.View{
-			Error: err.Error(),
-		})
-	}
-	if getListRes, err := service.Content.GetList(r.Context(), req.ContentGetListInput); err != nil {
-		service.View.Render500(r, model.View{
-			Error: err.Error(),
-		})
+func (a *indexApi) Index(ctx context.Context, req *internal.ContentGetListReq) error {
+	if getListRes, err := service.Content.GetList(ctx, req.ContentGetListInput); err != nil {
+		return err
 	} else {
-		service.View.Render(r, model.View{
+		service.View.Render(ctx, model.View{
 			ContentType: req.Type,
 			Data:        getListRes,
 			Title:       "首页",
 		})
 	}
+	return nil
 }

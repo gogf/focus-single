@@ -31,7 +31,7 @@ func (s *interactService) Zan(ctx context.Context, targetType string, targetId u
 			TargetId:   targetId,
 			TargetType: targetType,
 			Type:       cnt.InteractTypeZan,
-		}).FieldsEx(dao.Interact.C.Id).InsertIgnore()
+		}).FieldsEx(dao.Interact.Columns.Id).InsertIgnore()
 		if err != nil {
 			return err
 		}
@@ -50,10 +50,10 @@ func (s *interactService) CancelZan(ctx context.Context, targetType string, targ
 			return nil
 		}
 		r, err := dao.Interact.Ctx(ctx).Where(g.Map{
-			dao.Interact.C.UserId:     Context.Get(ctx).User.Id,
-			dao.Interact.C.TargetId:   targetId,
-			dao.Interact.C.TargetType: targetType,
-			dao.Interact.C.Type:       cnt.InteractTypeZan,
+			dao.Interact.Columns.UserId:     Context.Get(ctx).User.Id,
+			dao.Interact.Columns.TargetId:   targetId,
+			dao.Interact.Columns.TargetType: targetType,
+			dao.Interact.Columns.Type:       cnt.InteractTypeZan,
 		}).Delete()
 		if err != nil {
 			return err
@@ -91,7 +91,7 @@ func (s *interactService) Cai(ctx context.Context, targetType string, targetId u
 			TargetId:   targetId,
 			TargetType: targetType,
 			Type:       cnt.InteractTypeCai,
-		}).FieldsEx(dao.Interact.C.Id).InsertIgnore()
+		}).FieldsEx(dao.Interact.Columns.Id).InsertIgnore()
 		if err != nil {
 			return err
 		}
@@ -110,10 +110,10 @@ func (s *interactService) CancelCai(ctx context.Context, targetType string, targ
 			return nil
 		}
 		r, err := dao.Interact.Ctx(ctx).Where(g.Map{
-			dao.Interact.C.UserId:     Context.Get(ctx).User.Id,
-			dao.Interact.C.TargetId:   targetId,
-			dao.Interact.C.TargetType: targetType,
-			dao.Interact.C.Type:       cnt.InteractTypeCai,
+			dao.Interact.Columns.UserId:     Context.Get(ctx).User.Id,
+			dao.Interact.Columns.TargetId:   targetId,
+			dao.Interact.Columns.TargetType: targetType,
+			dao.Interact.Columns.Type:       cnt.InteractTypeCai,
 		}).Delete()
 		if err != nil {
 			return err
@@ -149,7 +149,7 @@ func (s *interactService) getMyList(ctx context.Context) ([]*model.Interact, err
 		return v.([]*model.Interact), nil
 	}
 	var list []*model.Interact
-	err := dao.Interact.Ctx(ctx).Where(dao.Interact.C.UserId, customCtx.User.Id).Scan(&list)
+	err := dao.Interact.Ctx(ctx).Where(dao.Interact.Columns.UserId, customCtx.User.Id).Scan(&list)
 	if err != nil {
 		return nil, err
 	}
@@ -174,18 +174,18 @@ func (s *interactService) updateCount(ctx context.Context, interactType int, tar
 			switch interactType {
 			case cnt.InteractTypeZan:
 				_, err = dao.Content.Ctx(ctx).
-					Where(dao.Content.C.Id, targetId).
-					WhereGTE(dao.Content.C.ZanCount, 0).
-					Increment(dao.Content.C.ZanCount, count)
+					Where(dao.Content.Columns.Id, targetId).
+					WhereGTE(dao.Content.Columns.ZanCount, 0).
+					Increment(dao.Content.Columns.ZanCount, count)
 				if err != nil {
 					return err
 				}
 
 			case cnt.InteractTypeCai:
 				_, err = dao.Content.Ctx(ctx).
-					Where(dao.Content.C.Id, targetId).
-					WhereGTE(dao.Content.C.CaiCount, 0).
-					Increment(dao.Content.C.CaiCount, count)
+					Where(dao.Content.Columns.Id, targetId).
+					WhereGTE(dao.Content.Columns.CaiCount, 0).
+					Increment(dao.Content.Columns.CaiCount, count)
 				if err != nil {
 					return err
 				}
@@ -195,18 +195,18 @@ func (s *interactService) updateCount(ctx context.Context, interactType int, tar
 			switch interactType {
 			case cnt.InteractTypeZan:
 				_, err = dao.Reply.Ctx(ctx).
-					Where(dao.Content.C.Id, targetId).
-					WhereGTE(dao.Content.C.ZanCount, 0).
-					Increment(dao.Content.C.ZanCount, count)
+					Where(dao.Content.Columns.Id, targetId).
+					WhereGTE(dao.Content.Columns.ZanCount, 0).
+					Increment(dao.Content.Columns.ZanCount, count)
 				if err != nil {
 					return err
 				}
 
 			case cnt.InteractTypeCai:
 				_, err = dao.Reply.Ctx(ctx).
-					Where(dao.Content.C.Id, targetId).
-					WhereGTE(dao.Content.C.CaiCount, 0).
-					Increment(dao.Content.C.CaiCount, count)
+					Where(dao.Content.Columns.Id, targetId).
+					WhereGTE(dao.Content.Columns.CaiCount, 0).
+					Increment(dao.Content.Columns.CaiCount, count)
 				if err != nil {
 					return err
 				}

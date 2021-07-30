@@ -38,8 +38,8 @@ func (s *replyService) Delete(ctx context.Context, id uint) error {
 		}
 		// 删除回复记录
 		_, err = dao.Reply.Ctx(ctx).Where(g.Map{
-			dao.Reply.C.Id:     id,
-			dao.Reply.C.UserId: Context.Get(ctx).User.Id,
+			dao.Reply.Columns.Id:     id,
+			dao.Reply.Columns.UserId: Context.Get(ctx).User.Id,
 		}).Delete()
 		if err == nil {
 			// 回复统计-1
@@ -63,8 +63,8 @@ func (s *replyService) DeleteByUserContentId(ctx context.Context, userId, conten
 	return dao.Reply.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		// 删除内容对应的回复
 		_, err := dao.Reply.Ctx(ctx).Where(g.Map{
-			dao.Reply.C.TargetId: contentId,
-			dao.Reply.C.UserId:   userId,
+			dao.Reply.Columns.TargetId: contentId,
+			dao.Reply.Columns.UserId:   userId,
 		}).Delete()
 		return err
 	})
@@ -78,16 +78,16 @@ func (s *replyService) GetList(ctx context.Context, input model.ReplyGetListInpu
 	}
 	m := dao.Reply.Ctx(ctx).Fields(model.ReplyListItem{})
 	if input.TargetType != "" {
-		m = m.Where(dao.Reply.C.TargetType, input.TargetType)
+		m = m.Where(dao.Reply.Columns.TargetType, input.TargetType)
 	}
 	if input.TargetId > 0 {
-		m = m.Where(dao.Reply.C.TargetId, input.TargetId)
+		m = m.Where(dao.Reply.Columns.TargetId, input.TargetId)
 	}
 	if input.UserId > 0 {
-		m = m.Where(dao.Reply.C.UserId, input.UserId)
+		m = m.Where(dao.Reply.Columns.UserId, input.UserId)
 	}
 
-	err = m.Page(input.Page, input.Size).OrderDesc(dao.Content.C.Id).ScanList(&output.List, "Reply")
+	err = m.Page(input.Page, input.Size).OrderDesc(dao.Content.Columns.Id).ScanList(&output.List, "Reply")
 	if err != nil {
 		return nil, err
 	}
@@ -98,26 +98,27 @@ func (s *replyService) GetList(ctx context.Context, input model.ReplyGetListInpu
 	if err = m.ScanList(&output.List, "Reply"); err != nil {
 		return nil, err
 	}
-	err = dao.User.
+	err = dao.User.Ctx(ctx).
 		Fields(model.ReplyListUserItem{}).
-		Where(dao.User.C.Id, gutil.ListItemValuesUnique(output.List, "Reply", "UserId")).
+		Where(dao.User.Columns.Id, gutil.ListItemValuesUnique(output.List, "Reply", "UserId")).
 		ScanList(&output.List, "User", "Reply", "id:UserId")
 	if err != nil {
 		return nil, err
 	}
 
 	// Content
-	err = dao.Content.Fields(dao.Content.C.Id, dao.Content.C.Title, dao.Content.C.CategoryId).
-		Where(dao.Content.C.Id, gutil.ListItemValuesUnique(output.List, "Reply", "TargetId")).
+	err = dao.Content.Ctx(ctx).
+		Fields(dao.Content.Columns.Id, dao.Content.Columns.Title, dao.Content.Columns.CategoryId).
+		Where(dao.Content.Columns.Id, gutil.ListItemValuesUnique(output.List, "Reply", "TargetId")).
 		ScanList(&output.List, "Content", "Reply", "id:TargetId")
 	if err != nil {
 		return nil, err
 	}
 
 	// Category
-	err = dao.Category.
+	err = dao.Category.Ctx(ctx).
 		Fields(model.ContentListCategoryItem{}).
-		Where(dao.Category.C.Id, gutil.ListItemValuesUnique(output.List, "Content", "CategoryId")).
+		Where(dao.Category.Columns.Id, gutil.ListItemValuesUnique(output.List, "Content", "CategoryId")).
 		ScanList(&output.List, "Category", "Content", "id:CategoryId")
 	if err != nil {
 		return nil, err

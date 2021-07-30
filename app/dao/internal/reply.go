@@ -5,21 +5,20 @@
 package internal
 
 import (
+	"context"
 	"github.com/gogf/gf/database/gdb"
 	"github.com/gogf/gf/frame/g"
-	"github.com/gogf/gf/frame/gmvc"
 )
 
 // ReplyDao is the manager for logic model data accessing and custom defined data operations functions management.
 type ReplyDao struct {
-	gmvc.M              // M is the core and embedded struct that inherits all chaining operations from gdb.Model.
-	C      replyColumns // C is the short type for Columns, which contains all the column names of Table for convenient usage.
-	DB     gdb.DB       // DB is the raw underlying database management object.
-	Table  string       // Table is the underlying table name of the DAO.
+	Table   string       // Table is the underlying table name of the DAO.
+	Group   string       // Group is the database configuration group name of current DAO.
+	Columns ReplyColumns // Columns is the short type for Columns, which contains all the column names of Table for convenient usage.
 }
 
 // ReplyColumns defines and stores column names for table gf_reply.
-type replyColumns struct {
+type ReplyColumns struct {
 	Id         string // 回复ID
 	ParentId   string // 回复对应的上一级回复ID(没有的话默认为0)
 	Title      string // 回复标题
@@ -33,25 +32,46 @@ type replyColumns struct {
 	UpdatedAt  string //
 }
 
+//  replyColumns holds the columns for table gf_reply.
+var replyColumns = ReplyColumns{
+	Id:         "id",
+	ParentId:   "parent_id",
+	Title:      "title",
+	Content:    "content",
+	TargetType: "target_type",
+	TargetId:   "target_id",
+	UserId:     "user_id",
+	ZanCount:   "zan_count",
+	CaiCount:   "cai_count",
+	CreatedAt:  "created_at",
+	UpdatedAt:  "updated_at",
+}
+
 // NewReplyDao creates and returns a new DAO object for table data access.
 func NewReplyDao() *ReplyDao {
-	columns := replyColumns{
-		Id:         "id",
-		ParentId:   "parent_id",
-		Title:      "title",
-		Content:    "content",
-		TargetType: "target_type",
-		TargetId:   "target_id",
-		UserId:     "user_id",
-		ZanCount:   "zan_count",
-		CaiCount:   "cai_count",
-		CreatedAt:  "created_at",
-		UpdatedAt:  "updated_at",
-	}
 	return &ReplyDao{
-		C:     columns,
-		M:     g.DB("default").Model("gf_reply").Safe(),
-		DB:    g.DB("default"),
-		Table: "gf_reply",
+		Group:   "default",
+		Table:   "gf_reply",
+		Columns: replyColumns,
 	}
+}
+
+// DB retrieves and returns the underlying raw database management object of current DAO.
+func (dao *ReplyDao) DB() gdb.DB {
+	return g.DB(dao.Group)
+}
+
+// Ctx creates and returns the Model for current DAO, It automatically sets the context for current operation.
+func (dao *ReplyDao) Ctx(ctx context.Context) *gdb.Model {
+	return dao.DB().Model(dao.Table).Safe().Ctx(ctx)
+}
+
+// Transaction wraps the transaction logic using function f.
+// It rollbacks the transaction and returns the error from function f if it returns non-nil error.
+// It commits the transaction and returns nil if function f returns nil.
+//
+// Note that, you should not Commit or Rollback the transaction in function f
+// as it is automatically handled by this function.
+func (dao *ReplyDao) Transaction(ctx context.Context, f func(ctx context.Context, tx *gdb.TX) error) (err error) {
+	return dao.Ctx(ctx).Transaction(ctx, f)
 }

@@ -1,12 +1,13 @@
 package api
 
 import (
+	"context"
 	"focus/app/api/internal"
 	"focus/app/cnt"
 	"focus/app/model"
 	"focus/app/service"
-	"focus/library/response"
-	"github.com/gogf/gf/net/ghttp"
+	"github.com/gogf/gf/errors/gerror"
+	"github.com/gogf/gf/frame/g"
 )
 
 // 登录管理
@@ -19,8 +20,8 @@ type loginApi struct{}
 // @produce html
 // @router  /login [GET]
 // @success 200 {string} html "页面HTML"
-func (a *loginApi) Index(r *ghttp.Request) {
-	service.View.Render(r, model.View{})
+func (a *loginApi) Index(ctx context.Context) {
+	service.View.Render(ctx, model.View{})
 }
 
 // @summary 提交登录
@@ -34,24 +35,18 @@ func (a *loginApi) Index(r *ghttp.Request) {
 // @param   verify_code formData string false "验证码"
 // @router  /login/do [POST]
 // @success 200 {object} response.JsonRes "执行结果"
-func (a *loginApi) Do(r *ghttp.Request) {
-	var (
-		req *internal.UserLoginReq
-	)
-	if err := r.Parse(&req); err != nil {
-		response.JsonExit(r, 1, err.Error())
+func (a *loginApi) Do(ctx context.Context, req *internal.UserLoginReq) (string, error) {
+	if !service.Captcha.VerifyAndClear(g.RequestFromCtx(ctx), cnt.CaptchaDefaultName, req.Captcha) {
+		return "", gerror.NewCode(gerror.CodeBusinessValidationFailed, "请输入正确的验证码")
 	}
-	if !service.Captcha.VerifyAndClear(r, cnt.CaptchaDefaultName, req.Captcha) {
-		response.JsonExit(r, 1, "请输入正确的验证码")
-	}
-	if err := service.User.Login(r.Context(), req.UserLoginInput); err != nil {
-		response.JsonExit(r, 1, err.Error())
+	if err := service.User.Login(ctx, req.UserLoginInput); err != nil {
+		return "", err
 	} else {
 		// 识别并跳转到登录前页面
-		loginReferer := service.Session.GetLoginReferer(r.Context())
+		loginReferer := service.Session.GetLoginReferer(ctx)
 		if loginReferer != "" {
-			_ = service.Session.RemoveLoginReferer(r.Context())
+			_ = service.Session.RemoveLoginReferer(ctx)
 		}
-		response.JsonRedirectExit(r, 0, "", loginReferer)
+		return loginReferer, nil
 	}
 }

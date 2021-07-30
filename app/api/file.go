@@ -1,11 +1,12 @@
 package api
 
 import (
+	"context"
 	"focus/app/api/internal"
 	"focus/app/model"
 	"focus/app/service"
-	"focus/library/response"
-	"github.com/gogf/gf/net/ghttp"
+	"github.com/gogf/gf/errors/gerror"
+	"github.com/gogf/gf/frame/g"
 )
 
 // 文件管理
@@ -19,20 +20,24 @@ type fileApi struct{}
 // @param   file formData file true "文件域"
 // @router  /file/upload [POST]
 // @success 200 {object} internal.FileUploadRes "请求结果"
-func (a *fileApi) Upload(r *ghttp.Request) {
-	file := r.GetUploadFile("file")
+func (a *fileApi) Upload(ctx context.Context) (res *internal.FileUploadRes, err error) {
+	var (
+		request = g.RequestFromCtx(ctx)
+		file    = request.GetUploadFile("file")
+	)
 	if file == nil {
-		response.JsonExit(r, 1, "请选择需要上传的文件")
+		return nil, gerror.NewCode(gerror.CodeMissingParameter, "请选择需要上传的文件")
 	}
-	uploadResult, err := service.File.Upload(r.Context(), model.FileUploadInput{
+	result, err := service.File.Upload(ctx, model.FileUploadInput{
 		File:       file,
 		RandomName: true,
 	})
 	if err != nil {
-		response.JsonExit(r, 1, err.Error())
+		return nil, err
 	}
-	response.JsonExit(r, 0, "", &internal.FileUploadRes{
-		Name: uploadResult.Name,
-		Url:  uploadResult.Url,
-	})
+	res = &internal.FileUploadRes{
+		Name: result.Name,
+		Url:  result.Url,
+	}
+	return
 }

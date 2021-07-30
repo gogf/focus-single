@@ -105,8 +105,8 @@ func (s *categoryService) formTree(parentId uint, contentType string, entities [
 // 获得所有的栏目列表。
 func (s *categoryService) GetList(ctx context.Context) (list []*model.Category, err error) {
 	err = dao.Category.Ctx(ctx).
-		OrderAsc(dao.Category.C.Sort).
-		OrderAsc(dao.Category.C.Id).
+		OrderAsc(dao.Category.Columns.Sort).
+		OrderAsc(dao.Category.Columns.Id).
 		Scan(&list)
 	return
 }

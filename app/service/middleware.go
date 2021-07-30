@@ -4,22 +4,48 @@ import (
 	"focus/app/cnt"
 	"focus/app/model"
 	"focus/library/response"
+	"github.com/gogf/gf/errors/gerror"
 	"github.com/gogf/gf/frame/g"
 	"github.com/gogf/gf/net/ghttp"
 )
 
 // 中间件管理服务
 var Middleware = middlewareService{
-	loginUrl: "/login",
+	LoginUrl: "/login",
 }
 
 type middlewareService struct {
-	loginUrl string // 登录路由地址
+	LoginUrl string // 登录路由地址
 }
 
-// 获取用户登录URL
-func (s *middlewareService) GetLoginUrl() string {
-	return s.loginUrl
+// 返回处理中间件
+func (s *middlewareService) ResponseHandler(r *ghttp.Request) {
+	r.Middleware.Next()
+	var (
+		err  error
+		res  interface{}
+		code int
+	)
+	res, err = r.GetHandlerResponse()
+	if err != nil {
+		code := gerror.Code(err)
+		if code == gerror.CodeNil {
+			code = gerror.CodeInternalError
+		}
+		if r.IsAjaxRequest() {
+			response.JsonExit(r, code, err.Error())
+		} else {
+			View.Render500(r.Context(), model.View{
+				Error: err.Error(),
+			})
+		}
+	} else {
+		if r.IsAjaxRequest() {
+			response.JsonExit(r, code, "", res)
+		} else {
+			// 什么都不做，业务API自行处理模板渲染的成功逻辑。
+		}
+	}
 }
 
 // 自定义上下文对象
@@ -63,9 +89,9 @@ func (s *middlewareService) Auth(r *ghttp.Request) {
 		}
 		// 根据当前请求方式执行不同的返回数据结构
 		if r.IsAjaxRequest() {
-			response.JsonRedirectExit(r, 1, "", s.loginUrl)
+			response.JsonRedirectExit(r, 1, "", s.LoginUrl)
 		} else {
-			r.Response.RedirectTo(s.loginUrl)
+			r.Response.RedirectTo(s.LoginUrl)
 		}
 	}
 	r.Middleware.Next()

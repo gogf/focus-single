@@ -16,13 +16,9 @@ type settingDao struct {
 
 var (
 	// Setting is globally public accessible object for table gf_setting operations.
-	Setting settingDao
-)
-
-func init() {
 	Setting = settingDao{
 		internal.NewSettingDao(),
 	}
-}
+)
 
 // Fill with you ideas below.

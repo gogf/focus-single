@@ -16,13 +16,9 @@ type replyDao struct {
 
 var (
 	// Reply is globally public accessible object for table gf_reply operations.
-	Reply replyDao
-)
-
-func init() {
 	Reply = replyDao{
 		internal.NewReplyDao(),
 	}
-}
+)
 
 // Fill with you ideas below.

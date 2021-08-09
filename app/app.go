@@ -57,6 +57,7 @@ func Run() {
 	// 前台系统路由注册
 	s.Group("/", func(group *ghttp.RouterGroup) {
 		group.Middleware(
+			service.Middleware.RequestId,
 			service.Middleware.Ctx,
 			service.Middleware.ResponseHandler,
 		)

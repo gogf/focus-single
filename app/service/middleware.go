@@ -7,6 +7,7 @@ import (
 	"github.com/gogf/gf/errors/gerror"
 	"github.com/gogf/gf/frame/g"
 	"github.com/gogf/gf/net/ghttp"
+	"github.com/gogf/gf/util/guid"
 )
 
 // 中间件管理服务
@@ -93,6 +94,21 @@ func (s *middlewareService) Auth(r *ghttp.Request) {
 		} else {
 			r.Response.RedirectTo(s.LoginUrl)
 		}
+	}
+	r.Middleware.Next()
+}
+
+// 添加自定义RequestId到ctx中
+func (s *middlewareService) RequestId(r *ghttp.Request) {
+	requestId := r.GetCtxVar(cnt.ContextKeyRequestId).String()
+	if requestId == "" {
+		if v := r.Header.Get(cnt.ContextKeyRequestId); v != "" {
+			requestId = v
+		} else {
+			requestId = guid.S()
+		}
+		r.SetCtxVar(cnt.ContextKeyRequestId, requestId)
+		r.Response.Header().Set(cnt.ContextKeyRequestId, requestId)
 	}
 	r.Middleware.Next()
 }

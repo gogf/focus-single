@@ -3,7 +3,7 @@ module focus
 go 1.14
 
 require (
-	github.com/gogf/gf v1.16.5-0.20210730091713-5a6c2c27df1d
+	github.com/gogf/gf v1.16.5-0.20210805111531-214d0513e594
 	github.com/gogf/swagger v1.3.0
 	github.com/kr/text v0.2.0 // indirect
 	github.com/mojocn/base64Captcha v1.3.1

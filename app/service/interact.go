@@ -49,12 +49,12 @@ func (s *interactService) CancelZan(ctx context.Context, targetType string, targ
 		if customCtx == nil || customCtx.User == nil {
 			return nil
 		}
-		r, err := dao.Interact.Ctx(ctx).Where(g.Map{
-			dao.Interact.Columns.UserId:     Context.Get(ctx).User.Id,
-			dao.Interact.Columns.TargetId:   targetId,
-			dao.Interact.Columns.TargetType: targetType,
-			dao.Interact.Columns.Type:       cnt.InteractTypeZan,
-		}).Delete()
+		r, err := dao.Interact.Ctx(ctx).Where(model.InteractForDao{
+			Type:       cnt.InteractTypeZan,
+			UserId:     Context.Get(ctx).User.Id,
+			TargetId:   targetId,
+			TargetType: targetType,
+		}).OmitEmptyWhere().Delete()
 		if err != nil {
 			return err
 		}

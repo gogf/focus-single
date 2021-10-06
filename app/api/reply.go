@@ -1,48 +1,32 @@
 package api
 
 import (
-	"context"
-	"focus/app/api/internal"
-	"focus/app/model"
-	"focus/app/service"
+	"focus/app/internal/model"
 	"github.com/gogf/gf/frame/g"
 )
 
-// 回复控制器
-var Reply = replyApi{}
-
-type replyApi struct{}
-
-// @summary 创建回复
-// @description 客户端AJAX提交，客户端
-// @tags    前台-回复
-// @produce json
-// @param   entity body internal.ReplyDoCreateReq true "请求参数" required
-// @router  /reply/do-create [POST]
-// @success 200 {object} response.JsonRes "请求结果"
-func (a *replyApi) DoCreate(ctx context.Context, req *internal.ReplyDoCreateReq) error {
-	return service.Reply.Create(ctx, req.ReplyCreateInput)
+type ReplyDoCreateReq struct {
+	g.Meta `method:"post" summary:"执行回复接口" tags:"回复"`
+	model.ReplyCreateInput
+	ParentId   uint   `v:"required#请输入账号"`    // 回复对应的上一级回复ID(没有的话默认为0)
+	TargetType string `v:"required#评论内容类型错误"` // 评论类型: topic, ask, article, reply
+	TargetId   uint   `v:"required#评论目标ID错误"` // 对应内容ID
+	Content    string `v:"required#评论内容不能为空"` // 回复内容
 }
+type ReplyDoCreateRes struct{}
 
-// 获取回复列表
-func (a *replyApi) Index(ctx context.Context, req *internal.ReplyGetListReq) (string, error) {
-	if getListRes, err := service.Reply.GetList(ctx, req.ReplyGetListInput); err != nil {
-		return "", err
-	} else {
-		request := g.RequestFromCtx(ctx)
-		service.View.RenderTpl(ctx, "index/reply.html", model.View{Data: getListRes})
-		tplContent := request.Response.BufferString()
-		request.Response.ClearBuffer()
-		return tplContent, nil
-	}
+// 执行删除内容
+type ReplyDoDeleteReq struct {
+	g.Meta `method:"post" summary:"删除回复接口" tags:"回复"`
+	Id     uint `v:"min:1#请选择需要删除的内容"` // 删除时ID不能为空
 }
+type ReplyDoDeleteRes struct{}
 
-// @summary 删除回复
-// @tags    前台-回复
-// @produce json
-// @param   id formData int true "回复ID"
-// @router  /reply/do-delete [POST]
-// @success 200 {object} response.JsonRes "请求结果"
-func (a *replyApi) DoDelete(ctx context.Context, req *internal.ReplyDoDeleteReq) error {
-	return service.Reply.Delete(ctx, req.Id)
+// 查询回复列表请求
+type ReplyGetListReq struct {
+	g.Meta `method:"post" summary:"查询回复列表" tags:"回复"`
+	model.ReplyGetListInput
+}
+type ReplyGetListRes struct {
+	Content string // HTML内容
 }

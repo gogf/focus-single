@@ -1,27 +1,29 @@
 package app
 
 import (
-	_ "focus/packed"
+	_ "focus/app/internal/packed"
 
-	"focus/app/api"
-	"focus/app/service"
+	"focus/app/internal/act"
+	"focus/app/internal/service"
 	"github.com/gogf/gf/frame/g"
 	"github.com/gogf/gf/net/ghttp"
+	"github.com/gogf/gf/os/gctx"
 	"github.com/gogf/gf/text/gstr"
 	"github.com/gogf/gf/util/gmode"
-	"github.com/gogf/swagger"
 )
 
 // 应用启动
 func Run() {
+	var (
+		ctx = gctx.New()
+	)
 	// 绑定Swagger Plugin
 	s := g.Server()
-	s.Plugin(&swagger.Swagger{})
 
 	// 静态目录设置
-	uploadPath := g.Cfg().GetString("upload.path")
+	uploadPath := g.Cfg().MustGet(ctx, "upload.path").String()
 	if uploadPath == "" {
-		g.Log().Fatal("文件上传配置路径不能为空")
+		g.Log().Fatal(ctx, "文件上传配置路径不能为空")
 	}
 	s.AddStaticPath("/upload", uploadPath)
 
@@ -62,29 +64,29 @@ func Run() {
 			service.Middleware.ResponseHandler,
 		)
 		group.ALLMap(g.Map{
-			"/":            api.Index,          // 首页
-			"/login":       api.Login,          // 登录
-			"/register":    api.Register,       // 注册
-			"/category":    api.Category,       // 栏目
-			"/topic":       api.Topic,          // 主题
-			"/topic/:id":   api.Topic.Detail,   // 主题 - 详情
-			"/ask":         api.Ask,            // 问答
-			"/ask/:id":     api.Ask.Detail,     // 问答 - 详情
-			"/article":     api.Article,        // 文章
-			"/article/:id": api.Article.Detail, // 文章 - 详情
-			"/reply":       api.Reply,          // 回复
-			"/search":      api.Search,         // 搜索
-			"/captcha":     api.Captcha,        // 验证码
-			"/user/:id":    api.User.Index,     // 用户 - 主页
+			"/":             act.Index,          // 首页
+			"/login":        act.Login,          // 登录
+			"/register":     act.Register,       // 注册
+			"/category":     act.Category,       // 栏目
+			"/topic":        act.Topic,          // 主题
+			"/topic/{id}":   act.Topic.Detail,   // 主题 - 详情
+			"/ask":          act.Ask,            // 问答
+			"/ask/{id}":     act.Ask.Detail,     // 问答 - 详情
+			"/article":      act.Article,        // 文章
+			"/article/{id}": act.Article.Detail, // 文章 - 详情
+			"/reply":        act.Reply,          // 回复
+			"/search":       act.Search,         // 搜索
+			"/captcha":      act.Captcha,        // 验证码
+			"/user/{id}":    act.User.Index,     // 用户 - 主页
 		})
 		// 权限控制路由
 		group.Group("/", func(group *ghttp.RouterGroup) {
 			group.Middleware(service.Middleware.Auth)
 			group.ALLMap(g.Map{
-				"/user":     api.User,     // 用户
-				"/content":  api.Content,  // 内容
-				"/interact": api.Interact, // 交互
-				"/file":     api.File,     // 文件
+				"/user":     act.User,     // 用户
+				"/content":  act.Content,  // 内容
+				"/interact": act.Interact, // 交互
+				"/file":     act.File,     // 文件
 			})
 		})
 	})

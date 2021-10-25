@@ -5,7 +5,7 @@
 package model
 
 import (
-	"github.com/gogf/gf/os/gtime"
+	"github.com/gogf/gf/v2/os/gtime"
 )
 
 // Category is the golang structure for table category.

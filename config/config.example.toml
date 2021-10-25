@@ -9,7 +9,6 @@
     accessLogEnabled    = true
     accessLogPattern    = "access-{Ymd}.log"
     sessionPath         = "temp/sessions"    # Session文件存储目录
-    logPath             = "logs/server"      # Server日志文件存储目录
 
 # 数据库连接配置
 [database]

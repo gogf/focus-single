@@ -5,9 +5,9 @@ import (
 	"focus/app/api"
 	"focus/app/internal/model"
 	"focus/app/internal/service"
-	"github.com/gogf/gf/errors/gcode"
-	"github.com/gogf/gf/errors/gerror"
-	"github.com/gogf/gf/frame/g"
+	"github.com/gogf/gf/v2/errors/gcode"
+	"github.com/gogf/gf/v2/errors/gerror"
+	"github.com/gogf/gf/v2/frame/g"
 )
 
 var (
@@ -17,12 +17,6 @@ var (
 
 type fileAct struct{}
 
-// @summary 上传文件
-// @tags    前台-文件
-// @produce json
-// @param   file formData file true "文件域"
-// @router  /file/upload [POST]
-// @success 200 {object} internal.FileUploadRes "请求结果"
 func (a *fileAct) Upload(ctx context.Context, req *api.FileUploadReq) (res *api.FileUploadRes, err error) {
 	var (
 		request = g.RequestFromCtx(ctx)

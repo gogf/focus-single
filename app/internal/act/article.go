@@ -15,18 +15,16 @@ var (
 
 type articleAct struct{}
 
-// @summary 展示文章首页
-// @tags    前台-文章
-// @produce html
-// @param   cate query int    false "栏目ID"
-// @param   page query int    false "分页号码"
-// @param   size query int    false "分页数量"
-// @param   sort query string false "排序方式"
-// @router  /article [GET]
-// @success 200 {string} html "页面HTML"
 func (a *articleAct) Index(ctx context.Context, req *api.ContentGetListReq) (res *api.ContentGetListRes, err error) {
 	req.Type = cnt.ContentTypeArticle
-	if getListRes, err := service.Content.GetList(ctx, req.ContentGetListInput); err != nil {
+	if getListRes, err := service.Content.GetList(ctx, model.ContentGetListInput{
+		Type:       req.Type,
+		CategoryId: req.CategoryId,
+		Page:       req.Page,
+		Size:       req.Size,
+		Sort:       req.Sort,
+		UserId:     service.Session.GetUser(ctx).Id,
+	}); err != nil {
 		return nil, err
 	} else {
 		service.View.Render(ctx, model.View{
@@ -34,19 +32,13 @@ func (a *articleAct) Index(ctx context.Context, req *api.ContentGetListReq) (res
 			Data:        getListRes,
 			Title: service.View.GetTitle(ctx, &model.ViewGetTitleInput{
 				ContentType: req.Type,
-				CategoryId:  req.CategoryId,
+				CategoryId:  req.ContentListCommonReq.CategoryId,
 			}),
 		})
 	}
 	return
 }
 
-// @summary 展示文章详情
-// @tags    前台-文章
-// @produce html
-// @param   id path int false "文章ID"
-// @router  /article/detail/{id} [GET]
-// @success 200 {string} html "页面HTML"
 func (a *articleAct) Detail(ctx context.Context, req *api.ContentDetailReq) (res *api.ContentDetailRes, err error) {
 	if getDetailRes, err := service.Content.GetDetail(ctx, req.Id); err != nil {
 		return nil, err

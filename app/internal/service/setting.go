@@ -4,7 +4,7 @@ import (
 	"context"
 	"focus/app/internal/dao"
 	"focus/app/internal/model"
-	"github.com/gogf/gf/frame/g"
+	"github.com/gogf/gf/v2/frame/g"
 )
 
 // 持久化Key-Value管理服务

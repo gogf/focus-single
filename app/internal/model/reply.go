@@ -1,7 +1,7 @@
 package model
 
 import (
-	"github.com/gogf/gf/os/gtime"
+	"github.com/gogf/gf/v2/os/gtime"
 )
 
 // 创建内容
@@ -19,7 +19,7 @@ type ReplyGetListInput struct {
 	Page       int    // 分页码
 	Size       int    // 分页数量
 	TargetType string // 数据类型
-	TargetId   int    // 数据ID
+	TargetId   uint   // 数据ID
 	UserId     uint   // 用户ID
 }
 

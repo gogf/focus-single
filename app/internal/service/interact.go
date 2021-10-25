@@ -5,9 +5,9 @@ import (
 	"focus/app/internal/cnt"
 	"focus/app/internal/dao"
 	"focus/app/internal/model"
-	"github.com/gogf/gf/database/gdb"
-	"github.com/gogf/gf/errors/gerror"
-	"github.com/gogf/gf/frame/g"
+	"github.com/gogf/gf/v2/database/gdb"
+	"github.com/gogf/gf/v2/errors/gerror"
+	"github.com/gogf/gf/v2/frame/g"
 )
 
 // 交互管理服务

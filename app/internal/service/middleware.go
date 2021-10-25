@@ -4,11 +4,11 @@ import (
 	"focus/app/internal/cnt"
 	"focus/app/internal/model"
 	"focus/library/response"
-	"github.com/gogf/gf/errors/gcode"
-	"github.com/gogf/gf/errors/gerror"
-	"github.com/gogf/gf/frame/g"
-	"github.com/gogf/gf/net/ghttp"
-	"github.com/gogf/gf/util/guid"
+	"github.com/gogf/gf/v2/errors/gcode"
+	"github.com/gogf/gf/v2/errors/gerror"
+	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/net/ghttp"
+	"github.com/gogf/gf/v2/util/guid"
 )
 
 // 中间件管理服务
@@ -32,7 +32,7 @@ func (s *middlewareService) ResponseHandler(r *ghttp.Request) {
 	var (
 		err  error
 		res  interface{}
-		code gcode.Code
+		code gcode.Code = gcode.CodeNil
 	)
 	res, err = r.GetHandlerResponse()
 	if err != nil {

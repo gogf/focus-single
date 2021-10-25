@@ -1,6 +1,6 @@
 package model
 
-import "github.com/gogf/gf/net/ghttp"
+import "github.com/gogf/gf/v2/net/ghttp"
 
 // 上传文件输入参数
 type FileUploadInput struct {

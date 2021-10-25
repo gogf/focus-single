@@ -14,13 +14,15 @@ var (
 
 type indexAct struct{}
 
-// @summary 展示站点首页
-// @tags    前台-首页
-// @produce html
-// @router  / [GET]
-// @success 200 {string} html "页面HTML"
 func (a *indexAct) Index(ctx context.Context, req *api.ContentGetListReq) (res *api.ContentGetListRes, err error) {
-	if getListRes, err := service.Content.GetList(ctx, req.ContentGetListInput); err != nil {
+	if getListRes, err := service.Content.GetList(ctx, model.ContentGetListInput{
+		Type:       req.Type,
+		CategoryId: req.CategoryId,
+		Page:       req.Page,
+		Size:       req.Size,
+		Sort:       req.Sort,
+		UserId:     service.Session.GetUser(ctx).Id,
+	}); err != nil {
 		return nil, err
 	} else {
 		service.View.Render(ctx, model.View{

@@ -1,24 +1,29 @@
 package app
 
 import (
-	_ "focus/app/internal/packed"
-
 	"focus/app/internal/act"
+	_ "focus/app/internal/packed"
 	"focus/app/internal/service"
-	"github.com/gogf/gf/frame/g"
-	"github.com/gogf/gf/net/ghttp"
-	"github.com/gogf/gf/os/gctx"
-	"github.com/gogf/gf/text/gstr"
-	"github.com/gogf/gf/util/gmode"
+	"focus/library/response"
+	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/net/ghttp"
+	"github.com/gogf/gf/v2/os/gctx"
+	"github.com/gogf/gf/v2/text/gstr"
+	"github.com/gogf/gf/v2/util/gmode"
 )
 
 // 应用启动
 func Run() {
 	var (
 		ctx = gctx.New()
+		s   = g.Server()
+		oai = s.GetOpenApi()
 	)
-	// 绑定Swagger Plugin
-	s := g.Server()
+
+	// OpenApi自定义信息
+	oai.Info.Title = `API Reference`
+	oai.Config.CommonResponse = response.JsonRes{}
+	oai.Config.CommonResponseDataField = `Data`
 
 	// 静态目录设置
 	uploadPath := g.Cfg().MustGet(ctx, "upload.path").String()

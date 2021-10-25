@@ -4,9 +4,9 @@ import (
 	"context"
 	"focus/app/internal/dao"
 	"focus/app/internal/model"
-	"github.com/gogf/gf/errors/gerror"
-	"github.com/gogf/gf/os/gcache"
-	"github.com/gogf/gf/util/gconv"
+	"github.com/gogf/gf/v2/errors/gerror"
+	"github.com/gogf/gf/v2/os/gcache"
+	"github.com/gogf/gf/v2/util/gconv"
 	"time"
 )
 

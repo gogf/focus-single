@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"focus/app/internal/cnt"
 	"focus/app/internal/model"
-	"github.com/gogf/gf/net/ghttp"
-	"github.com/gogf/gf/os/gtime"
-	"github.com/gogf/gf/text/gstr"
-	"github.com/gogf/gf/util/gconv"
-	"github.com/gogf/gf/util/gmode"
+	"github.com/gogf/gf/v2/net/ghttp"
+	"github.com/gogf/gf/v2/os/gtime"
+	"github.com/gogf/gf/v2/text/gstr"
+	"github.com/gogf/gf/v2/util/gconv"
+	"github.com/gogf/gf/v2/util/gmode"
 )
 
 // 视图自定义方法管理对象

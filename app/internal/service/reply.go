@@ -4,10 +4,10 @@ import (
 	"context"
 	"focus/app/internal/dao"
 	"focus/app/internal/model"
-	"github.com/gogf/gf/database/gdb"
+	"github.com/gogf/gf/v2/database/gdb"
 
-	"github.com/gogf/gf/frame/g"
-	"github.com/gogf/gf/util/gutil"
+	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/util/gutil"
 )
 
 // 评论/回复管理服务
@@ -16,13 +16,13 @@ var Reply = replyService{}
 type replyService struct{}
 
 // 创建回复
-func (s *replyService) Create(ctx context.Context, input model.ReplyCreateInput) error {
+func (s *replyService) Create(ctx context.Context, in model.ReplyCreateInput) error {
 	return dao.Reply.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		// 覆盖用户ID
-		input.UserId = Context.Get(ctx).User.Id
-		_, err := dao.Reply.Ctx(ctx).Data(input).Insert()
+		in.UserId = Context.Get(ctx).User.Id
+		_, err := dao.Reply.Ctx(ctx).Data(in).Insert()
 		if err == nil {
-			err = Content.AddReplyCount(ctx, input.TargetId, 1)
+			err = Content.AddReplyCount(ctx, in.TargetId, 1)
 		}
 		return err
 	})
@@ -71,37 +71,37 @@ func (s *replyService) DeleteByUserContentId(ctx context.Context, userId, conten
 }
 
 // 获取回复列表
-func (s *replyService) GetList(ctx context.Context, input model.ReplyGetListInput) (output *model.ReplyGetListOutput, err error) {
-	output = &model.ReplyGetListOutput{
-		Page: input.Page,
-		Size: input.Size,
+func (s *replyService) GetList(ctx context.Context, in model.ReplyGetListInput) (out *model.ReplyGetListOutput, err error) {
+	out = &model.ReplyGetListOutput{
+		Page: in.Page,
+		Size: in.Size,
 	}
 	m := dao.Reply.Ctx(ctx).Fields(model.ReplyListItem{})
-	if input.TargetType != "" {
-		m = m.Where(dao.Reply.Columns.TargetType, input.TargetType)
+	if in.TargetType != "" {
+		m = m.Where(dao.Reply.Columns.TargetType, in.TargetType)
 	}
-	if input.TargetId > 0 {
-		m = m.Where(dao.Reply.Columns.TargetId, input.TargetId)
+	if in.TargetId > 0 {
+		m = m.Where(dao.Reply.Columns.TargetId, in.TargetId)
 	}
-	if input.UserId > 0 {
-		m = m.Where(dao.Reply.Columns.UserId, input.UserId)
+	if in.UserId > 0 {
+		m = m.Where(dao.Reply.Columns.UserId, in.UserId)
 	}
 
-	err = m.Page(input.Page, input.Size).OrderDesc(dao.Content.Columns.Id).ScanList(&output.List, "Reply")
+	err = m.Page(in.Page, in.Size).OrderDesc(dao.Content.Columns.Id).ScanList(&out.List, "Reply")
 	if err != nil {
 		return nil, err
 	}
-	if len(output.List) == 0 {
+	if len(out.List) == 0 {
 		return nil, nil
 	}
 	// User
-	if err = m.ScanList(&output.List, "Reply"); err != nil {
+	if err = m.ScanList(&out.List, "Reply"); err != nil {
 		return nil, err
 	}
 	err = dao.User.Ctx(ctx).
 		Fields(model.ReplyListUserItem{}).
-		Where(dao.User.Columns.Id, gutil.ListItemValuesUnique(output.List, "Reply", "UserId")).
-		ScanList(&output.List, "User", "Reply", "id:UserId")
+		Where(dao.User.Columns.Id, gutil.ListItemValuesUnique(out.List, "Reply", "UserId")).
+		ScanList(&out.List, "User", "Reply", "id:UserId")
 	if err != nil {
 		return nil, err
 	}
@@ -109,8 +109,8 @@ func (s *replyService) GetList(ctx context.Context, input model.ReplyGetListInpu
 	// Content
 	err = dao.Content.Ctx(ctx).
 		Fields(dao.Content.Columns.Id, dao.Content.Columns.Title, dao.Content.Columns.CategoryId).
-		Where(dao.Content.Columns.Id, gutil.ListItemValuesUnique(output.List, "Reply", "TargetId")).
-		ScanList(&output.List, "Content", "Reply", "id:TargetId")
+		Where(dao.Content.Columns.Id, gutil.ListItemValuesUnique(out.List, "Reply", "TargetId")).
+		ScanList(&out.List, "Content", "Reply", "id:TargetId")
 	if err != nil {
 		return nil, err
 	}
@@ -118,11 +118,11 @@ func (s *replyService) GetList(ctx context.Context, input model.ReplyGetListInpu
 	// Category
 	err = dao.Category.Ctx(ctx).
 		Fields(model.ContentListCategoryItem{}).
-		Where(dao.Category.Columns.Id, gutil.ListItemValuesUnique(output.List, "Content", "CategoryId")).
-		ScanList(&output.List, "Category", "Content", "id:CategoryId")
+		Where(dao.Category.Columns.Id, gutil.ListItemValuesUnique(out.List, "Content", "CategoryId")).
+		ScanList(&out.List, "Category", "Content", "id:CategoryId")
 	if err != nil {
 		return nil, err
 	}
 
-	return output, nil
+	return out, nil
 }

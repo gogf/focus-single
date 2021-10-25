@@ -54,11 +54,11 @@ type UserGetListOutput struct {
 }
 
 type UserGetMessageListInput struct {
-	Page       int    `json:"page"`        // 分页码
-	Size       int    `json:"size"`        // 分页数量
-	TargetType string `json:"target_type"` // 数据类型
-	TargetId   int    `json:"target_id"`   // 数据ID
-	UserId     uint   `json:"user_id"`     // 用户ID
+	Page       int    // 分页码
+	Size       int    // 分页数量
+	TargetType string // 数据类型
+	TargetId   uint   // 数据ID
+	UserId     uint   // 用户ID
 }
 
 // 查询用户列表查询结果

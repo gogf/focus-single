@@ -5,10 +5,10 @@ import (
 	"focus/app/internal/cnt"
 	"focus/app/internal/dao"
 	"focus/app/internal/model"
-	"github.com/gogf/gf/errors/gerror"
-	"github.com/gogf/gf/frame/g"
-	"github.com/gogf/gf/os/gfile"
-	"github.com/gogf/gf/os/gtime"
+	"github.com/gogf/gf/v2/errors/gerror"
+	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/os/gfile"
+	"github.com/gogf/gf/v2/os/gtime"
 	"time"
 )
 
@@ -18,13 +18,13 @@ var File = fileService{}
 type fileService struct{}
 
 // 同一上传文件
-func (s *fileService) Upload(ctx context.Context, input model.FileUploadInput) (*model.FileUploadOutput, error) {
+func (s *fileService) Upload(ctx context.Context, in model.FileUploadInput) (*model.FileUploadOutput, error) {
 	uploadPath := g.Cfg().MustGet(ctx, "upload.path").String()
 	if uploadPath == "" {
 		return nil, gerror.New("上传文件路径配置不存在")
 	}
-	if input.Name != "" {
-		input.File.Filename = input.Name
+	if in.Name != "" {
+		in.File.Filename = in.Name
 	}
 	// 同一用户1分钟之内只能上传10张图片
 	count, err := dao.File.Ctx(ctx).
@@ -38,7 +38,7 @@ func (s *fileService) Upload(ctx context.Context, input model.FileUploadInput) (
 		return nil, gerror.New("您上传得太频繁，请稍后再操作")
 	}
 	dateDirName := gtime.Now().Format("Ymd")
-	fileName, err := input.File.Save(gfile.Join(uploadPath, dateDirName), input.RandomName)
+	fileName, err := in.File.Save(gfile.Join(uploadPath, dateDirName), in.RandomName)
 	if err != nil {
 		return nil, err
 	}

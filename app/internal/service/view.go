@@ -4,11 +4,11 @@ import (
 	"context"
 	"fmt"
 	"focus/app/internal/model"
-	"github.com/gogf/gf/frame/g"
-	"github.com/gogf/gf/os/gfile"
-	"github.com/gogf/gf/text/gstr"
-	"github.com/gogf/gf/util/gconv"
-	"github.com/gogf/gf/util/gmode"
+	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/os/gfile"
+	"github.com/gogf/gf/v2/text/gstr"
+	"github.com/gogf/gf/v2/util/gconv"
+	"github.com/gogf/gf/v2/util/gmode"
 )
 
 // 视图管理服务
@@ -17,13 +17,13 @@ var View = viewService{}
 type viewService struct{}
 
 // 前台系统-获取面包屑列表
-func (s *viewService) GetBreadCrumb(ctx context.Context, input *model.ViewGetBreadCrumbInput) []model.ViewBreadCrumb {
+func (s *viewService) GetBreadCrumb(ctx context.Context, in *model.ViewGetBreadCrumbInput) []model.ViewBreadCrumb {
 	breadcrumb := []model.ViewBreadCrumb{
 		{Name: "首页", Url: "/"},
 	}
 	var uriPrefix string
-	if input.ContentType != "" {
-		uriPrefix = "/" + input.ContentType
+	if in.ContentType != "" {
+		uriPrefix = "/" + in.ContentType
 		topMenuItem, _ := Menu.GetTopMenuByUrl(ctx, uriPrefix)
 		if topMenuItem != nil {
 			breadcrumb = append(breadcrumb, model.ViewBreadCrumb{
@@ -32,8 +32,8 @@ func (s *viewService) GetBreadCrumb(ctx context.Context, input *model.ViewGetBre
 			})
 		}
 	}
-	if uriPrefix != "" && input.CategoryId > 0 {
-		category, _ := Category.GetItem(ctx, input.CategoryId)
+	if uriPrefix != "" && in.CategoryId > 0 {
+		category, _ := Category.GetItem(ctx, in.CategoryId)
 		if category != nil {
 			breadcrumb = append(breadcrumb, model.ViewBreadCrumb{
 				Name: category.Name,
@@ -41,7 +41,7 @@ func (s *viewService) GetBreadCrumb(ctx context.Context, input *model.ViewGetBre
 			})
 		}
 	}
-	if input.ContentId > 0 {
+	if in.ContentId > 0 {
 		breadcrumb = append(breadcrumb, model.ViewBreadCrumb{
 			Name: "内容详情",
 		})
@@ -50,22 +50,22 @@ func (s *viewService) GetBreadCrumb(ctx context.Context, input *model.ViewGetBre
 }
 
 // 前台系统-获取标题
-func (s *viewService) GetTitle(ctx context.Context, input *model.ViewGetTitleInput) string {
+func (s *viewService) GetTitle(ctx context.Context, in *model.ViewGetTitleInput) string {
 	var (
 		titleArray []string
 		uriPrefix  string
 	)
-	if input.CurrentName != "" {
-		titleArray = append(titleArray, input.CurrentName)
+	if in.CurrentName != "" {
+		titleArray = append(titleArray, in.CurrentName)
 	}
-	if input.CategoryId > 0 {
-		category, _ := Category.GetItem(ctx, input.CategoryId)
+	if in.CategoryId > 0 {
+		category, _ := Category.GetItem(ctx, in.CategoryId)
 		if category != nil {
 			titleArray = append(titleArray, category.Name)
 		}
 	}
-	if input.ContentType != "" {
-		uriPrefix = "/" + input.ContentType
+	if in.ContentType != "" {
+		uriPrefix = "/" + in.ContentType
 		topMenuItem, _ := Menu.GetTopMenuByUrl(ctx, uriPrefix)
 		if topMenuItem != nil {
 			titleArray = append(titleArray, topMenuItem.Name)

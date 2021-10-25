@@ -4,8 +4,8 @@ import (
 	"context"
 	"focus/app/internal/cnt"
 	"focus/app/internal/model"
-	"github.com/gogf/gf/frame/g"
-	"github.com/gogf/gf/net/ghttp"
+	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/net/ghttp"
 )
 
 // 上下文管理服务

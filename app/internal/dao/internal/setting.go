@@ -6,8 +6,8 @@ package internal
 
 import (
 	"context"
-	"github.com/gogf/gf/database/gdb"
-	"github.com/gogf/gf/frame/g"
+	"github.com/gogf/gf/v2/database/gdb"
+	"github.com/gogf/gf/v2/frame/g"
 )
 
 // SettingDao is the data access object for table gf_setting..

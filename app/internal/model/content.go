@@ -1,17 +1,17 @@
 package model
 
 import (
-	"github.com/gogf/gf/os/gtime"
+	"github.com/gogf/gf/v2/os/gtime"
 )
 
 // 获取内容列表
 type ContentGetListInput struct {
-	Type       string `json:"type" in:"query" description:"内容模型"`
-	CategoryId uint   `json:"cate" in:"query" description:"栏目ID"`
-	Page       int    `json:"page" in:"query" description:"分页号码"`
-	Size       int    `json:"size" in:"query" description:"分页数量，最大50"`
-	Sort       int    `json:"sort" in:"query" description:"排序类型(0:最新, 默认。1:活跃, 2:热度)"`
-	UserId     uint   `json:"userId" in:"query" description:"要查询的用户ID"`
+	Type       string // 内容模型
+	CategoryId uint   // 栏目ID
+	Page       int    // 分页号码
+	Size       int    // 分页数量，最大50
+	Sort       int    // 排序类型(0:最新, 默认。1:活跃, 2:热度)
+	UserId     uint   // 要查询的用户ID
 }
 
 // 查询列表结果

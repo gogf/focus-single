@@ -25,7 +25,7 @@ func (s *sessionService) SetUser(ctx context.Context, user *model.User) error {
 func (s *sessionService) GetUser(ctx context.Context) *model.User {
 	customCtx := Context.Get(ctx)
 	if customCtx != nil {
-		v := customCtx.Session.MustGet(sessionKeyUser)
+		v, _ := customCtx.Session.Get(sessionKeyUser)
 		if !v.IsNil() {
 			var user *model.User
 			_ = v.Struct(&user)
@@ -88,8 +88,14 @@ func (s *sessionService) GetNotice(ctx context.Context) (*model.SessionNotice, e
 	customCtx := Context.Get(ctx)
 	if customCtx != nil {
 		var message *model.SessionNotice
-		err := customCtx.Session.MustGet(sessionKeyNotice).Scan(&message)
-		return message, err
+		v, err := customCtx.Session.Get(sessionKeyNotice)
+		if err != nil {
+			return nil, err
+		}
+		if err = v.Scan(&message); err != nil {
+			return nil, err
+		}
+		return message, nil
 	}
 	return nil, nil
 }

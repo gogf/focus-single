@@ -21,7 +21,6 @@ func (a *replyAct) Index(ctx context.Context, req *api.ReplyGetListReq) (res *ap
 		Size:       req.Size,
 		TargetType: req.TargetType,
 		TargetId:   req.TargetId,
-		UserId:     service.Session.GetUser(ctx).Id,
 	}); err != nil {
 		return nil, err
 	} else {

@@ -286,7 +286,9 @@ func (s *userService) GetMessageList(ctx context.Context, in model.UserGetMessag
 	if err != nil {
 		return nil, err
 	}
-	out.List = replyList.List
+	if replyList != nil {
+		out.List = replyList.List
+	}
 	out.Stats, err = s.GetUserStats(ctx, userId)
 	if err != nil {
 		return nil, err

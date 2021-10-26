@@ -88,7 +88,16 @@ func (a *userAct) Ask(ctx context.Context, req *api.UserGetContentListReq) (res 
 
 func (a *userAct) getContentList(ctx context.Context, req *api.UserGetContentListReq) error {
 	req.UserId = service.Context.Get(ctx).User.Id
-	if out, err := service.User.GetList(ctx, req.UserGetContentListInput); err != nil {
+	if out, err := service.User.GetList(ctx, model.UserGetContentListInput{
+		ContentGetListInput: model.ContentGetListInput{
+			Type:       req.Type,
+			CategoryId: req.CategoryId,
+			Page:       req.Page,
+			Size:       req.Size,
+			Sort:       req.Sort,
+			UserId:     req.UserId,
+		},
+	}); err != nil {
 		return err
 	} else {
 		title := service.View.GetTitle(ctx, &model.ViewGetTitleInput{
@@ -105,7 +114,13 @@ func (a *userAct) getContentList(ctx context.Context, req *api.UserGetContentLis
 }
 
 func (a *userAct) Message(ctx context.Context, req *api.UserGetMessageListReq) (res *api.UserGetMessageListRes, err error) {
-	if getListRes, err := service.User.GetMessageList(ctx, req.UserGetMessageListInput); err != nil {
+	if getListRes, err := service.User.GetMessageList(ctx, model.UserGetMessageListInput{
+		Page:       req.Page,
+		Size:       req.Size,
+		TargetType: req.TargetType,
+		TargetId:   req.TargetId,
+		UserId:     service.Session.GetUser(ctx).Id,
+	}); err != nil {
 		return nil, err
 	} else {
 		service.View.Render(ctx, model.View{
@@ -117,7 +132,10 @@ func (a *userAct) Message(ctx context.Context, req *api.UserGetMessageListReq) (
 }
 
 func (a *userAct) UpdatePassword(ctx context.Context, req *api.UserUpdatePasswordReq) (res *api.UserUpdatePasswordRes, err error) {
-	err = service.User.UpdatePassword(ctx, req.UserPasswordInput)
+	err = service.User.UpdatePassword(ctx, model.UserPasswordInput{
+		OldPassword: req.OldPassword,
+		NewPassword: req.NewPassword,
+	})
 	return
 }
 
@@ -139,12 +157,22 @@ func (a *userAct) UpdateAvatar(ctx context.Context, req *api.UserUpdateProfileRe
 	if uploadResult != nil {
 		req.Avatar = uploadResult.Url
 	}
-	err = service.User.UpdateAvatar(ctx, req.UserUpdateProfileInput)
+	err = service.User.UpdateAvatar(ctx, model.UserUpdateProfileInput{
+		Id:       req.Id,
+		Nickname: req.Nickname,
+		Avatar:   req.Avatar,
+		Gender:   req.Gender,
+	})
 	return
 }
 
 func (a *userAct) UpdateProfile(ctx context.Context, req *api.UserUpdateProfileReq) (res *api.UserUpdateProfileRes, err error) {
-	err = service.User.UpdateProfile(ctx, req.UserUpdateProfileInput)
+	err = service.User.UpdateProfile(ctx, model.UserUpdateProfileInput{
+		Id:       req.Id,
+		Nickname: req.Nickname,
+		Avatar:   req.Avatar,
+		Gender:   req.Gender,
+	})
 	return
 }
 

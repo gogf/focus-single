@@ -1,14 +1,12 @@
 package api
 
 import (
-	"focus/app/internal/model"
 	"github.com/gogf/gf/v2/frame/g"
 )
 
 // 用户注册
 type UserRegisterReq struct {
-	g.Meta `method:"post" summary:"执行用户注册" tags:"用户"`
-	model.UserRegisterInput
+	g.Meta   `method:"post" summary:"执行用户注册" tags:"用户"`
 	Passport string `json:"passport" v:"required#请输入账号" dc:"账号"`
 	Password string `json:"password" v:"required#请输入密码" dc:"密码"`
 	Nickname string `json:"nickname" v:"required#请输入昵称" dc:"昵称"`
@@ -18,8 +16,7 @@ type UserRegisterRes struct{}
 
 // 修改用户密码
 type UserUpdatePasswordReq struct {
-	g.Meta `method:"post" summary:"修改个人密码" tags:"用户"`
-	model.UserPasswordInput
+	g.Meta      `method:"post" summary:"修改个人密码" tags:"用户"`
 	OldPassword string `json:"oldPassword" v:"required#请输入原始密码" dc:"原密码"`
 	NewPassword string `json:"newPassword" v:"required#请输入新密码"   dc:"新密码"`
 }
@@ -27,8 +24,10 @@ type UserUpdatePasswordRes struct{}
 
 // 修改用户
 type UserUpdateProfileReq struct {
-	g.Meta `method:"post" summary:"修改个人资料" tags:"用户"`
-	model.UserUpdateProfileInput
+	g.Meta   `method:"post" summary:"修改个人资料" tags:"用户"`
+	Id       uint   `json:"id"     dc:"用户ID"`
+	Avatar   string `json:"avatar" dc:"头像地址"`
+	Gender   int    `json:"gender" dc:"性别 0: 未设置 1: 男 2: 女"`
 	Nickname string `json:"nickname" v:"required#请输入昵称信息" dc:"昵称"`
 }
 type UserUpdateProfileRes struct{}
@@ -42,8 +41,7 @@ type UserDisableRes struct{}
 
 // 用户登录
 type UserLoginReq struct {
-	g.Meta `method:"post" summary:"执行用户登录" tags:"用户"`
-	model.UserLoginInput
+	g.Meta   `method:"post" summary:"执行用户登录" tags:"用户"`
 	Passport string `json:"passport" v:"required#请输入账号"   dc:"账号"`
 	Password string `json:"password" v:"required#请输入密码"   dc:"密码(明文)"`
 	Captcha  string `json:"captcha"  v:"required#请输入验证码" dc:"验证码"`
@@ -55,8 +53,8 @@ type UserLoginRes struct {
 // 查询用户列表请求
 type UserGetContentListReq struct {
 	g.Meta `method:"get" summary:"展示查询用户内容列表页面" tags:"用户"`
-	model.UserGetContentListInput
-	Id uint `json:"id" in:"path" dc:"内容id"`
+	ContentGetListReq
+	UserId uint `json:"userId" in:"query" dc:"要查询的用户ID"`
 }
 type UserGetContentListRes struct {
 	g.Meta `mime:"text/html" type:"string" example:"<html/>"`
@@ -65,7 +63,9 @@ type UserGetContentListRes struct {
 // 查询用户列表查询请求
 type UserGetMessageListReq struct {
 	g.Meta `method:"get" summary:"展示查询用户消息列表页面" tags:"用户"`
-	model.UserGetMessageListInput
+	CommonListReq
+	TargetType string `json:"targetType" dc:"数据类型"`
+	TargetId   uint   `json:"targetId"   dc:"数据ID"`
 }
 type UserGetMessageListRes struct {
 	g.Meta `mime:"text/html" type:"string" example:"<html/>"`

@@ -157,7 +157,7 @@
                 $(form).ajaxSubmit({
                     dataType: 'json',
                     success:  function (r, textStatus) {
-                        if (r.code == 0) {
+                        if (r.code <= 0) {
                             swal({
                                 title:   "保存成功",
                                 text:    "内容保存成功",

@@ -21,7 +21,6 @@ func (a *askAct) Index(ctx context.Context, req *api.ContentGetListReq) (res *ap
 		Page:       req.Page,
 		Size:       req.Size,
 		Sort:       req.Sort,
-		UserId:     service.Session.GetUser(ctx).Id,
 	}); err != nil {
 		return nil, err
 	} else {

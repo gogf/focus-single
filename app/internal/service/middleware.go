@@ -12,9 +12,11 @@ import (
 )
 
 // 中间件管理服务
-var Middleware = middlewareService{
-	LoginUrl: "/login",
-}
+var (
+	Middleware = middlewareService{
+		LoginUrl: "/login",
+	}
+)
 
 type middlewareService struct {
 	LoginUrl string // 登录路由地址
@@ -64,7 +66,7 @@ func (s *middlewareService) Ctx(r *ghttp.Request) {
 		Data:    make(g.Map),
 	}
 	Context.Init(r, customCtx)
-	if userEntity := Session.GetUser(r.Context()); userEntity != nil {
+	if userEntity := Session.GetUser(r.Context()); userEntity.Id > 0 {
 		adminId := g.Cfg().MustGet(r.Context(), "setting.adminId", cnt.DefaultAdminId).Uint()
 		customCtx.User = &model.ContextUser{
 			Id:       userEntity.Id,
@@ -85,7 +87,7 @@ func (s *middlewareService) Ctx(r *ghttp.Request) {
 // 前台系统权限控制，用户必须登录才能访问
 func (s *middlewareService) Auth(r *ghttp.Request) {
 	user := Session.GetUser(r.Context())
-	if user == nil {
+	if user.Id == 0 {
 		Session.SetNotice(r.Context(), &model.SessionNotice{
 			Type:    cnt.SessionNoticeTypeWarn,
 			Content: "未登录或会话已过期，请您登录后再继续",

@@ -78,7 +78,7 @@ jQuery(function($) {
             jQuery(form).ajaxSubmit({
                 dataType: 'json',
                 success:  function (r, textStatus) {
-                    if (r.code == 0) {
+                    if (r.code <= 0) {
                         swal({
                             title:   "登录成功",
                             text:    "页面将自动跳转到登录前页面",

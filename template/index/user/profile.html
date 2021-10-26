@@ -79,7 +79,7 @@
                 jQuery(form).ajaxSubmit({
                     dataType: 'json',
                     success: function (r, textStatus) {
-                        if (r.code == 0) {
+                        if (r.code <= 0) {
                             swal({
                                 text: "修改成功",
                                 icon: "success",

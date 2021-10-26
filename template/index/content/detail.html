@@ -141,7 +141,7 @@
                 url: '/content/adopt-reply',
                 data: {
                     id: "{{.Data.Content.Id}}",
-                    reply_id: id,
+                    replyId: id,
                 },
                 success: function (r) {
                     if (r.code === 0) {
@@ -198,11 +198,11 @@
                 type: 'GET',
                 url: '/reply/index',
                 data: {
-                    size: 30,
-                    page: 1,
-                    target_id: "{{.Data.Content.Id}}",
-                    target_type: "{{.Data.Content.Type}}",
-                    target_user_id: "{{.Data.Content.UserId}}",
+                    size:         30,
+                    page:         1,
+                    targetId:     "{{.Data.Content.Id}}",
+                    targetType:   "{{.Data.Content.Type}}",
+                    targetUserId: "{{.Data.Content.UserId}}",
                 },
                 success: function (r) {
                     $('.reply-list').remove();
@@ -320,10 +320,10 @@
                 type: 'POST',
                 url: '/reply/do-create',
                 data: {
-                    parent_id: pid,
-                    content: editor.getHTML(),
-                    target_id: "{{.Data.Content.Id}}",
-                    target_type: "{{.Data.Content.Type}}",
+                    parentId:   pid,
+                    content:    editor.getHTML(),
+                    targetId:   "{{.Data.Content.Id}}",
+                    targetType: "{{.Data.Content.Type}}",
                 },
                 success: function (r) {
                     $('button[type=submit]').removeAttr('disabled');

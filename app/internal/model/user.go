@@ -43,7 +43,6 @@ type UserUpdateProfileInput struct {
 // 查询用户列表输入
 type UserGetContentListInput struct {
 	ContentGetListInput
-	Id uint
 }
 
 // 查询用户详情结果

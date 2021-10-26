@@ -27,7 +27,11 @@ func (a *registerAct) Do(ctx context.Context, req *api.UserRegisterReq) (res *ap
 	if !service.Captcha.VerifyAndClear(g.RequestFromCtx(ctx), cnt.CaptchaDefaultName, req.Captcha) {
 		return nil, gerror.NewCode(gcode.CodeBusinessValidationFailed, "请输入正确的验证码")
 	}
-	if err = service.User.Register(ctx, req.UserRegisterInput); err != nil {
+	if err = service.User.Register(ctx, model.UserRegisterInput{
+		Passport: req.Passport,
+		Password: req.Password,
+		Nickname: req.Nickname,
+	}); err != nil {
 		return
 	}
 

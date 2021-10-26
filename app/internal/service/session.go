@@ -32,8 +32,7 @@ func (s *sessionService) GetUser(ctx context.Context) *model.User {
 			return user
 		}
 	}
-
-	return nil
+	return &model.User{}
 }
 
 // 删除用户Session。

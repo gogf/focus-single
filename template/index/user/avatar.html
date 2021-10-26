@@ -49,7 +49,7 @@
                 $('button[type=submit]').attr('disabled', 'true');
                 jQuery(form).ajaxSubmit({
                     success: function (r, textStatus) {
-                        if (r.code == 0) {
+                        if (r.code <= 0) {
                             swal({
                                 text: "上传成功",
                                 icon: "success",

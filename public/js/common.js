@@ -81,7 +81,7 @@ gf.interact = {
             },
             sync: true,
             success: function (r, status) {
-                if (r.code == 0) {
+                if (r.code <= 0) {
                     let number = $(elem).find('.number').html()
                     $(elem).find('.number').html(parseInt(number)+1)
                     $(elem).find('.icon').removeClass('icon-zan').addClass('icon-zan-done')
@@ -105,7 +105,7 @@ gf.interact = {
             },
             sync: true,
             success: function (r, status) {
-                if (r.code == 0) {
+                if (r.code <= 0) {
                     let number = $(elem).find('.number').html()
                     $(elem).find('.number').html(parseInt(number) - 1)
                     $(elem).find('.icon').removeClass('icon-zan-done').addClass('icon-zan')
@@ -138,7 +138,7 @@ gf.interact = {
             },
             sync: true,
             success: function (r, status) {
-                if (r.code == 0) {
+                if (r.code <= 0) {
                     let number = $(elem).find('.number').html()
                     $(elem).find('.number').html(parseInt(number)+1)
                     $(elem).find('.icon').removeClass('icon-cai').addClass('icon-cai-done')
@@ -162,7 +162,7 @@ gf.interact = {
             },
             sync: true,
             success: function (r, status) {
-                if (r.code == 0) {
+                if (r.code <= 0) {
                     let number = $(elem).find('.number').html()
                     $(elem).find('.number').html(parseInt(number) - 1)
                     $(elem).find('.icon').removeClass('icon-cai-done').addClass('icon-cai')

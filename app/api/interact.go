@@ -14,7 +14,7 @@ type InteractZanRes struct{}
 type InteractCancelZanReq struct {
 	g.Meta `method:"post" summary:"取消赞" tags:"交互"`
 	Id     uint   `json:"id"   v:"min:1#请选择需要取消赞的内容"`
-	Type   string `json:"type" v:"required#请提交需要取消赞的内容类型" dc:"content, reply"`
+	Type   string `json:"type" v:"required#请提交需要取消赞的内容类型" dc:"content/reply"`
 }
 type InteractCancelZanRes struct{}
 
@@ -22,7 +22,7 @@ type InteractCancelZanRes struct{}
 type InteractCaiReq struct {
 	g.Meta `method:"post" summary:"踩" tags:"交互"`
 	Id     uint   `json:"id"   v:"min:1#请选择需要踩的内容"`
-	Type   string `json:"type" v:"required#请提交需要踩的内容类型" dc:"content, reply"`
+	Type   string `json:"type" v:"required#请提交需要踩的内容类型" dc:"content/reply"`
 }
 type InteractCaiRes struct{}
 
@@ -30,6 +30,6 @@ type InteractCaiRes struct{}
 type InteractCancelCaiReq struct {
 	g.Meta `method:"post" summary:"取消踩" tags:"交互"`
 	Id     uint   `json:"id"   v:"min:1#请选择需要取消踩的内容"`
-	Type   string `json:"type" v:"required#请提交需要取消踩的内容类型" dc:"content, reply"`
+	Type   string `json:"type" v:"required#请提交需要取消踩的内容类型" dc:"content/reply"`
 }
 type InteractCancelCaiRes struct{}

@@ -156,7 +156,7 @@ jQuery(function($) {
             $(form).ajaxSubmit({
                 dataType: 'json',
                 success:  function (r, textStatus) {
-                    if (r.code == 0) {
+                    if (r.code <= 0) {
                         swal({
                             title:   "发布成功",
                             text:    "内容发布成功",
@@ -164,7 +164,7 @@ jQuery(function($) {
                             buttons: ["继续撰写", "查看详情"]
                         }).then((value) => {
                             if (value) {
-                                window.location.href = "/{{.ContentType}}/" + r.data.content_id
+                                window.location.href = "/{{.ContentType}}/" + r.data.contentId
                             } else {
                                 window.location.reload()
                             }

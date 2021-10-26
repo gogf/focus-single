@@ -23,7 +23,6 @@ func (a *topicAct) Index(ctx context.Context, req *api.ContentGetListReq) (res *
 		Page:       req.Page,
 		Size:       req.Size,
 		Sort:       req.Sort,
-		UserId:     service.Session.GetUser(ctx).Id,
 	}); err != nil {
 		return nil, err
 	} else {

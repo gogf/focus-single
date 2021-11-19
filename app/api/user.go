@@ -63,7 +63,7 @@ type UserGetContentListRes struct {
 // 查询用户列表查询请求
 type UserGetMessageListReq struct {
 	g.Meta `method:"get" summary:"展示查询用户消息列表页面" tags:"用户"`
-	CommonListReq
+	CommonPaginationReq
 	TargetType string `json:"targetType" dc:"数据类型"`
 	TargetId   uint   `json:"targetId"   dc:"数据ID"`
 }

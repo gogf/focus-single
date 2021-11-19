@@ -5,19 +5,19 @@ import (
 )
 
 type ContentListCommonReq struct {
-	CommonListReq
 	CategoryId uint `json:"cate" required:"true" dc:"栏目ID"`
+	CommonPaginationReq
 }
 
 // 获取内容列表
 type ContentGetListReq struct {
-	g.Meta `method:"get" summary:"展示内容列表页面" tags:"内容"`
-	ContentListCommonReq
+	g.Meta     `method:"get" summary:"展示内容列表页面" tags:"内容"`
 	Type       string `json:"type"   in:"query" dc:"内容模型"`
 	CategoryId uint   `json:"cate"   in:"query" dc:"栏目ID"`
 	Page       int    `json:"page"   in:"query" dc:"分页号码"`
 	Size       int    `json:"size"   in:"query" dc:"分页数量，最大50"`
 	Sort       int    `json:"sort"   in:"query" dc:"排序类型(0:最新, 默认。1:活跃, 2:热度)"`
+	ContentListCommonReq
 }
 type ContentGetListRes struct {
 	g.Meta `mime:"text/html" type:"string" example:"<html/>"`

@@ -68,31 +68,27 @@ func Run() {
 			service.Middleware.Ctx,
 			service.Middleware.ResponseHandler,
 		)
-		group.ALLMap(g.Map{
-			"/":             act.Index,          // 首页
-			"/login":        act.Login,          // 登录
-			"/register":     act.Register,       // 注册
-			"/category":     act.Category,       // 栏目
-			"/topic":        act.Topic,          // 主题
-			"/topic/{id}":   act.Topic.Detail,   // 主题 - 详情
-			"/ask":          act.Ask,            // 问答
-			"/ask/{id}":     act.Ask.Detail,     // 问答 - 详情
-			"/article":      act.Article,        // 文章
-			"/article/{id}": act.Article.Detail, // 文章 - 详情
-			"/reply":        act.Reply,          // 回复
-			"/search":       act.Search,         // 搜索
-			"/captcha":      act.Captcha,        // 验证码
-			"/user/{id}":    act.User.Index,     // 用户 - 主页
-		})
+		group.Bind(
+			act.Index,    // 首页
+			act.Login,    // 登录
+			act.Register, // 注册
+			act.Category, // 栏目
+			act.Topic,    // 主题
+			act.Ask,      // 问答
+			act.Article,  // 文章
+			act.Reply,    // 回复
+			act.Search,   // 搜索
+			act.Captcha,  // 验证码
+		)
 		// 权限控制路由
 		group.Group("/", func(group *ghttp.RouterGroup) {
 			group.Middleware(service.Middleware.Auth)
-			group.ALLMap(g.Map{
-				"/user":     act.User,     // 用户
-				"/content":  act.Content,  // 内容
-				"/interact": act.Interact, // 交互
-				"/file":     act.File,     // 文件
-			})
+			group.Bind(
+				act.User,     // 用户
+				act.Content,  // 内容
+				act.Interact, // 交互
+				act.File,     // 文件
+			)
 		})
 	})
 

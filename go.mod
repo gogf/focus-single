@@ -1,9 +1,9 @@
-module focus
+module focus-single
 
 go 1.14
 
 require (
-	github.com/gogf/gf/v2 v2.0.0-beta.0.20211118143636-d35daa0f72ef
+	github.com/gogf/gf/v2 v2.0.0-beta.0.20211214130136-bb1a95fff873
 	github.com/kr/text v0.2.0 // indirect
 	github.com/mojocn/base64Captcha v1.3.1
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect

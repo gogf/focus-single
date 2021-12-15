@@ -1,13 +1,18 @@
 package main
 
 import (
-	"focus/app"
+	_ "focus-single/internal/packed"
+
+	"focus-single/internal/cmd"
+	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/os/gctx"
 )
 
-// @title       GoFrame社区API
-// @version     1.0
-// @description GoFrame社区API
-// @schemes     http https
 func main() {
-	app.Run()
+	var (
+		ctx = gctx.New()
+	)
+	if err := cmd.Main.Run(ctx); err != nil {
+		g.Log().Fatal(ctx, err)
+	}
 }

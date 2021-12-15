@@ -26,4 +26,5 @@ temp/
 logs/
 packed/data.go
 focus
+config.yaml
 

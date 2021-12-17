@@ -29,17 +29,21 @@ const (
 // 查询列表
 func (s *serviceCategory) GetTree(ctx context.Context, contentType string) ([]*model.CategoryTreeItem, error) {
 	// 缓存控制
-	v, err := gcache.GetOrSetFunc(ctx, treeCacheKey+contentType, func() (interface{}, error) {
-		entities, err := s.GetList(ctx)
-		if err != nil {
-			return nil, err
+	var (
+		cacheKey  = treeCacheKey + contentType
+		cacheFunc = func(ctx context.Context) (interface{}, error) {
+			entities, err := s.GetList(ctx)
+			if err != nil {
+				return nil, err
+			}
+			tree, err := s.formTree(0, contentType, entities)
+			if err != nil {
+				return nil, err
+			}
+			return tree, nil
 		}
-		tree, err := s.formTree(0, contentType, entities)
-		if err != nil {
-			return nil, err
-		}
-		return tree, nil
-	}, treeCacheDuration)
+	)
+	v, err := gcache.GetOrSetFunc(ctx, cacheKey, cacheFunc, treeCacheDuration)
 	if err != nil {
 		return nil, err
 	}
@@ -128,18 +132,22 @@ func (s *serviceCategory) GetItem(ctx context.Context, id uint) (*entity.Categor
 
 // 获得所有的栏目列表，构成Map返回，键名为栏目ID
 func (s *serviceCategory) GetMap(ctx context.Context) (map[uint]*entity.Category, error) {
-	v, err := gcache.GetOrSetFunc(ctx, mapCacheKey, func() (interface{}, error) {
-		entities, err := s.GetList(ctx)
-		if err != nil {
-			return nil, err
+	var (
+		cacheKey  = mapCacheKey
+		cacheFunc = func(ctx context.Context) (interface{}, error) {
+			entities, err := s.GetList(ctx)
+			if err != nil {
+				return nil, err
+			}
+			m := make(map[uint]*entity.Category)
+			for _, entity := range entities {
+				item := entity
+				m[entity.Id] = item
+			}
+			return m, nil
 		}
-		m := make(map[uint]*entity.Category)
-		for _, entity := range entities {
-			item := entity
-			m[entity.Id] = item
-		}
-		return m, nil
-	}, mapCacheDuration)
+	)
+	v, err := gcache.GetOrSetFunc(ctx, cacheKey, cacheFunc, mapCacheDuration)
 	if err != nil {
 		return nil, err
 	}

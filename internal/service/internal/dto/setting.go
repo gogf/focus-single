@@ -11,7 +11,7 @@ import (
 
 // SettingForDao is the golang structure of table gf_setting for DAO operations like Where/Data.
 type Setting struct {
-	g.Meta    `orm:"dto:true"`
+	g.Meta    `orm:"table:gf_setting, dto:true"`
 	K         interface{} // 键名
 	V         interface{} // 键值
 	CreatedAt *gtime.Time // 创建时间

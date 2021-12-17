@@ -11,7 +11,7 @@ import (
 
 // UserForDao is the golang structure of table gf_user for DAO operations like Where/Data.
 type User struct {
-	g.Meta    `orm:"dto:true"`
+	g.Meta    `orm:"table:gf_user, dto:true"`
 	Id        interface{} // UID
 	Passport  interface{} // 账号
 	Password  interface{} // MD5密码

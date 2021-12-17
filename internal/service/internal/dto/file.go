@@ -11,7 +11,7 @@ import (
 
 // FileForDao is the golang structure of table gf_file for DAO operations like Where/Data.
 type File struct {
-	g.Meta    `orm:"dto:true"`
+	g.Meta    `orm:"table:gf_file, dto:true"`
 	Id        interface{} // 自增ID
 	Name      interface{} // 文件名称
 	Src       interface{} // 本地文件存储路径

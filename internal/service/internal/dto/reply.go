@@ -11,7 +11,7 @@ import (
 
 // ReplyForDao is the golang structure of table gf_reply for DAO operations like Where/Data.
 type Reply struct {
-	g.Meta     `orm:"dto:true"`
+	g.Meta     `orm:"table:gf_reply, dto:true"`
 	Id         interface{} // 回复ID
 	ParentId   interface{} // 回复对应的上一级回复ID(没有的话默认为0)
 	Title      interface{} // 回复标题

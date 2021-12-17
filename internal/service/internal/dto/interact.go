@@ -11,7 +11,7 @@ import (
 
 // InteractForDao is the golang structure of table gf_interact for DAO operations like Where/Data.
 type Interact struct {
-	g.Meta     `orm:"dto:true"`
+	g.Meta     `orm:"table:gf_interact, dto:true"`
 	Id         interface{} // 自增ID
 	Type       interface{} // 操作类型。0:赞，1:踩。
 	UserId     interface{} // 操作用户

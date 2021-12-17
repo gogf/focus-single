@@ -11,7 +11,7 @@ import (
 
 // ContentForDao is the golang structure of table gf_content for DAO operations like Where/Data.
 type Content struct {
-	g.Meta         `orm:"dto:true"`
+	g.Meta         `orm:"table:gf_content, dto:true"`
 	Id             interface{} // 自增ID
 	Key            interface{} // 唯一键名，用于程序硬编码，一般不常用
 	Type           interface{} // 内容模型: topic, ask, article等，具体由程序定义

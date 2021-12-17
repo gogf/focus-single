@@ -11,7 +11,7 @@ import (
 
 // CategoryForDao is the golang structure of table gf_category for DAO operations like Where/Data.
 type Category struct {
-	g.Meta      `orm:"dto:true"`
+	g.Meta      `orm:"table:gf_category, dto:true"`
 	Id          interface{} // 分类ID，自增主键
 	ContentType interface{} // 内容类型：topic, ask, article, reply
 	Key         interface{} // 栏目唯一键名，用于程序部分场景硬编码，一般不会用得到

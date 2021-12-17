@@ -3,12 +3,14 @@ package cmd
 import (
 	"context"
 
+	"focus-single/internal/consts"
 	"focus-single/internal/handler"
 	"focus-single/internal/service"
 	"focus-single/utility/response"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/os/gcmd"
+	"github.com/gogf/gf/v2/protocol/goai"
 	"github.com/gogf/gf/v2/text/gstr"
 	"github.com/gogf/gf/v2/util/gmode"
 )
@@ -95,10 +97,39 @@ var (
 					)
 				})
 			})
-
+			// 自定义丰富文档
+			enhanceOpenAPIDoc(s)
 			// 启动Http Server
 			s.Run()
 			return
 		},
 	}
 )
+
+func enhanceOpenAPIDoc(s *ghttp.Server) {
+	openapi := s.GetOpenApi()
+	openapi.Config.CommonResponse = ghttp.DefaultHandlerResponse{}
+	openapi.Config.CommonResponseDataField = `Data`
+
+	// API description.
+	openapi.Info.Title = `Focus Project`
+	openapi.Info.Description = ``
+
+	// Sort the tags in custom sequence.
+	openapi.Tags = &goai.Tags{
+		{Name: consts.OpenAPITagNameIndex},
+		{Name: consts.OpenAPITagNameLogin},
+		{Name: consts.OpenAPITagNameRegister},
+		{Name: consts.OpenAPITagNameArticle},
+		{Name: consts.OpenAPITagNameTopic},
+		{Name: consts.OpenAPITagNameAsk},
+		{Name: consts.OpenAPITagNameReply},
+		{Name: consts.OpenAPITagNameContent},
+		{Name: consts.OpenAPITagNameSearch},
+		{Name: consts.OpenAPITagNameInteract},
+		{Name: consts.OpenAPITagNameCategory},
+		{Name: consts.OpenAPITagNameProfile},
+		{Name: consts.OpenAPITagNameUser},
+		{Name: consts.OpenAPITagNameMess},
+	}
+}

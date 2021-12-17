@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: template-single-configmap
+  name: focus-single-configmap
 data:
   config.yaml: |
     server:

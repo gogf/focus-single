@@ -15,7 +15,7 @@ var (
 
 type handlerIndex struct{}
 
-func (a *handlerIndex) Index(ctx context.Context, req *apiv1.ContentGetListReq) (res *apiv1.ContentGetListRes, err error) {
+func (a *handlerIndex) Index(ctx context.Context, req *apiv1.IndexReq) (res *apiv1.IndexRes, err error) {
 	if getListRes, err := service.Content.GetList(ctx, model.ContentGetListInput{
 		Type:       req.Type,
 		CategoryId: req.CategoryId,

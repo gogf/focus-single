@@ -15,14 +15,14 @@ var (
 
 type handlerContent struct{}
 
-func (a *handlerContent) Create(ctx context.Context, req *apiv1.ContentCreateReq) (res *apiv1.ContentCreateRes, err error) {
+func (a *handlerContent) ShowCreate(ctx context.Context, req *apiv1.ContentShowCreateReq) (res *apiv1.ContentShowCreateRes, err error) {
 	service.View.Render(ctx, model.View{
 		ContentType: req.Type,
 	})
 	return
 }
 
-func (a *handlerContent) DoCreate(ctx context.Context, req *apiv1.ContentDoCreateReq) (res *apiv1.ContentDoCreateRes, err error) {
+func (a *handlerContent) Create(ctx context.Context, req *apiv1.ContentCreateReq) (res *apiv1.ContentCreateRes, err error) {
 	out, err := service.Content.Create(ctx, model.ContentCreateInput{
 		ContentCreateUpdateBase: model.ContentCreateUpdateBase{
 			Type:       req.Type,
@@ -39,10 +39,10 @@ func (a *handlerContent) DoCreate(ctx context.Context, req *apiv1.ContentDoCreat
 	if err != nil {
 		return nil, err
 	}
-	return &apiv1.ContentDoCreateRes{ContentId: out.ContentId}, nil
+	return &apiv1.ContentCreateRes{ContentId: out.ContentId}, nil
 }
 
-func (a *handlerContent) Update(ctx context.Context, req *apiv1.ContentUpdateReq) (res *apiv1.ContentUpdateRes, err error) {
+func (a *handlerContent) ShowUpdate(ctx context.Context, req *apiv1.ContentShowUpdateReq) (res *apiv1.ContentShowUpdateRes, err error) {
 	if getDetailRes, err := service.Content.GetDetail(ctx, req.Id); err != nil {
 		return nil, err
 	} else {
@@ -54,7 +54,7 @@ func (a *handlerContent) Update(ctx context.Context, req *apiv1.ContentUpdateReq
 	return
 }
 
-func (a *handlerContent) DoUpdate(ctx context.Context, req *apiv1.ContentDoUpdateReq) (res *apiv1.ContentDoUpdateRes, err error) {
+func (a *handlerContent) Update(ctx context.Context, req *apiv1.ContentUpdateReq) (res *apiv1.ContentUpdateRes, err error) {
 	err = service.Content.Update(ctx, model.ContentUpdateInput{
 		Id: req.Id,
 		ContentCreateUpdateBase: model.ContentCreateUpdateBase{
@@ -71,7 +71,7 @@ func (a *handlerContent) DoUpdate(ctx context.Context, req *apiv1.ContentDoUpdat
 	return
 }
 
-func (a *handlerContent) DoDelete(ctx context.Context, req *apiv1.ContentDoDeleteReq) (res *apiv1.ContentDoDeleteRes, err error) {
+func (a *handlerContent) Delete(ctx context.Context, req *apiv1.ContentDeleteReq) (res *apiv1.ContentDeleteRes, err error) {
 	err = service.Content.Delete(ctx, req.Id)
 	return
 }

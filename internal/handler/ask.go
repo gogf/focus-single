@@ -14,7 +14,7 @@ var Ask = handlerAak{}
 
 type handlerAak struct{}
 
-func (a *handlerAak) Index(ctx context.Context, req *apiv1.ContentGetListReq) (res *apiv1.ContentGetListRes, err error) {
+func (a *handlerAak) Index(ctx context.Context, req *apiv1.AskIndexReq) (res *apiv1.AskIndexRes, err error) {
 	req.Type = consts.ContentTypeAsk
 	if getListRes, err := service.Content.GetList(ctx, model.ContentGetListInput{
 		Type:       req.Type,
@@ -30,14 +30,14 @@ func (a *handlerAak) Index(ctx context.Context, req *apiv1.ContentGetListReq) (r
 			Data:        getListRes,
 			Title: service.View.GetTitle(ctx, &model.ViewGetTitleInput{
 				ContentType: req.Type,
-				CategoryId:  req.ContentListCommonReq.CategoryId,
+				CategoryId:  req.CategoryId,
 			}),
 		})
 	}
 	return
 }
 
-func (a *handlerAak) Detail(ctx context.Context, req *apiv1.ContentDetailReq) (res *apiv1.ContentDetailRes, err error) {
+func (a *handlerAak) Detail(ctx context.Context, req *apiv1.AskDetailReq) (res *apiv1.AskDetailRes, err error) {
 	if getDetailRes, err := service.Content.GetDetail(ctx, req.Id); err != nil {
 		return nil, err
 	} else {

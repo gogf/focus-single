@@ -68,7 +68,6 @@ var (
 			// 前台系统路由注册
 			s.Group("/", func(group *ghttp.RouterGroup) {
 				group.Middleware(
-					service.Middleware.RequestId,
 					service.Middleware.Ctx,
 					service.Middleware.ResponseHandler,
 				)
@@ -83,12 +82,13 @@ var (
 					handler.Reply,    // 回复
 					handler.Search,   // 搜索
 					handler.Captcha,  // 验证码
+					handler.User,     // 用户
 				)
 				// 权限控制路由
 				group.Group("/", func(group *ghttp.RouterGroup) {
 					group.Middleware(service.Middleware.Auth)
 					group.Bind(
-						handler.User,     // 用户
+						handler.Profile,  // 个人
 						handler.Content,  // 内容
 						handler.Interact, // 交互
 						handler.File,     // 文件

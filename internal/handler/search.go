@@ -15,7 +15,7 @@ var (
 
 type handlerSearch struct{}
 
-func (a *handlerSearch) Index(ctx context.Context, req *apiv1.ContentSearchReq) (res *apiv1.ContentSearchRes, err error) {
+func (a *handlerSearch) Index(ctx context.Context, req *apiv1.SearchIndexReq) (res *apiv1.SearchIndexRes, err error) {
 	if searchRes, err := service.Content.Search(ctx, model.ContentSearchInput{
 		Key:        req.Key,
 		Type:       req.Type,

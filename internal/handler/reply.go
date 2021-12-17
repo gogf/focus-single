@@ -16,7 +16,7 @@ var (
 
 type handlerReply struct{}
 
-func (a *handlerReply) Index(ctx context.Context, req *apiv1.ReplyGetListReq) (res *apiv1.ReplyGetListRes, err error) {
+func (a *handlerReply) GetListContent(ctx context.Context, req *apiv1.ReplyGetListContentReq) (res *apiv1.ReplyGetListContentRes, err error) {
 	if getListRes, err := service.Reply.GetList(ctx, model.ReplyGetListInput{
 		Page:       req.Page,
 		Size:       req.Size,
@@ -29,11 +29,11 @@ func (a *handlerReply) Index(ctx context.Context, req *apiv1.ReplyGetListReq) (r
 		service.View.RenderTpl(ctx, "index/reply.html", model.View{Data: getListRes})
 		tplContent := request.Response.BufferString()
 		request.Response.ClearBuffer()
-		return &apiv1.ReplyGetListRes{Content: tplContent}, nil
+		return &apiv1.ReplyGetListContentRes{Content: tplContent}, nil
 	}
 }
 
-func (a *handlerReply) DoCreate(ctx context.Context, req *apiv1.ReplyDoCreateReq) (res *apiv1.ReplyDoCreateRes, err error) {
+func (a *handlerReply) Create(ctx context.Context, req *apiv1.ReplyCreateReq) (res *apiv1.ReplyCreateRes, err error) {
 	err = service.Reply.Create(ctx, model.ReplyCreateInput{
 		Title:      req.Title,
 		ParentId:   req.ParentId,
@@ -45,7 +45,7 @@ func (a *handlerReply) DoCreate(ctx context.Context, req *apiv1.ReplyDoCreateReq
 	return
 }
 
-func (a *handlerReply) DoDelete(ctx context.Context, req *apiv1.ReplyDoDeleteReq) (res *apiv1.ReplyDoDeleteRes, err error) {
+func (a *handlerReply) Delete(ctx context.Context, req *apiv1.ReplyDeleteReq) (res *apiv1.ReplyDeleteRes, err error) {
 	err = service.Reply.Delete(ctx, req.Id)
 	return
 }

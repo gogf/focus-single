@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: template-single
+  name: focus-single
 spec:
   ports:
   - port: 80
     protocol: TCP
     targetPort: 8000
   selector:
-    app: template-single
+    app: focus-single
 

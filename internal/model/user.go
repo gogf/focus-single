@@ -18,7 +18,6 @@ type UserLoginInput struct {
 	Password string // 密码(明文)
 }
 
-// 用户信息
 type UserGetProfileOutput struct {
 	Id       uint           // 用户ID
 	Nickname string         // 昵称
@@ -27,14 +26,13 @@ type UserGetProfileOutput struct {
 	Stats    map[string]int // 发布内容数量
 }
 
-// 修改用户头像
 type UserUpdateAvatarInput struct {
+	UserId uint   // 用户ID
 	Avatar string // 头像地址
 }
 
-// 修改用户信息
 type UserUpdateProfileInput struct {
-	Id       uint   // 用户ID
+	UserId   uint   // 用户ID
 	Nickname string // 昵称
 	Avatar   string // 头像地址
 	Gender   int    // 性别 0: 未设置 1: 男 2: 女

@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: template-single
+  name: focus-single
   labels:
-    app: template-single
+    app: focus-single
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: template-single
+      app: focus-single
   template:
     metadata:
       labels:
-        app: template-single
+        app: focus-single
     spec:
       containers:
         - name : main
-          image: template-single
+          image: focus-single
           imagePullPolicy: Always
 

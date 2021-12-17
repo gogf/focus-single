@@ -8,6 +8,7 @@ import (
 	"focus-single/internal/model"
 	"focus-single/internal/model/entity"
 	"focus-single/internal/service/internal/dao"
+	"focus-single/internal/service/internal/dto"
 	"github.com/gogf/gf/v2/crypto/gmd5"
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
@@ -183,23 +184,16 @@ func (s *serviceUser) GetProfile(ctx context.Context) (*model.UserGetProfileOutp
 	return s.GetProfileById(ctx, Context.Get(ctx).User.Id)
 }
 
-// 修改个人头像
-func (s *serviceUser) UpdateAvatar(ctx context.Context, in model.UserUpdateProfileInput) error {
+func (s *serviceUser) UpdateAvatar(ctx context.Context, in model.UserUpdateAvatarInput) error {
 	return dao.User.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		var (
-			err    error
-			user   = Context.Get(ctx).User
-			userId = user.Id
+			err error
 		)
-		_, err = dao.User.Ctx(ctx).Data(model.UserUpdateAvatarInput{
+		_, err = dao.User.Ctx(ctx).Data(dto.User{
 			Avatar: in.Avatar,
-		}).Where(dao.User.Columns.Id, userId).Update()
-		// 更新登录session Avatar
-		if err == nil && user.Avatar != in.Avatar {
-			sessionUser := Session.GetUser(ctx)
-			sessionUser.Avatar = in.Avatar
-			err = Session.SetUser(ctx, sessionUser)
-		}
+		}).Where(dto.User{
+			Id: in.UserId,
+		}).Update()
 		return err
 	})
 }

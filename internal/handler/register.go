@@ -24,7 +24,7 @@ func (a *handlerRegister) Index(ctx context.Context, req *apiv1.RegisterIndexReq
 	return
 }
 
-func (a *handlerRegister) Do(ctx context.Context, req *apiv1.UserRegisterReq) (res *apiv1.UserRegisterRes, err error) {
+func (a *handlerRegister) Register(ctx context.Context, req *apiv1.RegisterDoReq) (res *apiv1.RegisterDoRes, err error) {
 	if !service.Captcha.VerifyAndClear(g.RequestFromCtx(ctx), consts.CaptchaDefaultName, req.Captcha) {
 		return nil, gerror.NewCode(gcode.CodeBusinessValidationFailed, "请输入正确的验证码")
 	}

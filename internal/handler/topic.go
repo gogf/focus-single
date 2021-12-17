@@ -16,7 +16,7 @@ var (
 
 type handlerTopic struct{}
 
-func (a *handlerTopic) Index(ctx context.Context, req *apiv1.ContentGetListReq) (res *apiv1.ContentGetListRes, err error) {
+func (a *handlerTopic) Index(ctx context.Context, req *apiv1.TopicIndexReq) (res *apiv1.TopicIndexRes, err error) {
 	req.Type = consts.ContentTypeTopic
 	if getListRes, err := service.Content.GetList(ctx, model.ContentGetListInput{
 		Type:       req.Type,
@@ -29,7 +29,7 @@ func (a *handlerTopic) Index(ctx context.Context, req *apiv1.ContentGetListReq) 
 	} else {
 		title := service.View.GetTitle(ctx, &model.ViewGetTitleInput{
 			ContentType: req.Type,
-			CategoryId:  req.ContentListCommonReq.CategoryId,
+			CategoryId:  req.CategoryId,
 		})
 		service.View.Render(ctx, model.View{
 			ContentType: req.Type,
@@ -40,7 +40,7 @@ func (a *handlerTopic) Index(ctx context.Context, req *apiv1.ContentGetListReq) 
 	}
 }
 
-func (a *handlerTopic) Detail(ctx context.Context, req *apiv1.ContentDetailReq) (res *apiv1.ContentDetailRes, err error) {
+func (a *handlerTopic) Detail(ctx context.Context, req *apiv1.TopicDetailReq) (res *apiv1.TopicDetailRes, err error) {
 	if getDetailRes, err := service.Content.GetDetail(ctx, req.Id); err != nil {
 		return nil, err
 	} else {

@@ -1,10 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: template-single
+  name: focus-single
 spec:
   template:
     spec:
       containers:
         - name : main
-          image: template-single:develop
+          image: focus-single:develop

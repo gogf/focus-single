@@ -14,8 +14,8 @@ var (
 
 type handlerCategory struct{}
 
-func (a *handlerCategory) Tree(ctx context.Context, req *apiv1.CategoryGetTreeReq) (res *apiv1.CategoryGetTreeRes, err error) {
-	res = &apiv1.CategoryGetTreeRes{}
+func (a *handlerCategory) Tree(ctx context.Context, req *apiv1.CategoryTreeReq) (res *apiv1.CategoryTreeRes, err error) {
+	res = &apiv1.CategoryTreeRes{}
 	res.List, err = service.Category.GetTree(ctx, req.ContentType)
 	return
 }

@@ -5,7 +5,7 @@ import (
 	"github.com/gogf/gf/v2/net/ghttp"
 )
 
-// 数据返回通用JSON数据结构
+// JsonRes 数据返回通用JSON数据结构
 type JsonRes struct {
 	Code     int         `json:"code"`     // 错误码((0:成功, 1:失败, >1:错误码))
 	Message  string      `json:"message"`  // 提示信息
@@ -13,7 +13,7 @@ type JsonRes struct {
 	Redirect string      `json:"redirect"` // 引导客户端跳转到指定路由
 }
 
-// 返回标准JSON数据。
+// Json 返回标准JSON数据。
 func Json(r *ghttp.Request, code int, message string, data ...interface{}) {
 	var responseData interface{}
 	if len(data) > 0 {
@@ -28,13 +28,13 @@ func Json(r *ghttp.Request, code int, message string, data ...interface{}) {
 	})
 }
 
-// 返回标准JSON数据并退出当前HTTP执行函数。
+// JsonExit 返回标准JSON数据并退出当前HTTP执行函数。
 func JsonExit(r *ghttp.Request, code int, message string, data ...interface{}) {
 	Json(r, code, message, data...)
 	r.Exit()
 }
 
-// 返回标准JSON数据引导客户端跳转。
+// JsonRedirect 返回标准JSON数据引导客户端跳转。
 func JsonRedirect(r *ghttp.Request, code int, message, redirect string, data ...interface{}) {
 	responseData := interface{}(nil)
 	if len(data) > 0 {
@@ -48,7 +48,7 @@ func JsonRedirect(r *ghttp.Request, code int, message, redirect string, data ...
 	})
 }
 
-// 返回标准JSON数据引导客户端跳转，并退出当前HTTP执行函数。
+// JsonRedirectExit 返回标准JSON数据引导客户端跳转，并退出当前HTTP执行函数。
 func JsonRedirectExit(r *ghttp.Request, code int, message, redirect string, data ...interface{}) {
 	JsonRedirect(r, code, message, redirect, data...)
 	r.Exit()

@@ -9,7 +9,7 @@ import (
 	"github.com/mojocn/base64Captcha"
 )
 
-// 验证码管理服务
+// Captcha 验证码管理服务
 var (
 	Captcha = serviceCaptcha{}
 )
@@ -34,7 +34,7 @@ func newDriver() *base64Captcha.DriverString {
 	return driver.ConvertFonts()
 }
 
-// 创建验证码，直接输出验证码图片内容到HTTP Response.
+// NewAndStore 创建验证码，直接输出验证码图片内容到HTTP Response.
 func (s *serviceCaptcha) NewAndStore(ctx context.Context, name string) error {
 	var (
 		request = g.RequestFromCtx(ctx)
@@ -49,7 +49,7 @@ func (s *serviceCaptcha) NewAndStore(ctx context.Context, name string) error {
 	return err
 }
 
-// 校验验证码，并清空缓存的验证码信息
+// VerifyAndClear 校验验证码，并清空缓存的验证码信息
 func (s *serviceCaptcha) VerifyAndClear(r *ghttp.Request, name string, value string) bool {
 	defer r.Session.Remove(name)
 	captchaStoreKey := r.Session.MustGet(name).String()

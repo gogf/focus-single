@@ -3,9 +3,10 @@ package service
 import (
 	"context"
 
+	"github.com/gogf/gf/v2/frame/g"
+
 	"focus-single/internal/model/entity"
 	"focus-single/internal/service/internal/dao"
-	"github.com/gogf/gf/v2/frame/g"
 )
 
 // 持久化Key-Value管理服务

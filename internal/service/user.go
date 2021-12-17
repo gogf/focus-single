@@ -4,11 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"focus-single/internal/consts"
-	"focus-single/internal/model"
-	"focus-single/internal/model/entity"
-	"focus-single/internal/service/internal/dao"
-	"focus-single/internal/service/internal/dto"
 	"github.com/gogf/gf/v2/crypto/gmd5"
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
@@ -17,6 +12,12 @@ import (
 	"github.com/gogf/gf/v2/os/gfile"
 	"github.com/gogf/gf/v2/util/gconv"
 	"github.com/o1egl/govatar"
+
+	"focus-single/internal/consts"
+	"focus-single/internal/model"
+	"focus-single/internal/model/entity"
+	"focus-single/internal/service/internal/dao"
+	"focus-single/internal/service/internal/dto"
 )
 
 // 用户管理服务

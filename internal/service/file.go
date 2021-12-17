@@ -4,17 +4,18 @@ import (
 	"context"
 	"time"
 
-	"focus-single/internal/consts"
-	"focus-single/internal/model"
-	"focus-single/internal/model/entity"
-	"focus-single/internal/service/internal/dao"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gfile"
 	"github.com/gogf/gf/v2/os/gtime"
+
+	"focus-single/internal/consts"
+	"focus-single/internal/model"
+	"focus-single/internal/model/entity"
+	"focus-single/internal/service/internal/dao"
 )
 
-// 文件管理服务
+// File 文件管理服务
 var File = serviceFile{}
 
 type serviceFile struct{}

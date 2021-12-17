@@ -5,7 +5,7 @@ import (
 )
 
 type IndexReq struct {
-	g.Meta `path:"/" method:"get" tags:"内容" summary:"首页"`
+	g.Meta `path:"/" method:"get" tags:"首页" summary:"首页"`
 	ContentGetListCommonReq
 }
 type IndexRes struct {

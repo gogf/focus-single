@@ -4,9 +4,8 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 )
 
-// 搜索列表
 type SearchIndexReq struct {
-	g.Meta `path:"/search" method:"get" summary:"展示内容搜索页面" tags:"内容"`
+	g.Meta `path:"/search" method:"get" summary:"展示内容搜索页面" tags:"搜索"`
 	ContentGetListCommonReq
 	Key        string `json:"key" v:"required#请输入搜索关键字" dc:"关键字"`
 	Type       string `json:"type" dc:"内容模型"`

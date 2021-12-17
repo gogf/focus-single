@@ -5,9 +5,8 @@ import (
 	"github.com/gogf/gf/v2/net/ghttp"
 )
 
-// 上传文件
 type FileUploadReq struct {
-	g.Meta `method:"post" mime:"multipart/form-data" summary:"上传文件" tags:"工具"`
+	g.Meta `path:"/file" method:"put" mime:"multipart/form-data" tags:"工具" summary:"上传文件"`
 	File   *ghttp.UploadFile `json:"file" dc:"选择上传文件"`
 }
 type FileUploadRes struct {

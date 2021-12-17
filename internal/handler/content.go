@@ -75,8 +75,3 @@ func (a *handlerContent) Delete(ctx context.Context, req *apiv1.ContentDeleteReq
 	err = service.Content.Delete(ctx, req.Id)
 	return
 }
-
-func (a *handlerContent) AdoptReply(ctx context.Context, req *apiv1.ContentAdoptReplyReq) (res *apiv1.ContentAdoptReplyRes, err error) {
-	err = service.Content.AdoptReply(ctx, req.Id, req.ReplyId)
-	return
-}

@@ -4,7 +4,6 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 )
 
-// 查询回复列表请求
 type ReplyGetListContentReq struct {
 	g.Meta     `path:"/reply" method:"get" summary:"查询回复列表" tags:"回复"`
 	Page       int    `json:"page"       dc:"分页码"`
@@ -26,7 +25,6 @@ type ReplyCreateReq struct {
 }
 type ReplyCreateRes struct{}
 
-// 执行删除内容
 type ReplyDeleteReq struct {
 	g.Meta `path:"/reply" method:"delete" summary:"删除回复接口" tags:"回复"`
 	Id     uint `v:"min:1#请选择需要删除的内容" dc:"删除时ID不能为空"`

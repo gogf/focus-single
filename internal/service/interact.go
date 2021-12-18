@@ -56,7 +56,7 @@ func (s *serviceInteract) CancelZan(ctx context.Context, targetType string, targ
 			UserId:     Context.Get(ctx).User.Id,
 			TargetId:   targetId,
 			TargetType: targetType,
-		}).OmitEmptyWhere().Delete()
+		}).Delete()
 		if err != nil {
 			return err
 		}

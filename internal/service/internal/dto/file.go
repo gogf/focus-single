@@ -9,7 +9,7 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 )
 
-// FileForDao is the golang structure of table gf_file for DAO operations like Where/Data.
+// File is the golang structure of table gf_file for DAO operations like Where/Data.
 type File struct {
 	g.Meta    `orm:"table:gf_file, dto:true"`
 	Id        interface{} // 自增ID

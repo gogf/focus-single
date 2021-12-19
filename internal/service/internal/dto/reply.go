@@ -9,7 +9,7 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 )
 
-// ReplyForDao is the golang structure of table gf_reply for DAO operations like Where/Data.
+// Reply is the golang structure of table gf_reply for DAO operations like Where/Data.
 type Reply struct {
 	g.Meta     `orm:"table:gf_reply, dto:true"`
 	Id         interface{} // 回复ID

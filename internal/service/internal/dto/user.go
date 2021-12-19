@@ -9,7 +9,7 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 )
 
-// UserForDao is the golang structure of table gf_user for DAO operations like Where/Data.
+// User is the golang structure of table gf_user for DAO operations like Where/Data.
 type User struct {
 	g.Meta    `orm:"table:gf_user, dto:true"`
 	Id        interface{} // UID

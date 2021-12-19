@@ -9,7 +9,7 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 )
 
-// CategoryForDao is the golang structure of table gf_category for DAO operations like Where/Data.
+// Category is the golang structure of table gf_category for DAO operations like Where/Data.
 type Category struct {
 	g.Meta      `orm:"table:gf_category, dto:true"`
 	Id          interface{} // 分类ID，自增主键

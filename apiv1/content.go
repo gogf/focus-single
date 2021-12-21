@@ -23,7 +23,7 @@ type ContentShowCreateRes struct {
 }
 
 type ContentCreateReq struct {
-	g.Meta     `path:"/content/create" method:"put" tags:"内容" summary:"创建内容接口"`
+	g.Meta     `path:"/content/create" method:"post" tags:"内容" summary:"创建内容接口"`
 	Type       string   `json:"type"    v:"required#内容模型不能为空" dc:"内容模型"`
 	CategoryId uint     `json:"cate"    v:"required#请选择栏目"      dc:"栏目ID"`
 	Title      string   `json:"title"   v:"required#请输入标题"      dc:"标题"`

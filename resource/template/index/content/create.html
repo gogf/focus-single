@@ -104,10 +104,8 @@ jQuery(function($) {
             },
             // 格式化上传返回
             format(file, response) {
-                console.log(response)
                 const {code, data, message} = JSON.parse(response)
-                console.log(code, data, message)
-                return JSON.stringify({message, code, data: {errFiles: [], succMap: {"image.png": data.Url}}})
+                return JSON.stringify({message, code, data: {errFiles: [], succMap: {"image.png": data.url}}})
             }
         },
         preview: {

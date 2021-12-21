@@ -100,13 +100,16 @@
                 url:          '/file',  // 上传路径
                 linkToImgUrl: '/file',  // 粘贴图片上传
                 max:          8 * 1024 * 1024, // 最大上传文件大小（8MB）
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest"
+                },
                 filename(name) {
                     return name.replace(/[^(a-zA-Z0-9\u4e00-\u9fa5\.)]/g, '').replace(/[\?\\/:|<>\*\[\]\(\)\$%\{\}@~]/g, '').replace('/\\s/g', '')
                 },
                 // 格式化上传返回
                 format(file, response) {
-                    const {code, data, msg} = JSON.parse(response)
-                    return JSON.stringify({msg, code, data: {errFiles: [], succMap: {"image.png": data.Url}}})
+                    const {code, data, message} = JSON.parse(response)
+                    return JSON.stringify({message, code, data: {errFiles: [], succMap: {"image.png": data.url}}})
                 }
             },
         });

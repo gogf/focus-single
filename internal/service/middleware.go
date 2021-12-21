@@ -33,7 +33,7 @@ func (s *serviceMiddleware) ResponseHandler(r *ghttp.Request) {
 	var (
 		err  error
 		res  interface{}
-		code gcode.Code = gcode.CodeNil
+		code gcode.Code = gcode.CodeOK
 	)
 	res, err = r.GetHandlerResponse()
 	if err != nil {

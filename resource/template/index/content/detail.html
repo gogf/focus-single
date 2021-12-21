@@ -285,9 +285,9 @@
                 // 附件格式
                 accept: 'image/*',
                 // 上传路径
-                url: '/file/upload',
+                url: '/file',
                 // 粘贴图片上传
-                linkToImgUrl: '/file/upload',
+                linkToImgUrl: '/file',
                 filename(name) {
                     return name.replace(/[^(a-zA-Z0-9\u4e00-\u9fa5\.)]/g, '').replace(/[\?\\/:|<>\*\[\]\(\)\$%\{\}@~]/g, '').replace('/\\s/g', '')
                 },

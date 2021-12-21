@@ -8,7 +8,7 @@
             修改内容
         </div>
         <div class="card-body">
-            <form id="contentForm" action="/content/do-update" method="post" enctype="application/x-www-form-urlencoded">
+            <form id="contentForm" action="/content/update/{{.Data.Content.Id}}" method="post" enctype="application/x-www-form-urlencoded">
                 <input type="hidden" value="{{.Data.Content.Id}}" name="id">
                 <input type="hidden" value="{{.Data.Content.Type}}" name="type">
                 <div class="form-group row">
@@ -97,8 +97,8 @@
             ],
             upload: {
                 accept:       'image/*',       // 附件格式
-                url:          '/file/upload',  // 上传路径
-                linkToImgUrl: '/file/upload',  // 粘贴图片上传
+                url:          '/file',  // 上传路径
+                linkToImgUrl: '/file',  // 粘贴图片上传
                 max:          8 * 1024 * 1024, // 最大上传文件大小（8MB）
                 filename(name) {
                     return name.replace(/[^(a-zA-Z0-9\u4e00-\u9fa5\.)]/g, '').replace(/[\?\\/:|<>\*\[\]\(\)\$%\{\}@~]/g, '').replace('/\\s/g', '')

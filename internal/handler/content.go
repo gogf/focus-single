@@ -2,7 +2,6 @@ package handler
 
 import (
 	"context"
-
 	"focus-single/apiv1"
 	"focus-single/internal/model"
 	"focus-single/internal/service"
@@ -49,6 +48,16 @@ func (a *handlerContent) ShowUpdate(ctx context.Context, req *apiv1.ContentShowU
 		service.View.Render(ctx, model.View{
 			ContentType: getDetailRes.Content.Type,
 			Data:        getDetailRes,
+			Title: service.View.GetTitle(ctx, &model.ViewGetTitleInput{
+				ContentType: getDetailRes.Content.Type,
+				CategoryId:  getDetailRes.Content.CategoryId,
+				CurrentName: getDetailRes.Content.Title,
+			}),
+			BreadCrumb: service.View.GetBreadCrumb(ctx, &model.ViewGetBreadCrumbInput{
+				ContentId:   getDetailRes.Content.Id,
+				ContentType: getDetailRes.Content.Type,
+				CategoryId:  getDetailRes.Content.CategoryId,
+			}),
 		})
 	}
 	return

@@ -9,7 +9,7 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 )
 
-// SettingForDao is the golang structure of table gf_setting for DAO operations like Where/Data.
+// Setting is the golang structure of table gf_setting for DAO operations like Where/Data.
 type Setting struct {
 	g.Meta    `orm:"table:gf_setting, dto:true"`
 	K         interface{} // 键名

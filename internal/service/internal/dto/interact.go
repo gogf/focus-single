@@ -9,7 +9,7 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 )
 
-// InteractForDao is the golang structure of table gf_interact for DAO operations like Where/Data.
+// Interact is the golang structure of table gf_interact for DAO operations like Where/Data.
 type Interact struct {
 	g.Meta     `orm:"table:gf_interact, dto:true"`
 	Id         interface{} // 自增ID

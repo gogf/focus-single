@@ -36,8 +36,8 @@ gf.content = {
         }).then((value) => {
             if (value) {
                 jQuery.ajax({
-                    type: 'POST',
-                    url : '/content/do-delete',
+                    type: 'DELETE',
+                    url : '/content/delete',
                     data: {
                         id: id
                     },
@@ -73,7 +73,7 @@ gf.interact = {
     // 赞
     zan: function (elem, type, id) {
         jQuery.ajax({
-            type: 'POST',
+            type: 'PUT',
             url : '/interact/zan',
             data: {
                 id:   id,
@@ -97,8 +97,8 @@ gf.interact = {
     // 取消赞
     cancelZan: function (elem, type, id) {
         jQuery.ajax({
-            type: 'POST',
-            url:  '/interact/cancel-zan',
+            type: 'DELETE',
+            url:  '/interact/zan',
             data: {
                 id:   id,
                 type: type
@@ -130,7 +130,7 @@ gf.interact = {
     // 踩
     cai: function (elem, type, id) {
         jQuery.ajax({
-            type: 'POST',
+            type: 'PUT',
             url : '/interact/cai',
             data: {
                 id:   id,
@@ -154,8 +154,8 @@ gf.interact = {
     // 取消踩
     cancelCai: function (elem, type, id) {
         jQuery.ajax({
-            type: 'POST',
-            url:  '/interact/cancel-cai',
+            type: 'DELETE',
+            url:  '/interact/cai',
             data: {
                 id:   id,
                 type: type

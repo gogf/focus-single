@@ -9,7 +9,7 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 )
 
-// ContentForDao is the golang structure of table gf_content for DAO operations like Where/Data.
+// Content is the golang structure of table gf_content for DAO operations like Where/Data.
 type Content struct {
 	g.Meta         `orm:"table:gf_content, dto:true"`
 	Id             interface{} // 自增ID

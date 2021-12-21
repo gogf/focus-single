@@ -57,7 +57,7 @@
                 {{if .Context.User}}
                 {{if eq .Data.Content.UserId .Context.User.Id}}
                 &nbsp;&nbsp;&nbsp;&nbsp;
-                <a href="/content/update?id={{.Data.Content.Id}}">编辑</a>
+                <a href="/content/update/{{.Data.Content.Id}}">编辑</a>
                 {{end}}
                 {{end}}
             </div>
@@ -166,8 +166,8 @@
             }).then((value) => {
 
                 jQuery.ajax({
-                    type: 'POST',
-                    url: '/reply/do-delete',
+                    type: 'DELETE',
+                    url: '/reply',
                     data: {
                         id: id,
                     },
@@ -196,7 +196,7 @@
         loadReply:function () {
             jQuery.ajax({
                 type: 'GET',
-                url: '/reply/index',
+                url: '/reply',
                 data: {
                     size:         30,
                     page:         1,
@@ -206,7 +206,12 @@
                 },
                 success: function (r) {
                     $('.reply-list').remove();
-                    $('.comment-num').after(r);
+                    const replyList = $(r.data.content);
+                    for (let i = 0; i< replyList.length; i ++) {
+                        if (replyList[i].nodeName === "LI") {
+                            $('.comment-num')[0].append($(r.data.content)[i]);
+                        }
+                    }
 
                     // 采纳展示，如有有已经被采纳，那么其他全部隐藏
                     $("[id^='adopted_btn_']").hide();
@@ -285,16 +290,19 @@
                 // 附件格式
                 accept: 'image/*',
                 // 上传路径
-                url: '/file/upload',
+                url: '/file',
                 // 粘贴图片上传
-                linkToImgUrl: '/file/upload',
+                linkToImgUrl: '/file',
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest"
+                },
                 filename(name) {
                     return name.replace(/[^(a-zA-Z0-9\u4e00-\u9fa5\.)]/g, '').replace(/[\?\\/:|<>\*\[\]\(\)\$%\{\}@~]/g, '').replace('/\\s/g', '')
                 },
                 // 格式化上传返回
                 format(file, response) {
-                    const {code, data, msg} = JSON.parse(response)
-                    return JSON.stringify({msg, code, data: {errFiles: [], succMap: {"image.png": data.Url}}})
+                    const {code, data, message} = JSON.parse(response)
+                    return JSON.stringify({message, code, data: {errFiles: [], succMap: {"image.png": data.url}}})
                 }
             },
             preview: {
@@ -317,8 +325,8 @@
             $('button[type=submit]').attr('disabled', 'true');
             var pid=$("#reply-btn").attr("data-reply-id");
             jQuery.ajax({
-                type: 'POST',
-                url: '/reply/do-create',
+                type: 'PUT',
+                url: '/reply',
                 data: {
                     parentId:   pid,
                     content:    editor.getHTML(),

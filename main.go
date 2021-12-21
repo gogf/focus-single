@@ -3,9 +3,10 @@ package main
 import (
 	_ "focus-single/internal/packed"
 
-	"focus-single/internal/cmd"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gctx"
+
+	"focus-single/internal/cmd"
 )
 
 func main() {

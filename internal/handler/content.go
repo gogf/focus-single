@@ -2,13 +2,14 @@ package handler
 
 import (
 	"context"
+
 	"focus-single/apiv1"
 	"focus-single/internal/model"
 	"focus-single/internal/service"
 )
 
 var (
-	// 内容管理
+	// Content 内容管理
 	Content = handlerContent{}
 )
 

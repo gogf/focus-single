@@ -12,12 +12,12 @@ import (
 	"focus-single/internal/service/internal/dao"
 )
 
-// 评论/回复管理服务
+// Reply 评论/回复管理服务
 var Reply = serviceReply{}
 
 type serviceReply struct{}
 
-// 创建回复
+// Create 创建回复
 func (s *serviceReply) Create(ctx context.Context, in model.ReplyCreateInput) error {
 	return dao.Reply.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		// 覆盖用户ID
@@ -30,7 +30,7 @@ func (s *serviceReply) Create(ctx context.Context, in model.ReplyCreateInput) er
 	})
 }
 
-// 删除回复(硬删除)
+// Delete 删除回复(硬删除)
 func (s *serviceReply) Delete(ctx context.Context, id uint) error {
 	return dao.Reply.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		var reply *entity.Reply

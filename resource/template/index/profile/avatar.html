@@ -9,7 +9,7 @@
             </div>
             <div class="card-body">
 
-                <form id="avatarForm" enctype="multipart/form-data" action="/user/update-avatar" method="post">
+                <form id="avatarForm" enctype="multipart/form-data" action="/profile/avatar" method="post">
                     <input type="hidden" class="form-control" name="nickname" value="{{ .Data.Nickname}}">
                     <div id="image-preview-div">
                         <img id="preview-img" class="avatar-preview-img image-border img-thumbnail"
@@ -55,7 +55,7 @@
                                 icon: "success",
                                 button: "确定"
                             }).then((value) => {
-                                window.location.href = "/user/avatar";
+                                window.location.href = "/profile/avatar";
                             });
                         } else {
                             if (r.message != "") {

@@ -7,6 +7,7 @@ import (
 	"focus-single/internal/consts"
 	"focus-single/internal/model"
 	"focus-single/internal/service"
+	"github.com/gogf/gf/v2/frame/g"
 )
 
 var (
@@ -63,4 +64,12 @@ func (a *handlerUser) getContentList(ctx context.Context, userId uint, req apiv1
 		})
 		return nil
 	}
+}
+
+func (a *handlerUser) Logout(ctx context.Context, req *apiv1.UserLogoutReq) (res *apiv1.UserLogoutRes, err error) {
+	if err = service.User.Logout(ctx); err != nil {
+		return
+	}
+	g.RequestFromCtx(ctx).Response.RedirectTo(service.Middleware.LoginUrl)
+	return
 }

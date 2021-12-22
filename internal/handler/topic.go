@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	// 主题管理
+	// Topic 主题管理
 	Topic = handlerTopic{}
 )
 

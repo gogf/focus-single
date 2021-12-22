@@ -1,6 +1,6 @@
 package model
 
-// 创建用户
+// UserRegisterInput 创建用户
 type UserRegisterInput struct {
 	Passport string // 账号
 	Password string // 密码(明文)
@@ -12,7 +12,7 @@ type UserPasswordInput struct {
 	NewPassword string // 新密码
 }
 
-// 用户登录
+// UserLoginInput 用户登录
 type UserLoginInput struct {
 	Passport string // 账号
 	Password string // 密码(明文)
@@ -38,12 +38,12 @@ type UserUpdateProfileInput struct {
 	Gender   int    // 性别 0: 未设置 1: 男 2: 女
 }
 
-// 查询用户列表输入
+// UserGetContentListInput 查询用户列表输入
 type UserGetContentListInput struct {
 	ContentGetListInput
 }
 
-// 查询用户详情结果
+// UserGetListOutput 查询用户详情结果
 type UserGetListOutput struct {
 	Content *ContentGetListOutput `json:"content"` // 查询用户
 	User    *UserGetProfileOutput `json:"user"`    // 查询用户

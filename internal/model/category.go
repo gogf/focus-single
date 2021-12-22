@@ -1,6 +1,6 @@
 package model
 
-// 栏目树形列表
+// CategoryTreeItem 栏目树形列表
 type CategoryTreeItem struct {
 	Id       uint                `json:"id"`              // 分类ID，自增主键
 	ParentId uint                `json:"parent_id"`       // 父级分类ID，用于层级管理

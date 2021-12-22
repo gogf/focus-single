@@ -1,9 +1,10 @@
 package utils
 
 import (
+	"testing"
+
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/test/gtest"
-	"testing"
 )
 
 func TestMarkdownToHtml(t *testing.T) {

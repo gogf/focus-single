@@ -4,7 +4,7 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 )
 
-// 创建内容
+// ReplyCreateInput 创建内容
 type ReplyCreateInput struct {
 	Title      string
 	ParentId   uint   // 回复对应的上一级回复ID(没有的话默认为0)
@@ -14,7 +14,7 @@ type ReplyCreateInput struct {
 	UserId     uint
 }
 
-// 查询回复列表
+// ReplyGetListInput 查询回复列表
 type ReplyGetListInput struct {
 	Page       int    // 分页码
 	Size       int    // 分页数量
@@ -23,7 +23,7 @@ type ReplyGetListInput struct {
 	UserId     uint   // 用户ID
 }
 
-// 查询列表结果
+// ReplyGetListOutput 查询列表结果
 type ReplyGetListOutput struct {
 	List  []ReplyGetListOutputItem `json:"list"`  // 列表
 	Page  int                      `json:"page"`  // 分页码
@@ -31,7 +31,7 @@ type ReplyGetListOutput struct {
 	Total int                      `json:"total"` // 数据总数
 }
 
-// 查询列表结果项
+// ReplyGetListOutputItem 查询列表结果项
 type ReplyGetListOutputItem struct {
 	Reply    *ReplyListItem           `json:"reply"`
 	User     *ReplyListUserItem       `json:"user"`
@@ -39,7 +39,7 @@ type ReplyGetListOutputItem struct {
 	Category *ContentListCategoryItem `json:"category"`
 }
 
-// 评论列表项
+// ReplyListItem 评论列表项
 type ReplyListItem struct {
 	Id         uint        `json:"id"`          // 回复ID
 	ParentId   uint        `json:"parent_id"`   // 回复对应的上一级回复ID(没有的话默认为0)
@@ -54,7 +54,7 @@ type ReplyListItem struct {
 	UpdatedAt  *gtime.Time `json:"updated_at"`  //
 }
 
-// 绑定到Content列表中的用户信息
+// ReplyListUserItem 绑定到Content列表中的用户信息
 type ReplyListUserItem struct {
 	Id       uint   `json:"id"`       // UID
 	Nickname string `json:"nickname"` // 昵称

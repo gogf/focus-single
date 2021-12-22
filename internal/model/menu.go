@@ -1,6 +1,6 @@
 package model
 
-// 菜单数据结构
+// MenuItem 菜单数据结构
 type MenuItem struct {
 	Name   string      // 显示名称
 	Url    string      // 链接地址

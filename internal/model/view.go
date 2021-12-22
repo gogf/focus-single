@@ -4,7 +4,7 @@
 
 package model
 
-// 视图渲染内容对象
+// View 视图渲染内容对象
 type View struct {
 	Title       string           // 页面标题
 	Keywords    string           // 页面Keywords
@@ -17,20 +17,20 @@ type View struct {
 	Data        interface{}      // 页面参数
 }
 
-// 视图面包屑结构
+// ViewBreadCrumb 视图面包屑结构
 type ViewBreadCrumb struct {
 	Name string // 显示名称
 	Url  string // 链接地址，当为空时表示被选中
 }
 
-// 获取面包屑请求
+// ViewGetBreadCrumbInput 获取面包屑请求
 type ViewGetBreadCrumbInput struct {
 	ContentId   uint   // (可选)内容ID
 	ContentType string // (可选)内容类型
 	CategoryId  uint   // (可选)栏目ID
 }
 
-// 获取title请求
+// ViewGetTitleInput 获取title请求
 type ViewGetTitleInput struct {
 	ContentType string // (可选)内容类型
 	CategoryId  uint   // (可选)栏目ID

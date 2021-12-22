@@ -1,11 +1,12 @@
 package model
 
 import (
-	"focus-single/internal/model/entity"
 	"github.com/gogf/gf/v2/os/gtime"
+
+	"focus-single/internal/model/entity"
 )
 
-// 获取内容列表
+// ContentGetListInput 获取内容列表
 type ContentGetListInput struct {
 	Type       string // 内容模型
 	CategoryId uint   // 栏目ID
@@ -15,7 +16,7 @@ type ContentGetListInput struct {
 	UserId     uint   // 要查询的用户ID
 }
 
-// 查询列表结果
+// ContentGetListOutput 查询列表结果
 type ContentGetListOutput struct {
 	List  []ContentGetListOutputItem `json:"list" description:"列表"`
 	Page  int                        `json:"page" description:"分页码"`
@@ -23,7 +24,7 @@ type ContentGetListOutput struct {
 	Total int                        `json:"total" description:"数据总数"`
 }
 
-// 搜索列表
+// ContentSearchInput 搜索列表
 type ContentSearchInput struct {
 	Key        string // 关键字
 	Type       string // 内容模型
@@ -33,7 +34,7 @@ type ContentSearchInput struct {
 	Sort       int    // 排序类型(0:最新, 默认。1:活跃, 2:热度)
 }
 
-// 搜索列表结果
+// ContentSearchOutput 搜索列表结果
 type ContentSearchOutput struct {
 	List  []ContentSearchOutputItem `json:"list"`  // 列表
 	Stats map[string]int            `json:"stats"` // 搜索统计
@@ -52,13 +53,13 @@ type ContentSearchOutputItem struct {
 	ContentGetListOutputItem
 }
 
-// 查询详情结果
+// ContentGetDetailOutput 查询详情结果
 type ContentGetDetailOutput struct {
 	Content *entity.Content `json:"content"`
 	User    *entity.User    `json:"user"`
 }
 
-// 创建/修改内容基类
+// ContentCreateUpdateBase 创建/修改内容基类
 type ContentCreateUpdateBase struct {
 	Type       string   // 内容模型
 	CategoryId uint     // 栏目ID
@@ -70,24 +71,24 @@ type ContentCreateUpdateBase struct {
 	Referer    string   // 内容来源，例如github/gitee
 }
 
-// 创建内容
+// ContentCreateInput 创建内容
 type ContentCreateInput struct {
 	ContentCreateUpdateBase
 	UserId uint
 }
 
-// 创建内容返回结果
+// ContentCreateOutput 创建内容返回结果
 type ContentCreateOutput struct {
 	ContentId uint `json:"content_id"`
 }
 
-// 修改内容
+// ContentUpdateInput 修改内容
 type ContentUpdateInput struct {
 	ContentCreateUpdateBase
 	Id uint
 }
 
-// 主要用于列表展示
+// ContentListItem 主要用于列表展示
 type ContentListItem struct {
 	Id         uint        `json:"id"`          // 自增ID
 	CategoryId uint        `json:"category_id"` // 栏目ID
@@ -107,7 +108,7 @@ type ContentListItem struct {
 	UpdatedAt  *gtime.Time `json:"updated_at"`  // 修改时间
 }
 
-// 绑定到Content列表中的栏目信息
+// ContentListCategoryItem 绑定到Content列表中的栏目信息
 type ContentListCategoryItem struct {
 	Id          uint   `json:"id"`           // 分类ID，自增主键
 	Name        string `json:"name"`         // 分类名称
@@ -116,14 +117,14 @@ type ContentListCategoryItem struct {
 
 }
 
-// 绑定到Content列表中的用户信息
+// ContentListUserItem 绑定到Content列表中的用户信息
 type ContentListUserItem struct {
 	Id       uint   `json:"id"`       // UID
 	Nickname string `json:"nickname"` // 昵称
 	Avatar   string `json:"avatar"`   // 头像地址
 }
 
-// Content详情
+// ContentDetail Content详情
 type ContentDetail struct {
 	Content entity.Content
 	User    entity.User

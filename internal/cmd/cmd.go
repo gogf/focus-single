@@ -3,16 +3,17 @@ package cmd
 import (
 	"context"
 
-	"focus-single/internal/consts"
-	"focus-single/internal/handler"
-	"focus-single/internal/service"
-	"focus-single/utility/response"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/os/gcmd"
 	"github.com/gogf/gf/v2/protocol/goai"
 	"github.com/gogf/gf/v2/text/gstr"
 	"github.com/gogf/gf/v2/util/gmode"
+
+	"focus-single/internal/consts"
+	"focus-single/internal/handler"
+	"focus-single/internal/service"
+	"focus-single/utility/response"
 )
 
 var (

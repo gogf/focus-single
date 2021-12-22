@@ -4,15 +4,16 @@ import (
 	"context"
 	"time"
 
-	"focus-single/internal/model"
-	"focus-single/internal/model/entity"
-	"focus-single/internal/service/internal/dao"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/os/gcache"
 	"github.com/gogf/gf/v2/util/gconv"
+
+	"focus-single/internal/model"
+	"focus-single/internal/model/entity"
+	"focus-single/internal/service/internal/dao"
 )
 
-// 栏目管理服务
+// Category 栏目管理服务
 var (
 	Category = serviceCategory{}
 )
@@ -26,7 +27,7 @@ const (
 	treeCacheDuration = time.Hour
 )
 
-// 查询列表
+// GetTree 查询列表
 func (s *serviceCategory) GetTree(ctx context.Context, contentType string) ([]*model.CategoryTreeItem, error) {
 	// 缓存控制
 	var (
@@ -54,7 +55,7 @@ func (s *serviceCategory) GetTree(ctx context.Context, contentType string) ([]*m
 	return result, err
 }
 
-// 获取指定栏目ID及其下面所有子ID，构成数组返回。
+// GetSubIdList 获取指定栏目ID及其下面所有子ID，构成数组返回。
 // 注意，返回的ID列表中包含查询的栏目ID.
 func (s *serviceCategory) GetSubIdList(ctx context.Context, id uint) ([]uint, error) {
 	m, err := s.GetMap(ctx)
@@ -112,7 +113,7 @@ func (s *serviceCategory) formTree(parentId uint, contentType string, entities [
 	return tree, nil
 }
 
-// 获得所有的栏目列表。
+// GetList 获得所有的栏目列表。
 func (s *serviceCategory) GetList(ctx context.Context) (list []*entity.Category, err error) {
 	err = dao.Category.Ctx(ctx).
 		OrderAsc(dao.Category.Columns.Sort).
@@ -121,7 +122,7 @@ func (s *serviceCategory) GetList(ctx context.Context) (list []*entity.Category,
 	return
 }
 
-// 查询单个栏目信息
+// GetItem 查询单个栏目信息
 func (s *serviceCategory) GetItem(ctx context.Context, id uint) (*entity.Category, error) {
 	m, err := s.GetMap(ctx)
 	if err != nil {
@@ -130,7 +131,7 @@ func (s *serviceCategory) GetItem(ctx context.Context, id uint) (*entity.Categor
 	return m[id], nil
 }
 
-// 获得所有的栏目列表，构成Map返回，键名为栏目ID
+// GetMap 获得所有的栏目列表，构成Map返回，键名为栏目ID
 func (s *serviceCategory) GetMap(ctx context.Context) (map[uint]*entity.Category, error) {
 	var (
 		cacheKey  = mapCacheKey

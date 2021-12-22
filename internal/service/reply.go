@@ -3,21 +3,21 @@ package service
 import (
 	"context"
 
+	"github.com/gogf/gf/v2/database/gdb"
+	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/util/gutil"
+
 	"focus-single/internal/model"
 	"focus-single/internal/model/entity"
 	"focus-single/internal/service/internal/dao"
-	"github.com/gogf/gf/v2/database/gdb"
-
-	"github.com/gogf/gf/v2/frame/g"
-	"github.com/gogf/gf/v2/util/gutil"
 )
 
-// 评论/回复管理服务
+// Reply 评论/回复管理服务
 var Reply = serviceReply{}
 
 type serviceReply struct{}
 
-// 创建回复
+// Create 创建回复
 func (s *serviceReply) Create(ctx context.Context, in model.ReplyCreateInput) error {
 	return dao.Reply.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		// 覆盖用户ID
@@ -30,7 +30,7 @@ func (s *serviceReply) Create(ctx context.Context, in model.ReplyCreateInput) er
 	})
 }
 
-// 删除回复(硬删除)
+// Delete 删除回复(硬删除)
 func (s *serviceReply) Delete(ctx context.Context, id uint) error {
 	return dao.Reply.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		var reply *entity.Reply

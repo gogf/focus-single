@@ -3,22 +3,23 @@ package service
 import (
 	"context"
 
-	"focus-single/internal/consts"
-	"focus-single/internal/model"
-	"focus-single/internal/model/entity"
-	"focus-single/internal/service/internal/dao"
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/encoding/ghtml"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/util/gutil"
+
+	"focus-single/internal/consts"
+	"focus-single/internal/model"
+	"focus-single/internal/model/entity"
+	"focus-single/internal/service/internal/dao"
 )
 
-// 内容管理服务
+// Content 内容管理服务
 var Content = serviceContent{}
 
 type serviceContent struct{}
 
-// 查询内容列表
+// GetList 查询内容列表
 func (s *serviceContent) GetList(ctx context.Context, in model.ContentGetListInput) (out *model.ContentGetListOutput, err error) {
 	var (
 		m = dao.Content.Ctx(ctx)
@@ -94,7 +95,7 @@ func (s *serviceContent) GetList(ctx context.Context, in model.ContentGetListInp
 	return
 }
 
-// 搜索内容列表
+// Search 搜索内容列表
 func (s *serviceContent) Search(ctx context.Context, in model.ContentSearchInput) (out *model.ContentSearchOutput, err error) {
 	var (
 		m           = dao.Content.Ctx(ctx)
@@ -125,7 +126,7 @@ func (s *serviceContent) Search(ctx context.Context, in model.ContentSearchInput
 	case consts.ContentSortActive:
 		listModel = listModel.OrderDesc(dao.Content.Columns.UpdatedAt)
 
-	//case model.ContentSortScore:
+	// case model.ContentSortScore:
 	//	listModel = listModel.OrderDesc("score")
 
 	default:
@@ -177,7 +178,7 @@ func (s *serviceContent) Search(ctx context.Context, in model.ContentSearchInput
 	return out, nil
 }
 
-// 查询详情
+// GetDetail 查询详情
 func (s *serviceContent) GetDetail(ctx context.Context, id uint) (out *model.ContentGetDetailOutput, err error) {
 	out = &model.ContentGetDetailOutput{}
 	if err := dao.Content.Ctx(ctx).WherePri(id).Scan(&out.Content); err != nil {
@@ -194,7 +195,7 @@ func (s *serviceContent) GetDetail(ctx context.Context, id uint) (out *model.Con
 	return out, nil
 }
 
-// 创建内容
+// Create 创建内容
 func (s *serviceContent) Create(ctx context.Context, in model.ContentCreateInput) (out model.ContentCreateOutput, err error) {
 	if in.UserId == 0 {
 		in.UserId = Context.Get(ctx).User.Id
@@ -210,7 +211,7 @@ func (s *serviceContent) Create(ctx context.Context, in model.ContentCreateInput
 	return model.ContentCreateOutput{ContentId: uint(lastInsertId)}, err
 }
 
-// 修改
+// Update 修改
 func (s *serviceContent) Update(ctx context.Context, in model.ContentUpdateInput) error {
 	return dao.Content.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		// 不允许HTML代码
@@ -228,7 +229,7 @@ func (s *serviceContent) Update(ctx context.Context, in model.ContentUpdateInput
 	})
 }
 
-// 删除
+// Delete 删除
 func (s *serviceContent) Delete(ctx context.Context, id uint) error {
 	return dao.Content.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		user := Context.Get(ctx).User
@@ -253,7 +254,7 @@ func (s *serviceContent) Delete(ctx context.Context, id uint) error {
 	})
 }
 
-// 浏览次数增加
+// AddViewCount 浏览次数增加
 func (s *serviceContent) AddViewCount(ctx context.Context, id uint, count int) error {
 	return dao.Content.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		_, err := dao.Content.Ctx(ctx).WherePri(id).Increment(dao.Content.Columns.ViewCount, count)
@@ -264,7 +265,7 @@ func (s *serviceContent) AddViewCount(ctx context.Context, id uint, count int) e
 	})
 }
 
-// 回复次数增加
+// AddReplyCount 回复次数增加
 func (s *serviceContent) AddReplyCount(ctx context.Context, id uint, count int) error {
 	return dao.Content.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		_, err := dao.Content.Ctx(ctx).WherePri(id).Increment(dao.Content.Columns.ReplyCount, count)
@@ -275,7 +276,7 @@ func (s *serviceContent) AddReplyCount(ctx context.Context, id uint, count int) 
 	})
 }
 
-// 采纳回复
+// AdoptReply 采纳回复
 func (s *serviceContent) AdoptReply(ctx context.Context, id uint, replyId uint) error {
 	return dao.Content.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		_, err := dao.Content.Ctx(ctx).
@@ -290,7 +291,7 @@ func (s *serviceContent) AdoptReply(ctx context.Context, id uint, replyId uint) 
 	})
 }
 
-// 取消采纳回复
+// UnacceptedReply 取消采纳回复
 func (s *serviceContent) UnacceptedReply(ctx context.Context, id uint) error {
 	return dao.Content.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		_, err := dao.Content.Ctx(ctx).

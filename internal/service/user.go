@@ -169,9 +169,12 @@ func (s *serviceUser) UpdatePassword(ctx context.Context, in model.UserPasswordI
 
 // 获取个人信息
 func (s *serviceUser) GetProfileById(ctx context.Context, userId uint) (out *model.UserGetProfileOutput, err error) {
-	out = &model.UserGetProfileOutput{}
-	if err = dao.User.Ctx(ctx).WherePri(userId).Scan(out); err != nil {
+	if err = dao.User.Ctx(ctx).WherePri(userId).Scan(&out); err != nil {
 		return nil, err
+	}
+	// 需要判断nil是否存在,不存在需要判断为空,以防后续nil
+	if out == nil {
+		return nil, nil
 	}
 	out.Stats, err = s.GetUserStats(ctx, userId)
 	if err != nil {

@@ -39,3 +39,11 @@ type UserAskReq struct {
 type UserAskRes struct {
 	g.Meta `mime:"text/html" type:"string" example:"<html/>"`
 }
+
+type UserLogoutReq struct {
+	g.Meta `path:"/user/logout" method:"get" summary:"执行用户注销接口" tags:"个人"`
+}
+
+type UserLogoutRes struct{
+	g.Meta `mime:"text/html" type:"string" example:"<html/>"`
+}

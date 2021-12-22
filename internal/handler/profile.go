@@ -130,11 +130,3 @@ func (a *handlerProfile) Message(ctx context.Context, req *apiv1.ProfileMessageR
 		return nil, nil
 	}
 }
-
-func (a *handlerProfile) Logout(ctx context.Context, req *apiv1.ProfileLogoutReq) (res *apiv1.ProfileLogoutRes, err error) {
-	if err = service.User.Logout(ctx); err != nil {
-		return
-	}
-	g.RequestFromCtx(ctx).Response.RedirectTo(service.Middleware.LoginUrl)
-	return
-}

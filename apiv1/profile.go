@@ -57,8 +57,3 @@ type ProfileMessageReq struct {
 type ProfileMessageRes struct {
 	g.Meta `mime:"text/html" type:"string" example:"<html/>"`
 }
-
-type ProfileLogoutReq struct {
-	g.Meta `path:"/profile/logout" method:"delete" summary:"执行用户注销接口" tags:"个人"`
-}
-type ProfileLogoutRes struct{}

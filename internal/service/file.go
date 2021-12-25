@@ -31,8 +31,8 @@ func (s *serviceFile) Upload(ctx context.Context, in model.FileUploadInput) (*mo
 	}
 	// 同一用户1分钟之内只能上传10张图片
 	count, err := dao.File.Ctx(ctx).
-		Where(dao.File.Columns.UserId, Context.Get(ctx).User.Id).
-		WhereGTE(dao.File.Columns.CreatedAt, gtime.Now().Add(time.Minute)).
+		Where(dao.File.Columns().UserId, Context.Get(ctx).User.Id).
+		WhereGTE(dao.File.Columns().CreatedAt, gtime.Now().Add(time.Minute)).
 		Count()
 	if err != nil {
 		return nil, err

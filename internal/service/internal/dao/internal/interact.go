@@ -12,9 +12,9 @@ import (
 
 // InteractDao is the data access object for table gf_interact.
 type InteractDao struct {
-	Table   string          // Table is the underlying table name of the DAO.
-	Group   string          // Group is the database configuration group name of current DAO.
-	Columns InteractColumns // Columns contains all the column names of Table for convenient usage.
+	table   string          // table is the underlying table name of the DAO.
+	group   string          // group is the database configuration group name of current DAO.
+	columns InteractColumns // columns contains all the column names of Table for convenient usage.
 }
 
 // InteractColumns defines and stores column names for table gf_interact.
@@ -44,20 +44,35 @@ var interactColumns = InteractColumns{
 // NewInteractDao creates and returns a new DAO object for table data access.
 func NewInteractDao() *InteractDao {
 	return &InteractDao{
-		Group:   "default",
-		Table:   "gf_interact",
-		Columns: interactColumns,
+		group:   "default",
+		table:   "gf_interact",
+		columns: interactColumns,
 	}
 }
 
 // DB retrieves and returns the underlying raw database management object of current DAO.
 func (dao *InteractDao) DB() gdb.DB {
-	return g.DB(dao.Group)
+	return g.DB(dao.group)
+}
+
+// Table returns the table name of current dao.
+func (dao *InteractDao) Table() string {
+	return dao.table
+}
+
+// Columns returns all column names of current dao.
+func (dao *InteractDao) Columns() InteractColumns {
+	return dao.columns
+}
+
+// Group returns the configuration group name of database of current dao.
+func (dao *InteractDao) Group() string {
+	return dao.group
 }
 
 // Ctx creates and returns the Model for current DAO, It automatically sets the context for current operation.
 func (dao *InteractDao) Ctx(ctx context.Context) *gdb.Model {
-	return dao.DB().Model(dao.Table).Safe().Ctx(ctx)
+	return dao.DB().Model(dao.table).Safe().Ctx(ctx)
 }
 
 // Transaction wraps the transaction logic using function f.

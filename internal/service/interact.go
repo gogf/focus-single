@@ -34,7 +34,7 @@ func (s *serviceInteract) Zan(ctx context.Context, targetType string, targetId u
 			TargetId:   targetId,
 			TargetType: targetType,
 			Type:       consts.InteractTypeZan,
-		}).FieldsEx(dao.Interact.Columns.Id).InsertIgnore()
+		}).FieldsEx(dao.Interact.Columns().Id).InsertIgnore()
 		if err != nil {
 			return err
 		}
@@ -94,7 +94,7 @@ func (s *serviceInteract) Cai(ctx context.Context, targetType string, targetId u
 			TargetId:   targetId,
 			TargetType: targetType,
 			Type:       consts.InteractTypeCai,
-		}).FieldsEx(dao.Interact.Columns.Id).InsertIgnore()
+		}).FieldsEx(dao.Interact.Columns().Id).InsertIgnore()
 		if err != nil {
 			return err
 		}
@@ -113,10 +113,10 @@ func (s *serviceInteract) CancelCai(ctx context.Context, targetType string, targ
 			return nil
 		}
 		r, err := dao.Interact.Ctx(ctx).Where(g.Map{
-			dao.Interact.Columns.UserId:     Context.Get(ctx).User.Id,
-			dao.Interact.Columns.TargetId:   targetId,
-			dao.Interact.Columns.TargetType: targetType,
-			dao.Interact.Columns.Type:       consts.InteractTypeCai,
+			dao.Interact.Columns().UserId:     Context.Get(ctx).User.Id,
+			dao.Interact.Columns().TargetId:   targetId,
+			dao.Interact.Columns().TargetType: targetType,
+			dao.Interact.Columns().Type:       consts.InteractTypeCai,
 		}).Delete()
 		if err != nil {
 			return err
@@ -152,7 +152,7 @@ func (s *serviceInteract) getMyList(ctx context.Context) ([]*entity.Interact, er
 		return v.([]*entity.Interact), nil
 	}
 	var list []*entity.Interact
-	err := dao.Interact.Ctx(ctx).Where(dao.Interact.Columns.UserId, customCtx.User.Id).Scan(&list)
+	err := dao.Interact.Ctx(ctx).Where(dao.Interact.Columns().UserId, customCtx.User.Id).Scan(&list)
 	if err != nil {
 		return nil, err
 	}
@@ -177,18 +177,18 @@ func (s *serviceInteract) updateCount(ctx context.Context, interactType int, tar
 			switch interactType {
 			case consts.InteractTypeZan:
 				_, err = dao.Content.Ctx(ctx).
-					Where(dao.Content.Columns.Id, targetId).
-					WhereGTE(dao.Content.Columns.ZanCount, 0).
-					Increment(dao.Content.Columns.ZanCount, count)
+					Where(dao.Content.Columns().Id, targetId).
+					WhereGTE(dao.Content.Columns().ZanCount, 0).
+					Increment(dao.Content.Columns().ZanCount, count)
 				if err != nil {
 					return err
 				}
 
 			case consts.InteractTypeCai:
 				_, err = dao.Content.Ctx(ctx).
-					Where(dao.Content.Columns.Id, targetId).
-					WhereGTE(dao.Content.Columns.CaiCount, 0).
-					Increment(dao.Content.Columns.CaiCount, count)
+					Where(dao.Content.Columns().Id, targetId).
+					WhereGTE(dao.Content.Columns().CaiCount, 0).
+					Increment(dao.Content.Columns().CaiCount, count)
 				if err != nil {
 					return err
 				}
@@ -198,18 +198,18 @@ func (s *serviceInteract) updateCount(ctx context.Context, interactType int, tar
 			switch interactType {
 			case consts.InteractTypeZan:
 				_, err = dao.Reply.Ctx(ctx).
-					Where(dao.Content.Columns.Id, targetId).
-					WhereGTE(dao.Content.Columns.ZanCount, 0).
-					Increment(dao.Content.Columns.ZanCount, count)
+					Where(dao.Content.Columns().Id, targetId).
+					WhereGTE(dao.Content.Columns().ZanCount, 0).
+					Increment(dao.Content.Columns().ZanCount, count)
 				if err != nil {
 					return err
 				}
 
 			case consts.InteractTypeCai:
 				_, err = dao.Reply.Ctx(ctx).
-					Where(dao.Content.Columns.Id, targetId).
-					WhereGTE(dao.Content.Columns.CaiCount, 0).
-					Increment(dao.Content.Columns.CaiCount, count)
+					Where(dao.Content.Columns().Id, targetId).
+					WhereGTE(dao.Content.Columns().CaiCount, 0).
+					Increment(dao.Content.Columns().CaiCount, count)
 				if err != nil {
 					return err
 				}

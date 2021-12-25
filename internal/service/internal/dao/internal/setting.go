@@ -12,9 +12,9 @@ import (
 
 // SettingDao is the data access object for table gf_setting.
 type SettingDao struct {
-	Table   string         // Table is the underlying table name of the DAO.
-	Group   string         // Group is the database configuration group name of current DAO.
-	Columns SettingColumns // Columns contains all the column names of Table for convenient usage.
+	table   string         // table is the underlying table name of the DAO.
+	group   string         // group is the database configuration group name of current DAO.
+	columns SettingColumns // columns contains all the column names of Table for convenient usage.
 }
 
 // SettingColumns defines and stores column names for table gf_setting.
@@ -36,20 +36,35 @@ var settingColumns = SettingColumns{
 // NewSettingDao creates and returns a new DAO object for table data access.
 func NewSettingDao() *SettingDao {
 	return &SettingDao{
-		Group:   "default",
-		Table:   "gf_setting",
-		Columns: settingColumns,
+		group:   "default",
+		table:   "gf_setting",
+		columns: settingColumns,
 	}
 }
 
 // DB retrieves and returns the underlying raw database management object of current DAO.
 func (dao *SettingDao) DB() gdb.DB {
-	return g.DB(dao.Group)
+	return g.DB(dao.group)
+}
+
+// Table returns the table name of current dao.
+func (dao *SettingDao) Table() string {
+	return dao.table
+}
+
+// Columns returns all column names of current dao.
+func (dao *SettingDao) Columns() SettingColumns {
+	return dao.columns
+}
+
+// Group returns the configuration group name of database of current dao.
+func (dao *SettingDao) Group() string {
+	return dao.group
 }
 
 // Ctx creates and returns the Model for current DAO, It automatically sets the context for current operation.
 func (dao *SettingDao) Ctx(ctx context.Context) *gdb.Model {
-	return dao.DB().Model(dao.Table).Safe().Ctx(ctx)
+	return dao.DB().Model(dao.table).Safe().Ctx(ctx)
 }
 
 // Transaction wraps the transaction logic using function f.

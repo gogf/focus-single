@@ -12,9 +12,9 @@ import (
 
 // CategoryDao is the data access object for table gf_category.
 type CategoryDao struct {
-	Table   string          // Table is the underlying table name of the DAO.
-	Group   string          // Group is the database configuration group name of current DAO.
-	Columns CategoryColumns // Columns contains all the column names of Table for convenient usage.
+	table   string          // table is the underlying table name of the DAO.
+	group   string          // group is the database configuration group name of current DAO.
+	columns CategoryColumns // columns contains all the column names of Table for convenient usage.
 }
 
 // CategoryColumns defines and stores column names for table gf_category.
@@ -52,20 +52,35 @@ var categoryColumns = CategoryColumns{
 // NewCategoryDao creates and returns a new DAO object for table data access.
 func NewCategoryDao() *CategoryDao {
 	return &CategoryDao{
-		Group:   "default",
-		Table:   "gf_category",
-		Columns: categoryColumns,
+		group:   "default",
+		table:   "gf_category",
+		columns: categoryColumns,
 	}
 }
 
 // DB retrieves and returns the underlying raw database management object of current DAO.
 func (dao *CategoryDao) DB() gdb.DB {
-	return g.DB(dao.Group)
+	return g.DB(dao.group)
+}
+
+// Table returns the table name of current dao.
+func (dao *CategoryDao) Table() string {
+	return dao.table
+}
+
+// Columns returns all column names of current dao.
+func (dao *CategoryDao) Columns() CategoryColumns {
+	return dao.columns
+}
+
+// Group returns the configuration group name of database of current dao.
+func (dao *CategoryDao) Group() string {
+	return dao.group
 }
 
 // Ctx creates and returns the Model for current DAO, It automatically sets the context for current operation.
 func (dao *CategoryDao) Ctx(ctx context.Context) *gdb.Model {
-	return dao.DB().Model(dao.Table).Safe().Ctx(ctx)
+	return dao.DB().Model(dao.table).Safe().Ctx(ctx)
 }
 
 // Transaction wraps the transaction logic using function f.

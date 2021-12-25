@@ -30,9 +30,9 @@ func (s *serviceContent) GetList(ctx context.Context, in model.ContentGetListInp
 	}
 	// 默认查询topic
 	if in.Type != "" {
-		m = m.Where(dao.Content.Columns.Type, in.Type)
+		m = m.Where(dao.Content.Columns().Type, in.Type)
 	} else {
-		m = m.Where(dao.Content.Columns.Type, consts.ContentTypeTopic)
+		m = m.Where(dao.Content.Columns().Type, consts.ContentTypeTopic)
 	}
 	// 栏目检索
 	if in.CategoryId > 0 {
@@ -40,24 +40,24 @@ func (s *serviceContent) GetList(ctx context.Context, in model.ContentGetListInp
 		if err != nil {
 			return out, err
 		}
-		m = m.Where(dao.Content.Columns.CategoryId, idArray)
+		m = m.Where(dao.Content.Columns().CategoryId, idArray)
 	}
 	// 管理员可以查看所有文章
 	if in.UserId > 0 && !User.IsAdminShow(ctx, in.UserId) {
-		m = m.Where(dao.Content.Columns.UserId, in.UserId)
+		m = m.Where(dao.Content.Columns().UserId, in.UserId)
 	}
 	// 分配查询
 	listModel := m.Page(in.Page, in.Size)
 	// 排序方式
 	switch in.Sort {
 	case consts.ContentSortHot:
-		listModel = listModel.OrderDesc(dao.Content.Columns.ViewCount)
+		listModel = listModel.OrderDesc(dao.Content.Columns().ViewCount)
 
 	case consts.ContentSortActive:
-		listModel = listModel.OrderDesc(dao.Content.Columns.UpdatedAt)
+		listModel = listModel.OrderDesc(dao.Content.Columns().UpdatedAt)
 
 	default:
-		listModel = listModel.OrderDesc(dao.Content.Columns.Id)
+		listModel = listModel.OrderDesc(dao.Content.Columns().Id)
 	}
 	// 执行查询
 	var list []*entity.Content
@@ -79,7 +79,7 @@ func (s *serviceContent) GetList(ctx context.Context, in model.ContentGetListInp
 	// Category
 	err = dao.Category.Ctx(ctx).
 		Fields(model.ContentListCategoryItem{}).
-		Where(dao.Category.Columns.Id, gutil.ListItemValuesUnique(out.List, "Content", "CategoryId")).
+		Where(dao.Category.Columns().Id, gutil.ListItemValuesUnique(out.List, "Content", "CategoryId")).
 		ScanList(&out.List, "Category", "Content", "id:CategoryId")
 	if err != nil {
 		return out, err
@@ -87,7 +87,7 @@ func (s *serviceContent) GetList(ctx context.Context, in model.ContentGetListInp
 	// User
 	err = dao.User.Ctx(ctx).
 		Fields(model.ContentListUserItem{}).
-		Where(dao.User.Columns.Id, gutil.ListItemValuesUnique(out.List, "Content", "UserId")).
+		Where(dao.User.Columns().Id, gutil.ListItemValuesUnique(out.List, "Content", "UserId")).
 		ScanList(&out.List, "User", "Content", "id:UserId")
 	if err != nil {
 		return out, err
@@ -105,10 +105,10 @@ func (s *serviceContent) Search(ctx context.Context, in model.ContentSearchInput
 		Page: in.Page,
 		Size: in.Size,
 	}
-	m = m.WhereLike(dao.Content.Columns.Content, likePattern).WhereOrLike(dao.Content.Columns.Title, likePattern)
+	m = m.WhereLike(dao.Content.Columns().Content, likePattern).WhereOrLike(dao.Content.Columns().Title, likePattern)
 	// 内容类型
 	if in.Type != "" {
-		m = m.Where(dao.Content.Columns.Type, in.Type)
+		m = m.Where(dao.Content.Columns().Type, in.Type)
 	}
 	// 栏目检索
 	if in.CategoryId > 0 {
@@ -116,21 +116,21 @@ func (s *serviceContent) Search(ctx context.Context, in model.ContentSearchInput
 		if err != nil {
 			return nil, err
 		}
-		m = m.Where(dao.Content.Columns.CategoryId, idArray)
+		m = m.Where(dao.Content.Columns().CategoryId, idArray)
 	}
 	listModel := m.Page(in.Page, in.Size)
 	switch in.Sort {
 	case consts.ContentSortHot:
-		listModel = listModel.OrderDesc(dao.Content.Columns.ViewCount)
+		listModel = listModel.OrderDesc(dao.Content.Columns().ViewCount)
 
 	case consts.ContentSortActive:
-		listModel = listModel.OrderDesc(dao.Content.Columns.UpdatedAt)
+		listModel = listModel.OrderDesc(dao.Content.Columns().UpdatedAt)
 
 	// case model.ContentSortScore:
 	//	listModel = listModel.OrderDesc("score")
 
 	default:
-		listModel = listModel.OrderDesc(dao.Content.Columns.Id)
+		listModel = listModel.OrderDesc(dao.Content.Columns().Id)
 	}
 	all, err := listModel.All()
 	if err != nil {
@@ -145,7 +145,7 @@ func (s *serviceContent) Search(ctx context.Context, in model.ContentSearchInput
 		return nil, err
 	}
 	// 搜索统计
-	statsModel := m.Fields(dao.Content.Columns.Type, "count(*) total").Group(dao.Content.Columns.Type)
+	statsModel := m.Fields(dao.Content.Columns().Type, "count(*) total").Group(dao.Content.Columns().Type)
 	statsAll, err := statsModel.All()
 	if err != nil {
 		return nil, err
@@ -161,7 +161,7 @@ func (s *serviceContent) Search(ctx context.Context, in model.ContentSearchInput
 	// Category
 	err = dao.Category.Ctx(ctx).
 		Fields(model.ContentListCategoryItem{}).
-		Where(dao.Category.Columns.Id, gutil.ListItemValuesUnique(out.List, "Content", "CategoryId")).
+		Where(dao.Category.Columns().Id, gutil.ListItemValuesUnique(out.List, "Content", "CategoryId")).
 		ScanList(&out.List, "Category", "Content", "id:CategoryId")
 	if err != nil {
 		return nil, err
@@ -169,7 +169,7 @@ func (s *serviceContent) Search(ctx context.Context, in model.ContentSearchInput
 	// User
 	err = dao.User.Ctx(ctx).
 		Fields(model.ContentListUserItem{}).
-		Where(dao.User.Columns.Id, gutil.ListItemValuesUnique(out.List, "Content", "UserId")).
+		Where(dao.User.Columns().Id, gutil.ListItemValuesUnique(out.List, "Content", "UserId")).
 		ScanList(&out.List, "User", "Content", "id:UserId")
 	if err != nil {
 		return nil, err
@@ -221,9 +221,9 @@ func (s *serviceContent) Update(ctx context.Context, in model.ContentUpdateInput
 		_, err := dao.Content.
 			Ctx(ctx).
 			Data(in).
-			FieldsEx(dao.Content.Columns.Id).
-			Where(dao.Content.Columns.Id, in.Id).
-			Where(dao.Content.Columns.UserId, Context.Get(ctx).User.Id).
+			FieldsEx(dao.Content.Columns().Id).
+			Where(dao.Content.Columns().Id, in.Id).
+			Where(dao.Content.Columns().UserId, Context.Get(ctx).User.Id).
 			Update()
 		return err
 	})
@@ -235,16 +235,16 @@ func (s *serviceContent) Delete(ctx context.Context, id uint) error {
 		user := Context.Get(ctx).User
 		// 管理员直接删除文章和评论
 		if user.IsAdmin {
-			_, err := dao.Content.Ctx(ctx).Where(dao.Content.Columns.Id, id).Delete()
+			_, err := dao.Content.Ctx(ctx).Where(dao.Content.Columns().Id, id).Delete()
 			if err == nil {
-				_, err = dao.Reply.Ctx(ctx).Where(dao.Reply.Columns.TargetId, id).Delete()
+				_, err = dao.Reply.Ctx(ctx).Where(dao.Reply.Columns().TargetId, id).Delete()
 			}
 			return err
 		}
 		// 删除内容
 		_, err := dao.Content.Ctx(ctx).Where(g.Map{
-			dao.Content.Columns.Id:     id,
-			dao.Content.Columns.UserId: Context.Get(ctx).User.Id,
+			dao.Content.Columns().Id:     id,
+			dao.Content.Columns().UserId: Context.Get(ctx).User.Id,
 		}).Delete()
 		// 删除评论
 		if err == nil {
@@ -257,7 +257,7 @@ func (s *serviceContent) Delete(ctx context.Context, id uint) error {
 // AddViewCount 浏览次数增加
 func (s *serviceContent) AddViewCount(ctx context.Context, id uint, count int) error {
 	return dao.Content.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
-		_, err := dao.Content.Ctx(ctx).WherePri(id).Increment(dao.Content.Columns.ViewCount, count)
+		_, err := dao.Content.Ctx(ctx).WherePri(id).Increment(dao.Content.Columns().ViewCount, count)
 		if err != nil {
 			return err
 		}
@@ -268,7 +268,7 @@ func (s *serviceContent) AddViewCount(ctx context.Context, id uint, count int) e
 // AddReplyCount 回复次数增加
 func (s *serviceContent) AddReplyCount(ctx context.Context, id uint, count int) error {
 	return dao.Content.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
-		_, err := dao.Content.Ctx(ctx).WherePri(id).Increment(dao.Content.Columns.ReplyCount, count)
+		_, err := dao.Content.Ctx(ctx).WherePri(id).Increment(dao.Content.Columns().ReplyCount, count)
 		if err != nil {
 			return err
 		}
@@ -280,8 +280,8 @@ func (s *serviceContent) AddReplyCount(ctx context.Context, id uint, count int) 
 func (s *serviceContent) AdoptReply(ctx context.Context, id uint, replyId uint) error {
 	return dao.Content.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		_, err := dao.Content.Ctx(ctx).
-			Data(dao.Content.Columns.AdoptedReplyId, replyId).
-			Where(dao.Content.Columns.UserId, Context.Get(ctx).User.Id).
+			Data(dao.Content.Columns().AdoptedReplyId, replyId).
+			Where(dao.Content.Columns().UserId, Context.Get(ctx).User.Id).
 			WherePri(id).
 			Update()
 		if err != nil {
@@ -295,7 +295,7 @@ func (s *serviceContent) AdoptReply(ctx context.Context, id uint, replyId uint) 
 func (s *serviceContent) UnacceptedReply(ctx context.Context, id uint) error {
 	return dao.Content.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		_, err := dao.Content.Ctx(ctx).
-			Data(dao.Content.Columns.AdoptedReplyId, 0).
+			Data(dao.Content.Columns().AdoptedReplyId, 0).
 			WherePri(id).
 			Update()
 		if err != nil {

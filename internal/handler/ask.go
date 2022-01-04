@@ -9,14 +9,14 @@ import (
 	"focus-single/internal/service"
 )
 
-// 问答管理
+// Ask 问答管理
 var Ask = handlerAak{}
 
 type handlerAak struct{}
 
 func (a *handlerAak) Index(ctx context.Context, req *apiv1.AskIndexReq) (res *apiv1.AskIndexRes, err error) {
 	req.Type = consts.ContentTypeAsk
-	if getListRes, err := service.Content.GetList(ctx, model.ContentGetListInput{
+	if getListRes, err := service.Content().GetList(ctx, model.ContentGetListInput{
 		Type:       req.Type,
 		CategoryId: req.CategoryId,
 		Page:       req.Page,
@@ -38,14 +38,14 @@ func (a *handlerAak) Index(ctx context.Context, req *apiv1.AskIndexReq) (res *ap
 }
 
 func (a *handlerAak) Detail(ctx context.Context, req *apiv1.AskDetailReq) (res *apiv1.AskDetailRes, err error) {
-	if getDetailRes, err := service.Content.GetDetail(ctx, req.Id); err != nil {
+	if getDetailRes, err := service.Content().GetDetail(ctx, req.Id); err != nil {
 		return nil, err
 	} else {
 		if getDetailRes == nil {
 			service.View.Render404(ctx)
 			return nil, nil
 		}
-		if err = service.Content.AddViewCount(ctx, req.Id, 1); err != nil {
+		if err = service.Content().AddViewCount(ctx, req.Id, 1); err != nil {
 			return nil, err
 		}
 		var (

@@ -76,7 +76,7 @@ func (s *viewBuildIn) TopMenus() ([]*model.MenuItem, error) {
 
 // 获得指定的栏目树形对象，当contentType为空时，表示获取所有的栏目树形对象。
 func (s *viewBuildIn) CategoryTree(contentType string) ([]*model.CategoryTreeItem, error) {
-	return Category.GetTree(s.httpRequest.Context(), contentType)
+	return Category().GetTree(s.httpRequest.Context(), contentType)
 }
 
 // 最新文章，12小时内为最新文章

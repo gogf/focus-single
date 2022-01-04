@@ -18,7 +18,7 @@ type handlerTopic struct{}
 
 func (a *handlerTopic) Index(ctx context.Context, req *apiv1.TopicIndexReq) (res *apiv1.TopicIndexRes, err error) {
 	req.Type = consts.ContentTypeTopic
-	if getListRes, err := service.Content.GetList(ctx, model.ContentGetListInput{
+	if getListRes, err := service.Content().GetList(ctx, model.ContentGetListInput{
 		Type:       req.Type,
 		CategoryId: req.CategoryId,
 		Page:       req.Page,
@@ -41,14 +41,14 @@ func (a *handlerTopic) Index(ctx context.Context, req *apiv1.TopicIndexReq) (res
 }
 
 func (a *handlerTopic) Detail(ctx context.Context, req *apiv1.TopicDetailReq) (res *apiv1.TopicDetailRes, err error) {
-	if getDetailRes, err := service.Content.GetDetail(ctx, req.Id); err != nil {
+	if getDetailRes, err := service.Content().GetDetail(ctx, req.Id); err != nil {
 		return nil, err
 	} else {
 		if getDetailRes == nil {
 			service.View.Render404(ctx)
 			return nil, nil
 		}
-		err = service.Content.AddViewCount(ctx, req.Id, 1)
+		err = service.Content().AddViewCount(ctx, req.Id, 1)
 		service.View.Render(ctx, model.View{
 			ContentType: consts.ContentTypeTopic,
 			Data:        getDetailRes,

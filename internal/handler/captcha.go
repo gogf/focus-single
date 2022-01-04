@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	// 图形验证码
+	// Captcha 图形验证码
 	Captcha = handlerCaptcha{}
 )
 

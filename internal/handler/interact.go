@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	// 赞踩控制器
+	// Interact 赞踩控制器
 	Interact = handlerInteract{}
 )
 

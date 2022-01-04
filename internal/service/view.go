@@ -35,7 +35,7 @@ func (s *serviceView) GetBreadCrumb(ctx context.Context, in *model.ViewGetBreadC
 		}
 	}
 	if uriPrefix != "" && in.CategoryId > 0 {
-		category, _ := Category.GetItem(ctx, in.CategoryId)
+		category, _ := Category().GetItem(ctx, in.CategoryId)
 		if category != nil {
 			breadcrumb = append(breadcrumb, model.ViewBreadCrumb{
 				Name: category.Name,
@@ -61,7 +61,7 @@ func (s *serviceView) GetTitle(ctx context.Context, in *model.ViewGetTitleInput)
 		titleArray = append(titleArray, in.CurrentName)
 	}
 	if in.CategoryId > 0 {
-		category, _ := Category.GetItem(ctx, in.CategoryId)
+		category, _ := Category().GetItem(ctx, in.CategoryId)
 		if category != nil {
 			titleArray = append(titleArray, category.Name)
 		}

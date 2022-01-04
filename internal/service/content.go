@@ -15,7 +15,12 @@ import (
 )
 
 // Content 内容管理服务
-var Content = serviceContent{}
+var insContent = serviceContent{}
+
+// Content 内容管理服务
+func Content() *serviceContent {
+	return &insContent
+}
 
 type serviceContent struct{}
 
@@ -36,7 +41,7 @@ func (s *serviceContent) GetList(ctx context.Context, in model.ContentGetListInp
 	}
 	// 栏目检索
 	if in.CategoryId > 0 {
-		idArray, err := Category.GetSubIdList(ctx, in.CategoryId)
+		idArray, err := Category().GetSubIdList(ctx, in.CategoryId)
 		if err != nil {
 			return out, err
 		}
@@ -112,7 +117,7 @@ func (s *serviceContent) Search(ctx context.Context, in model.ContentSearchInput
 	}
 	// 栏目检索
 	if in.CategoryId > 0 {
-		idArray, err := Category.GetSubIdList(ctx, in.CategoryId)
+		idArray, err := Category().GetSubIdList(ctx, in.CategoryId)
 		if err != nil {
 			return nil, err
 		}
@@ -204,11 +209,11 @@ func (s *serviceContent) Create(ctx context.Context, in model.ContentCreateInput
 	if err = ghtml.SpecialCharsMapOrStruct(in); err != nil {
 		return out, err
 	}
-	lastInsertId, err := dao.Content.Ctx(ctx).Data(in).InsertAndGetId()
+	lastInsertID, err := dao.Content.Ctx(ctx).Data(in).InsertAndGetId()
 	if err != nil {
 		return out, err
 	}
-	return model.ContentCreateOutput{ContentId: uint(lastInsertId)}, err
+	return model.ContentCreateOutput{ContentId: uint(lastInsertID)}, err
 }
 
 // Update 修改
@@ -277,10 +282,10 @@ func (s *serviceContent) AddReplyCount(ctx context.Context, id uint, count int) 
 }
 
 // AdoptReply 采纳回复
-func (s *serviceContent) AdoptReply(ctx context.Context, id uint, replyId uint) error {
+func (s *serviceContent) AdoptReply(ctx context.Context, id uint, replyID uint) error {
 	return dao.Content.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		_, err := dao.Content.Ctx(ctx).
-			Data(dao.Content.Columns().AdoptedReplyId, replyId).
+			Data(dao.Content.Columns().AdoptedReplyId, replyID).
 			Where(dao.Content.Columns().UserId, Context.Get(ctx).User.Id).
 			WherePri(id).
 			Update()

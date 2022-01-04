@@ -10,12 +10,12 @@ import (
 
 var (
 	// 图形验证码
-	Captcha = handlerCaptcha{}
+	Captcha = hCaptcha{}
 )
 
-type handlerCaptcha struct{}
+type hCaptcha struct{}
 
-func (a *handlerCaptcha) Index(ctx context.Context, req *apiv1.CaptchaIndexReq) (res *apiv1.CaptchaIndexRes, err error) {
-	err = service.Captcha.NewAndStore(ctx, consts.CaptchaDefaultName)
+func (a *hCaptcha) Index(ctx context.Context, req *apiv1.CaptchaIndexReq) (res *apiv1.CaptchaIndexRes, err error) {
+	err = service.Captcha().NewAndStore(ctx, consts.CaptchaDefaultName)
 	return
 }

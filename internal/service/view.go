@@ -14,19 +14,23 @@ import (
 )
 
 // 视图管理服务
-var View = serviceView{}
+var insView = sView{}
 
-type serviceView struct{}
+type sView struct{}
+
+func View() *sView {
+	return &insView
+}
 
 // 前台系统-获取面包屑列表
-func (s *serviceView) GetBreadCrumb(ctx context.Context, in *model.ViewGetBreadCrumbInput) []model.ViewBreadCrumb {
+func (s *sView) GetBreadCrumb(ctx context.Context, in *model.ViewGetBreadCrumbInput) []model.ViewBreadCrumb {
 	breadcrumb := []model.ViewBreadCrumb{
 		{Name: "首页", Url: "/"},
 	}
 	var uriPrefix string
 	if in.ContentType != "" {
 		uriPrefix = "/" + in.ContentType
-		topMenuItem, _ := Menu.GetTopMenuByUrl(ctx, uriPrefix)
+		topMenuItem, _ := Menu().GetTopMenuByUrl(ctx, uriPrefix)
 		if topMenuItem != nil {
 			breadcrumb = append(breadcrumb, model.ViewBreadCrumb{
 				Name: topMenuItem.Name,
@@ -35,7 +39,7 @@ func (s *serviceView) GetBreadCrumb(ctx context.Context, in *model.ViewGetBreadC
 		}
 	}
 	if uriPrefix != "" && in.CategoryId > 0 {
-		category, _ := Category.GetItem(ctx, in.CategoryId)
+		category, _ := Category().GetItem(ctx, in.CategoryId)
 		if category != nil {
 			breadcrumb = append(breadcrumb, model.ViewBreadCrumb{
 				Name: category.Name,
@@ -52,7 +56,7 @@ func (s *serviceView) GetBreadCrumb(ctx context.Context, in *model.ViewGetBreadC
 }
 
 // 前台系统-获取标题
-func (s *serviceView) GetTitle(ctx context.Context, in *model.ViewGetTitleInput) string {
+func (s *sView) GetTitle(ctx context.Context, in *model.ViewGetTitleInput) string {
 	var (
 		titleArray []string
 		uriPrefix  string
@@ -61,14 +65,14 @@ func (s *serviceView) GetTitle(ctx context.Context, in *model.ViewGetTitleInput)
 		titleArray = append(titleArray, in.CurrentName)
 	}
 	if in.CategoryId > 0 {
-		category, _ := Category.GetItem(ctx, in.CategoryId)
+		category, _ := Category().GetItem(ctx, in.CategoryId)
 		if category != nil {
 			titleArray = append(titleArray, category.Name)
 		}
 	}
 	if in.ContentType != "" {
 		uriPrefix = "/" + in.ContentType
-		topMenuItem, _ := Menu.GetTopMenuByUrl(ctx, uriPrefix)
+		topMenuItem, _ := Menu().GetTopMenuByUrl(ctx, uriPrefix)
 		if topMenuItem != nil {
 			titleArray = append(titleArray, topMenuItem.Name)
 		}
@@ -77,7 +81,7 @@ func (s *serviceView) GetTitle(ctx context.Context, in *model.ViewGetTitleInput)
 }
 
 // 渲染指定模板页面
-func (s *serviceView) RenderTpl(ctx context.Context, tpl string, data ...model.View) {
+func (s *sView) RenderTpl(ctx context.Context, tpl string, data ...model.View) {
 	var (
 		viewObj  = model.View{}
 		viewData = make(g.Map)
@@ -111,8 +115,8 @@ func (s *serviceView) RenderTpl(ctx context.Context, tpl string, data ...model.V
 		viewData["MainTpl"] = s.getDefaultMainTpl(ctx)
 	}
 	// 提示信息
-	if notice, _ := Session.GetNotice(ctx); notice != nil {
-		_ = Session.RemoveNotice(ctx)
+	if notice, _ := Session().GetNotice(ctx); notice != nil {
+		_ = Session().RemoveNotice(ctx)
 		viewData["Notice"] = notice
 	}
 	// 渲染模板
@@ -124,12 +128,12 @@ func (s *serviceView) RenderTpl(ctx context.Context, tpl string, data ...model.V
 }
 
 // 渲染默认模板页面
-func (s *serviceView) Render(ctx context.Context, data ...model.View) {
+func (s *sView) Render(ctx context.Context, data ...model.View) {
 	s.RenderTpl(ctx, g.Cfg().MustGet(ctx, "viewer.indexLayout").String(), data...)
 }
 
 // 跳转中间页面
-func (s *serviceView) Render302(ctx context.Context, data ...model.View) {
+func (s *sView) Render302(ctx context.Context, data ...model.View) {
 	view := model.View{}
 	if len(data) > 0 {
 		view = data[0]
@@ -142,7 +146,7 @@ func (s *serviceView) Render302(ctx context.Context, data ...model.View) {
 }
 
 // 401页面
-func (s *serviceView) Render401(ctx context.Context, data ...model.View) {
+func (s *sView) Render401(ctx context.Context, data ...model.View) {
 	view := model.View{}
 	if len(data) > 0 {
 		view = data[0]
@@ -155,7 +159,7 @@ func (s *serviceView) Render401(ctx context.Context, data ...model.View) {
 }
 
 // 403页面
-func (s *serviceView) Render403(ctx context.Context, data ...model.View) {
+func (s *sView) Render403(ctx context.Context, data ...model.View) {
 	view := model.View{}
 	if len(data) > 0 {
 		view = data[0]
@@ -168,7 +172,7 @@ func (s *serviceView) Render403(ctx context.Context, data ...model.View) {
 }
 
 // 404页面
-func (s *serviceView) Render404(ctx context.Context, data ...model.View) {
+func (s *sView) Render404(ctx context.Context, data ...model.View) {
 	view := model.View{}
 	if len(data) > 0 {
 		view = data[0]
@@ -181,7 +185,7 @@ func (s *serviceView) Render404(ctx context.Context, data ...model.View) {
 }
 
 // 500页面
-func (s *serviceView) Render500(ctx context.Context, data ...model.View) {
+func (s *sView) Render500(ctx context.Context, data ...model.View) {
 	view := model.View{}
 	if len(data) > 0 {
 		view = data[0]
@@ -194,12 +198,12 @@ func (s *serviceView) Render500(ctx context.Context, data ...model.View) {
 }
 
 // 获取视图存储目录
-func (s *serviceView) getViewFolderName(ctx context.Context) string {
+func (s *sView) getViewFolderName(ctx context.Context) string {
 	return gstr.Split(g.Cfg().MustGet(ctx, "viewer.indexLayout").String(), "/")[0]
 }
 
 // 获取自动设置的MainTpl
-func (s *serviceView) getDefaultMainTpl(ctx context.Context) string {
+func (s *sView) getDefaultMainTpl(ctx context.Context) string {
 	var (
 		viewFolderPrefix = s.getViewFolderName(ctx)
 		urlPathArray     = gstr.SplitAndTrim(g.RequestFromCtx(ctx).URL.Path, "/")

@@ -15,10 +15,14 @@ import (
 
 // Category 栏目管理服务
 var (
-	Category = serviceCategory{}
+	category = serviceCategory{}
 )
 
 type serviceCategory struct{}
+
+func Category() *serviceCategory {
+	return &category
+}
 
 const (
 	mapCacheKey       = "category_map_cache"

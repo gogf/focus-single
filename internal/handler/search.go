@@ -10,13 +10,13 @@ import (
 
 var (
 	// 搜索管理
-	Search = handlerSearch{}
+	Search = hSearch{}
 )
 
-type handlerSearch struct{}
+type hSearch struct{}
 
-func (a *handlerSearch) Index(ctx context.Context, req *apiv1.SearchIndexReq) (res *apiv1.SearchIndexRes, err error) {
-	if searchRes, err := service.Content.Search(ctx, model.ContentSearchInput{
+func (a *hSearch) Index(ctx context.Context, req *apiv1.SearchIndexReq) (res *apiv1.SearchIndexRes, err error) {
+	if searchRes, err := service.Content().Search(ctx, model.ContentSearchInput{
 		Key:        req.Key,
 		Type:       req.Type,
 		CategoryId: req.CategoryId,
@@ -26,9 +26,9 @@ func (a *handlerSearch) Index(ctx context.Context, req *apiv1.SearchIndexReq) (r
 	}); err != nil {
 		return nil, err
 	} else {
-		service.View.Render(ctx, model.View{
+		service.View().Render(ctx, model.View{
 			Data:  searchRes,
-			Title: service.View.GetTitle(ctx, &model.ViewGetTitleInput{}),
+			Title: service.View().GetTitle(ctx, &model.ViewGetTitleInput{}),
 		})
 		return nil, nil
 	}

@@ -1,6 +1,10 @@
 package service
 
 // 标签管理服务
-var Tag = serviceTag{}
+var insTag = sTag{}
 
-type serviceTag struct{}
+type sTag struct{}
+
+func Tag() *sTag {
+	return &insTag
+}

@@ -13,12 +13,12 @@ import (
 
 var (
 	// 文件管理
-	File = handlerFile{}
+	File = hFile{}
 )
 
-type handlerFile struct{}
+type hFile struct{}
 
-func (a *handlerFile) Upload(ctx context.Context, req *apiv1.FileUploadReq) (res *apiv1.FileUploadRes, err error) {
+func (a *hFile) Upload(ctx context.Context, req *apiv1.FileUploadReq) (res *apiv1.FileUploadRes, err error) {
 	var (
 		request = g.RequestFromCtx(ctx)
 		file    = request.GetUploadFile("file")
@@ -26,7 +26,7 @@ func (a *handlerFile) Upload(ctx context.Context, req *apiv1.FileUploadReq) (res
 	if file == nil {
 		return nil, gerror.NewCode(gcode.CodeMissingParameter, "请选择需要上传的文件")
 	}
-	result, err := service.File.Upload(ctx, model.FileUploadInput{
+	result, err := service.File().Upload(ctx, model.FileUploadInput{
 		File:       file,
 		RandomName: true,
 	})

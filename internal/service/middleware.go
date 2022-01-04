@@ -13,17 +13,21 @@ import (
 
 // 中间件管理服务
 var (
-	Middleware = serviceMiddleware{
+	insMiddleware = sMiddleware{
 		LoginUrl: "/login",
 	}
 )
 
-type serviceMiddleware struct {
+type sMiddleware struct {
 	LoginUrl string // 登录路由地址
 }
 
+func Middleware() *sMiddleware {
+	return &insMiddleware
+}
+
 // 返回处理中间件
-func (s *serviceMiddleware) ResponseHandler(r *ghttp.Request) {
+func (s *sMiddleware) ResponseHandler(r *ghttp.Request) {
 	r.Middleware.Next()
 
 	// 如果已经有返回内容，那么该中间件什么也不做
@@ -59,13 +63,13 @@ func (s *serviceMiddleware) ResponseHandler(r *ghttp.Request) {
 }
 
 // 自定义上下文对象
-func (s *serviceMiddleware) Ctx(r *ghttp.Request) {
+func (s *sMiddleware) Ctx(r *ghttp.Request) {
 	// 初始化，务必最开始执行
 	customCtx := &model.Context{
 		Session: r.Session,
 		Data:    make(g.Map),
 	}
-	Context.Init(r, customCtx)
+	Context().Init(r, customCtx)
 	if userEntity := Session.GetUser(r.Context()); userEntity.Id > 0 {
 		adminId := g.Cfg().MustGet(r.Context(), "setting.adminId", consts.DefaultAdminId).Uint()
 		customCtx.User = &model.ContextUser{
@@ -85,7 +89,7 @@ func (s *serviceMiddleware) Ctx(r *ghttp.Request) {
 }
 
 // 前台系统权限控制，用户必须登录才能访问
-func (s *serviceMiddleware) Auth(r *ghttp.Request) {
+func (s *sMiddleware) Auth(r *ghttp.Request) {
 	user := Session.GetUser(r.Context())
 	if user.Id == 0 {
 		Session.SetNotice(r.Context(), &model.SessionNotice{

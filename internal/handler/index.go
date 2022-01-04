@@ -10,13 +10,13 @@ import (
 
 var (
 	// 首页接口
-	Index = handlerIndex{}
+	Index = hIndex{}
 )
 
-type handlerIndex struct{}
+type hIndex struct{}
 
-func (a *handlerIndex) Index(ctx context.Context, req *apiv1.IndexReq) (res *apiv1.IndexRes, err error) {
-	if getListRes, err := service.Content.GetList(ctx, model.ContentGetListInput{
+func (a *hIndex) Index(ctx context.Context, req *apiv1.IndexReq) (res *apiv1.IndexRes, err error) {
+	if getListRes, err := service.Content().GetList(ctx, model.ContentGetListInput{
 		Type:       req.Type,
 		CategoryId: req.CategoryId,
 		Page:       req.Page,
@@ -25,7 +25,7 @@ func (a *handlerIndex) Index(ctx context.Context, req *apiv1.IndexReq) (res *api
 	}); err != nil {
 		return nil, err
 	} else {
-		service.View.Render(ctx, model.View{
+		service.View().Render(ctx, model.View{
 			ContentType: req.Type,
 			Data:        getListRes,
 			Title:       "首页",

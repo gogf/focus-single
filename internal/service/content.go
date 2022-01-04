@@ -15,12 +15,16 @@ import (
 )
 
 // Content 内容管理服务
-var Content = serviceContent{}
+var content = sContent{}
 
-type serviceContent struct{}
+type sContent struct{}
+
+func Content() *sContent {
+	return &content
+}
 
 // GetList 查询内容列表
-func (s *serviceContent) GetList(ctx context.Context, in model.ContentGetListInput) (out *model.ContentGetListOutput, err error) {
+func (s *sContent) GetList(ctx context.Context, in model.ContentGetListInput) (out *model.ContentGetListOutput, err error) {
 	var (
 		m = dao.Content.Ctx(ctx)
 	)
@@ -36,7 +40,7 @@ func (s *serviceContent) GetList(ctx context.Context, in model.ContentGetListInp
 	}
 	// 栏目检索
 	if in.CategoryId > 0 {
-		idArray, err := Category.GetSubIdList(ctx, in.CategoryId)
+		idArray, err := Category().GetSubIdList(ctx, in.CategoryId)
 		if err != nil {
 			return out, err
 		}
@@ -96,7 +100,7 @@ func (s *serviceContent) GetList(ctx context.Context, in model.ContentGetListInp
 }
 
 // Search 搜索内容列表
-func (s *serviceContent) Search(ctx context.Context, in model.ContentSearchInput) (out *model.ContentSearchOutput, err error) {
+func (s *sContent) Search(ctx context.Context, in model.ContentSearchInput) (out *model.ContentSearchOutput, err error) {
 	var (
 		m           = dao.Content.Ctx(ctx)
 		likePattern = `%` + in.Key + `%`
@@ -112,7 +116,7 @@ func (s *serviceContent) Search(ctx context.Context, in model.ContentSearchInput
 	}
 	// 栏目检索
 	if in.CategoryId > 0 {
-		idArray, err := Category.GetSubIdList(ctx, in.CategoryId)
+		idArray, err := Category().GetSubIdList(ctx, in.CategoryId)
 		if err != nil {
 			return nil, err
 		}
@@ -152,7 +156,9 @@ func (s *serviceContent) Search(ctx context.Context, in model.ContentSearchInput
 	}
 	out.Stats = make(map[string]int)
 	for _, v := range statsAll {
-		out.Stats[v["type"].String()] = v["total"].Int()
+		value := v["type"]
+		v2 := v["total"]
+		out.Stats[value.String()] = v2.Int()
 	}
 	// Content
 	if err := all.ScanList(&out.List, "Content"); err != nil {
@@ -179,7 +185,7 @@ func (s *serviceContent) Search(ctx context.Context, in model.ContentSearchInput
 }
 
 // GetDetail 查询详情
-func (s *serviceContent) GetDetail(ctx context.Context, id uint) (out *model.ContentGetDetailOutput, err error) {
+func (s *sContent) GetDetail(ctx context.Context, id uint) (out *model.ContentGetDetailOutput, err error) {
 	out = &model.ContentGetDetailOutput{}
 	if err := dao.Content.Ctx(ctx).WherePri(id).Scan(&out.Content); err != nil {
 		return nil, err
@@ -196,7 +202,7 @@ func (s *serviceContent) GetDetail(ctx context.Context, id uint) (out *model.Con
 }
 
 // Create 创建内容
-func (s *serviceContent) Create(ctx context.Context, in model.ContentCreateInput) (out model.ContentCreateOutput, err error) {
+func (s *sContent) Create(ctx context.Context, in model.ContentCreateInput) (out model.ContentCreateOutput, err error) {
 	if in.UserId == 0 {
 		in.UserId = Context.Get(ctx).User.Id
 	}
@@ -212,7 +218,7 @@ func (s *serviceContent) Create(ctx context.Context, in model.ContentCreateInput
 }
 
 // Update 修改
-func (s *serviceContent) Update(ctx context.Context, in model.ContentUpdateInput) error {
+func (s *sContent) Update(ctx context.Context, in model.ContentUpdateInput) error {
 	return dao.Content.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		// 不允许HTML代码
 		if err := ghtml.SpecialCharsMapOrStruct(in); err != nil {
@@ -230,7 +236,7 @@ func (s *serviceContent) Update(ctx context.Context, in model.ContentUpdateInput
 }
 
 // Delete 删除
-func (s *serviceContent) Delete(ctx context.Context, id uint) error {
+func (s *sContent) Delete(ctx context.Context, id uint) error {
 	return dao.Content.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		user := Context.Get(ctx).User
 		// 管理员直接删除文章和评论
@@ -255,7 +261,7 @@ func (s *serviceContent) Delete(ctx context.Context, id uint) error {
 }
 
 // AddViewCount 浏览次数增加
-func (s *serviceContent) AddViewCount(ctx context.Context, id uint, count int) error {
+func (s *sContent) AddViewCount(ctx context.Context, id uint, count int) error {
 	return dao.Content.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		_, err := dao.Content.Ctx(ctx).WherePri(id).Increment(dao.Content.Columns().ViewCount, count)
 		if err != nil {
@@ -266,7 +272,7 @@ func (s *serviceContent) AddViewCount(ctx context.Context, id uint, count int) e
 }
 
 // AddReplyCount 回复次数增加
-func (s *serviceContent) AddReplyCount(ctx context.Context, id uint, count int) error {
+func (s *sContent) AddReplyCount(ctx context.Context, id uint, count int) error {
 	return dao.Content.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		_, err := dao.Content.Ctx(ctx).WherePri(id).Increment(dao.Content.Columns().ReplyCount, count)
 		if err != nil {
@@ -277,7 +283,7 @@ func (s *serviceContent) AddReplyCount(ctx context.Context, id uint, count int) 
 }
 
 // AdoptReply 采纳回复
-func (s *serviceContent) AdoptReply(ctx context.Context, id uint, replyId uint) error {
+func (s *sContent) AdoptReply(ctx context.Context, id uint, replyId uint) error {
 	return dao.Content.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		_, err := dao.Content.Ctx(ctx).
 			Data(dao.Content.Columns().AdoptedReplyId, replyId).
@@ -292,7 +298,7 @@ func (s *serviceContent) AdoptReply(ctx context.Context, id uint, replyId uint) 
 }
 
 // UnacceptedReply 取消采纳回复
-func (s *serviceContent) UnacceptedReply(ctx context.Context, id uint) error {
+func (s *sContent) UnacceptedReply(ctx context.Context, id uint) error {
 	return dao.Content.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		_, err := dao.Content.Ctx(ctx).
 			Data(dao.Content.Columns().AdoptedReplyId, 0).

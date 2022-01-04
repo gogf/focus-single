@@ -10,18 +10,22 @@ import (
 	"focus-single/internal/model"
 )
 
-// Context 上下文管理服务
-var Context = serviceContext{}
+type sContext struct{}
 
-type serviceContext struct{}
+// Context 上下文管理服务
+var iContext = sContext{}
+
+func Context() *sContext {
+	return &iContext
+}
 
 // Init 初始化上下文对象指针到上下文对象中，以便后续的请求流程中可以修改。
-func (s *serviceContext) Init(r *ghttp.Request, customCtx *model.Context) {
+func (s *sContext) Init(r *ghttp.Request, customCtx *model.Context) {
 	r.SetCtxVar(consts.ContextKey, customCtx)
 }
 
 // Get 获得上下文变量，如果没有设置，那么返回nil
-func (s *serviceContext) Get(ctx context.Context) *model.Context {
+func (s *sContext) Get(ctx context.Context) *model.Context {
 	value := ctx.Value(consts.ContextKey)
 	if value == nil {
 		return nil
@@ -33,11 +37,11 @@ func (s *serviceContext) Get(ctx context.Context) *model.Context {
 }
 
 // SetUser 将上下文信息设置到上下文请求中，注意是完整覆盖
-func (s *serviceContext) SetUser(ctx context.Context, ctxUser *model.ContextUser) {
+func (s *sContext) SetUser(ctx context.Context, ctxUser *model.ContextUser) {
 	s.Get(ctx).User = ctxUser
 }
 
 // SetData 将上下文信息设置到上下文请求中，注意是完整覆盖
-func (s *serviceContext) SetData(ctx context.Context, data g.Map) {
+func (s *sContext) SetData(ctx context.Context, data g.Map) {
 	s.Get(ctx).Data = data
 }

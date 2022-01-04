@@ -14,21 +14,21 @@ import (
 
 var (
 	// 注册控制器
-	Register = handlerRegister{}
+	Register = hRegister{}
 )
 
-type handlerRegister struct{}
+type hRegister struct{}
 
-func (a *handlerRegister) Index(ctx context.Context, req *apiv1.RegisterIndexReq) (res *apiv1.RegisterIndexRes, err error) {
-	service.View.Render(ctx, model.View{})
+func (a *hRegister) Index(ctx context.Context, req *apiv1.RegisterIndexReq) (res *apiv1.RegisterIndexRes, err error) {
+	service.View().Render(ctx, model.View{})
 	return
 }
 
-func (a *handlerRegister) Register(ctx context.Context, req *apiv1.RegisterDoReq) (res *apiv1.RegisterDoRes, err error) {
-	if !service.Captcha.VerifyAndClear(g.RequestFromCtx(ctx), consts.CaptchaDefaultName, req.Captcha) {
+func (a *hRegister) Register(ctx context.Context, req *apiv1.RegisterDoReq) (res *apiv1.RegisterDoRes, err error) {
+	if !service.Captcha().VerifyAndClear(g.RequestFromCtx(ctx), consts.CaptchaDefaultName, req.Captcha) {
 		return nil, gerror.NewCode(gcode.CodeBusinessValidationFailed, "请输入正确的验证码")
 	}
-	if err = service.User.Register(ctx, model.UserRegisterInput{
+	if err = service.User().Register(ctx, model.UserRegisterInput{
 		Passport: req.Passport,
 		Password: req.Password,
 		Nickname: req.Nickname,
@@ -37,7 +37,7 @@ func (a *handlerRegister) Register(ctx context.Context, req *apiv1.RegisterDoReq
 	}
 
 	// 自动登录
-	err = service.User.Login(ctx, model.UserLoginInput{
+	err = service.User().Login(ctx, model.UserLoginInput{
 		Passport: req.Passport,
 		Password: req.Password,
 	})

@@ -24,7 +24,7 @@ func (s *serviceReply) Create(ctx context.Context, in model.ReplyCreateInput) er
 		in.UserId = Context.Get(ctx).User.Id
 		_, err := dao.Reply.Ctx(ctx).Data(in).Insert()
 		if err == nil {
-			err = Content.AddReplyCount(ctx, in.TargetId, 1)
+			err = Content().AddReplyCount(ctx, in.TargetId, 1)
 		}
 		return err
 	})
@@ -45,7 +45,7 @@ func (s *serviceReply) Delete(ctx context.Context, id uint) error {
 		}).Delete()
 		if err == nil {
 			// 回复统计-1
-			err = Content.AddReplyCount(ctx, reply.TargetId, -1)
+			err = Content().AddReplyCount(ctx, reply.TargetId, -1)
 			if err != nil {
 				return err
 			}
@@ -53,7 +53,7 @@ func (s *serviceReply) Delete(ctx context.Context, id uint) error {
 			var content *entity.Content
 			err = dao.Content.Ctx(ctx).WherePri(reply.TargetId).Scan(&content)
 			if err == nil && content != nil && content.AdoptedReplyId == id {
-				err = Content.UnacceptedReply(ctx, reply.TargetId)
+				err = Content().UnacceptedReply(ctx, reply.TargetId)
 			}
 		}
 		return err

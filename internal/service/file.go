@@ -20,7 +20,7 @@ var File = serviceFile{}
 
 type serviceFile struct{}
 
-// 同一上传文件
+// Upload 同一上传文件
 func (s *serviceFile) Upload(ctx context.Context, in model.FileUploadInput) (*model.FileUploadOutput, error) {
 	uploadPath := g.Cfg().MustGet(ctx, "upload.path").String()
 	if uploadPath == "" {

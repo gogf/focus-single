@@ -11,7 +11,7 @@ import (
 	"focus-single/utility/response"
 )
 
-// 中间件管理服务
+// Middleware 中间件管理服务
 var (
 	Middleware = serviceMiddleware{
 		LoginUrl: "/login",
@@ -22,7 +22,7 @@ type serviceMiddleware struct {
 	LoginUrl string // 登录路由地址
 }
 
-// 返回处理中间件
+// ResponseHandler 返回处理中间件
 func (s *serviceMiddleware) ResponseHandler(r *ghttp.Request) {
 	r.Middleware.Next()
 
@@ -58,7 +58,7 @@ func (s *serviceMiddleware) ResponseHandler(r *ghttp.Request) {
 	}
 }
 
-// 自定义上下文对象
+// Ctx 自定义上下文对象
 func (s *serviceMiddleware) Ctx(r *ghttp.Request) {
 	// 初始化，务必最开始执行
 	customCtx := &model.Context{
@@ -84,7 +84,7 @@ func (s *serviceMiddleware) Ctx(r *ghttp.Request) {
 	r.Middleware.Next()
 }
 
-// 前台系统权限控制，用户必须登录才能访问
+// Auth 前台系统权限控制，用户必须登录才能访问
 func (s *serviceMiddleware) Auth(r *ghttp.Request) {
 	user := Session.GetUser(r.Context())
 	if user.Id == 0 {

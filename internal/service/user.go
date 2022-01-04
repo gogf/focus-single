@@ -245,7 +245,7 @@ func (s *serviceUser) Disable(ctx context.Context, id uint) error {
 func (s *serviceUser) GetList(ctx context.Context, in model.UserGetContentListInput) (out *model.UserGetListOutput, err error) {
 	out = &model.UserGetListOutput{}
 	// 内容列表
-	out.Content, err = Content.GetList(ctx, in.ContentGetListInput)
+	out.Content, err = Content().GetList(ctx, in.ContentGetListInput)
 	if err != nil {
 		return out, err
 	}

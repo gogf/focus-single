@@ -13,10 +13,14 @@ import (
 	"focus-single/internal/service/internal/dao"
 )
 
-// Category 栏目管理服务
 var (
-	Category = serviceCategory{}
+	insCategory = serviceCategory{}
 )
+
+// Category 栏目管理服务
+func Category() *serviceCategory {
+	return &insCategory
+}
 
 type serviceCategory struct{}
 

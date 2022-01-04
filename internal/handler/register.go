@@ -3,17 +3,18 @@ package handler
 import (
 	"context"
 
+	"github.com/gogf/gf/v2/errors/gcode"
+	"github.com/gogf/gf/v2/errors/gerror"
+	"github.com/gogf/gf/v2/frame/g"
+
 	"focus-single/apiv1"
 	"focus-single/internal/consts"
 	"focus-single/internal/model"
 	"focus-single/internal/service"
-	"github.com/gogf/gf/v2/errors/gcode"
-	"github.com/gogf/gf/v2/errors/gerror"
-	"github.com/gogf/gf/v2/frame/g"
 )
 
 var (
-	// 注册控制器
+	// Register 注册控制器
 	Register = handlerRegister{}
 )
 

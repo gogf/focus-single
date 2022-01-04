@@ -23,7 +23,7 @@ func (a *handlerContent) ShowCreate(ctx context.Context, req *apiv1.ContentShowC
 }
 
 func (a *handlerContent) Create(ctx context.Context, req *apiv1.ContentCreateReq) (res *apiv1.ContentCreateRes, err error) {
-	out, err := service.Content.Create(ctx, model.ContentCreateInput{
+	out, err := service.Content().Create(ctx, model.ContentCreateInput{
 		ContentCreateUpdateBase: model.ContentCreateUpdateBase{
 			Type:       req.Type,
 			CategoryId: req.CategoryId,
@@ -43,7 +43,7 @@ func (a *handlerContent) Create(ctx context.Context, req *apiv1.ContentCreateReq
 }
 
 func (a *handlerContent) ShowUpdate(ctx context.Context, req *apiv1.ContentShowUpdateReq) (res *apiv1.ContentShowUpdateRes, err error) {
-	if getDetailRes, err := service.Content.GetDetail(ctx, req.Id); err != nil {
+	if getDetailRes, err := service.Content().GetDetail(ctx, req.Id); err != nil {
 		return nil, err
 	} else {
 		service.View.Render(ctx, model.View{
@@ -65,7 +65,7 @@ func (a *handlerContent) ShowUpdate(ctx context.Context, req *apiv1.ContentShowU
 }
 
 func (a *handlerContent) Update(ctx context.Context, req *apiv1.ContentUpdateReq) (res *apiv1.ContentUpdateRes, err error) {
-	err = service.Content.Update(ctx, model.ContentUpdateInput{
+	err = service.Content().Update(ctx, model.ContentUpdateInput{
 		Id: req.Id,
 		ContentCreateUpdateBase: model.ContentCreateUpdateBase{
 			Type:       req.Type,
@@ -82,6 +82,6 @@ func (a *handlerContent) Update(ctx context.Context, req *apiv1.ContentUpdateReq
 }
 
 func (a *handlerContent) Delete(ctx context.Context, req *apiv1.ContentDeleteReq) (res *apiv1.ContentDeleteRes, err error) {
-	err = service.Content.Delete(ctx, req.Id)
+	err = service.Content().Delete(ctx, req.Id)
 	return
 }

@@ -13,7 +13,7 @@ import (
 	"focus-single/internal/service/internal/dto"
 )
 
-// 交互管理服务
+// Interact 交互管理服务
 var Interact = serviceInteract{}
 
 type serviceInteract struct{}
@@ -22,7 +22,7 @@ const (
 	contextMapKeyForMyInteractList = "ContextMapKeyForMyInteractList"
 )
 
-// 赞
+// Zan 赞
 func (s *serviceInteract) Zan(ctx context.Context, targetType string, targetId uint) error {
 	return dao.Interact.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		customCtx := Context.Get(ctx)
@@ -45,7 +45,7 @@ func (s *serviceInteract) Zan(ctx context.Context, targetType string, targetId u
 	})
 }
 
-// 取消赞
+// CancelZan 取消赞
 func (s *serviceInteract) CancelZan(ctx context.Context, targetType string, targetId uint) error {
 	return dao.Interact.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		customCtx := Context.Get(ctx)
@@ -68,7 +68,7 @@ func (s *serviceInteract) CancelZan(ctx context.Context, targetType string, targ
 	})
 }
 
-// 我是否有对指定内容赞
+// DidIZan 我是否有对指定内容赞
 func (s *serviceInteract) DidIZan(ctx context.Context, targetType string, targetId uint) (bool, error) {
 	list, err := s.getMyList(ctx)
 	if err != nil {
@@ -82,7 +82,7 @@ func (s *serviceInteract) DidIZan(ctx context.Context, targetType string, target
 	return false, nil
 }
 
-// 踩
+// Cai 踩
 func (s *serviceInteract) Cai(ctx context.Context, targetType string, targetId uint) error {
 	return dao.Interact.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		customCtx := Context.Get(ctx)
@@ -105,7 +105,7 @@ func (s *serviceInteract) Cai(ctx context.Context, targetType string, targetId u
 	})
 }
 
-// 取消踩
+// CancelCai 取消踩
 func (s *serviceInteract) CancelCai(ctx context.Context, targetType string, targetId uint) error {
 	return dao.Interact.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		customCtx := Context.Get(ctx)
@@ -128,7 +128,7 @@ func (s *serviceInteract) CancelCai(ctx context.Context, targetType string, targ
 	})
 }
 
-// 我是否有对指定内容踩
+// DidICai 我是否有对指定内容踩
 func (s *serviceInteract) DidICai(ctx context.Context, targetType string, targetId uint) (bool, error) {
 	list, err := s.getMyList(ctx)
 	if err != nil {

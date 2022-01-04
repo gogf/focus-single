@@ -20,38 +20,43 @@ import (
 	"focus-single/internal/service/internal/dto"
 )
 
-// 用户管理服务
-var User = serviceUser{
-	avatarUploadPath:      g.Cfg().MustGet(gctx.New(), `upload.path`).String() + `/avatar`,
-	avatarUploadUrlPrefix: `/upload/avatar`,
-}
-
-type serviceUser struct {
+type sUser struct {
 	avatarUploadPath      string // 头像上传路径
 	avatarUploadUrlPrefix string // 头像上传对应的URL前缀
 }
 
+var insUser = sUser{
+	avatarUploadPath:      g.Cfg().MustGet(gctx.New(), `upload.path`).String() + `/avatar`,
+	avatarUploadUrlPrefix: `/upload/avatar`,
+}
+
+// 用户管理服务
+
+func User() *sUser {
+	return &insUser
+}
+
 func init() {
 	// 启动时创建头像存储目录
-	if !gfile.Exists(User.avatarUploadPath) {
-		if err := gfile.Mkdir(User.avatarUploadPath); err != nil {
+	if !gfile.Exists(User().avatarUploadPath) {
+		if err := gfile.Mkdir(User().avatarUploadPath); err != nil {
 			g.Log().Fatal(gctx.New(), err)
 		}
 	}
 }
 
 // 获得头像上传路径
-func (s *serviceUser) GetAvatarUploadPath() string {
+func (s *sUser) GetAvatarUploadPath() string {
 	return s.avatarUploadPath
 }
 
 // 获得头像上传对应的URL前缀
-func (s *serviceUser) GetAvatarUploadUrlPrefix() string {
+func (s *sUser) GetAvatarUploadUrlPrefix() string {
 	return s.avatarUploadUrlPrefix
 }
 
 // 执行登录
-func (s *serviceUser) Login(ctx context.Context, in model.UserLoginInput) error {
+func (s *sUser) Login(ctx context.Context, in model.UserLoginInput) error {
 	userEntity, err := s.GetUserByPassportAndPassword(
 		ctx,
 		in.Passport,
@@ -63,11 +68,11 @@ func (s *serviceUser) Login(ctx context.Context, in model.UserLoginInput) error 
 	if userEntity == nil {
 		return gerror.New(`账号或密码错误`)
 	}
-	if err := Session.SetUser(ctx, userEntity); err != nil {
+	if err := Session().SetUser(ctx, userEntity); err != nil {
 		return err
 	}
 	// 自动更新上线
-	Context.SetUser(ctx, &model.ContextUser{
+	Context().SetUser(ctx, &model.ContextUser{
 		Id:       userEntity.Id,
 		Passport: userEntity.Passport,
 		Nickname: userEntity.Nickname,
@@ -77,18 +82,18 @@ func (s *serviceUser) Login(ctx context.Context, in model.UserLoginInput) error 
 }
 
 // 注销
-func (s *serviceUser) Logout(ctx context.Context) error {
-	return Session.RemoveUser(ctx)
+func (s *sUser) Logout(ctx context.Context) error {
+	return Session().RemoveUser(ctx)
 }
 
 // 将密码按照内部算法进行加密
-func (s *serviceUser) EncryptPassword(passport, password string) string {
+func (s *sUser) EncryptPassword(passport, password string) string {
 	return gmd5.MustEncrypt(passport + password)
 }
 
 // 根据账号和密码查询用户信息，一般用于账号密码登录。
 // 注意password参数传入的是按照相同加密算法加密过后的密码字符串。
-func (s *serviceUser) GetUserByPassportAndPassword(ctx context.Context, passport, password string) (user *entity.User, err error) {
+func (s *sUser) GetUserByPassportAndPassword(ctx context.Context, passport, password string) (user *entity.User, err error) {
 	err = dao.User.Ctx(ctx).Where(g.Map{
 		dao.User.Columns().Passport: passport,
 		dao.User.Columns().Password: password,
@@ -97,7 +102,7 @@ func (s *serviceUser) GetUserByPassportAndPassword(ctx context.Context, passport
 }
 
 // 检测给定的账号是否唯一
-func (s *serviceUser) CheckPassportUnique(ctx context.Context, passport string) error {
+func (s *sUser) CheckPassportUnique(ctx context.Context, passport string) error {
 	n, err := dao.User.Ctx(ctx).Where(dao.User.Columns().Passport, passport).Count()
 	if err != nil {
 		return err
@@ -109,7 +114,7 @@ func (s *serviceUser) CheckPassportUnique(ctx context.Context, passport string) 
 }
 
 // 检测给定的昵称是否唯一
-func (s *serviceUser) CheckNicknameUnique(ctx context.Context, nickname string) error {
+func (s *sUser) CheckNicknameUnique(ctx context.Context, nickname string) error {
 	n, err := dao.User.Ctx(ctx).Where(dao.User.Columns().Nickname, nickname).Count()
 	if err != nil {
 		return err
@@ -121,7 +126,7 @@ func (s *serviceUser) CheckNicknameUnique(ctx context.Context, nickname string) 
 }
 
 // 用户注册。
-func (s *serviceUser) Register(ctx context.Context, in model.UserRegisterInput) error {
+func (s *sUser) Register(ctx context.Context, in model.UserRegisterInput) error {
 	return dao.User.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		var user *entity.User
 		if err := gconv.Struct(in, &user); err != nil {
@@ -146,12 +151,12 @@ func (s *serviceUser) Register(ctx context.Context, in model.UserRegisterInput) 
 }
 
 // 修改个人密码
-func (s *serviceUser) UpdatePassword(ctx context.Context, in model.UserPasswordInput) error {
+func (s *sUser) UpdatePassword(ctx context.Context, in model.UserPasswordInput) error {
 	return dao.User.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
-		oldPassword := s.EncryptPassword(Context.Get(ctx).User.Passport, in.OldPassword)
+		oldPassword := s.EncryptPassword(Context().Get(ctx).User.Passport, in.OldPassword)
 		n, err := dao.User.Ctx(ctx).
 			Where(dao.User.Columns().Password, oldPassword).
-			Where(dao.User.Columns().Id, Context.Get(ctx).User.Id).
+			Where(dao.User.Columns().Id, Context().Get(ctx).User.Id).
 			Count()
 		if err != nil {
 			return err
@@ -159,16 +164,16 @@ func (s *serviceUser) UpdatePassword(ctx context.Context, in model.UserPasswordI
 		if n == 0 {
 			return gerror.New(`原始密码错误`)
 		}
-		newPassword := s.EncryptPassword(Context.Get(ctx).User.Passport, in.NewPassword)
+		newPassword := s.EncryptPassword(Context().Get(ctx).User.Passport, in.NewPassword)
 		_, err = dao.User.Ctx(ctx).Data(g.Map{
 			dao.User.Columns().Password: newPassword,
-		}).Where(dao.User.Columns().Id, Context.Get(ctx).User.Id).Update()
+		}).Where(dao.User.Columns().Id, Context().Get(ctx).User.Id).Update()
 		return err
 	})
 }
 
 // 获取个人信息
-func (s *serviceUser) GetProfileById(ctx context.Context, userId uint) (out *model.UserGetProfileOutput, err error) {
+func (s *sUser) GetProfileById(ctx context.Context, userId uint) (out *model.UserGetProfileOutput, err error) {
 	if err = dao.User.Ctx(ctx).WherePri(userId).Scan(&out); err != nil {
 		return nil, err
 	}
@@ -184,11 +189,11 @@ func (s *serviceUser) GetProfileById(ctx context.Context, userId uint) (out *mod
 }
 
 // 修改个人资料
-func (s *serviceUser) GetProfile(ctx context.Context) (*model.UserGetProfileOutput, error) {
-	return s.GetProfileById(ctx, Context.Get(ctx).User.Id)
+func (s *sUser) GetProfile(ctx context.Context) (*model.UserGetProfileOutput, error) {
+	return s.GetProfileById(ctx, Context().Get(ctx).User.Id)
 }
 
-func (s *serviceUser) UpdateAvatar(ctx context.Context, in model.UserUpdateAvatarInput) error {
+func (s *sUser) UpdateAvatar(ctx context.Context, in model.UserUpdateAvatarInput) error {
 	return dao.User.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		var (
 			err error
@@ -203,11 +208,11 @@ func (s *serviceUser) UpdateAvatar(ctx context.Context, in model.UserUpdateAvata
 }
 
 // 修改个人资料
-func (s *serviceUser) UpdateProfile(ctx context.Context, in model.UserUpdateProfileInput) error {
+func (s *sUser) UpdateProfile(ctx context.Context, in model.UserUpdateProfileInput) error {
 	return dao.User.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		var (
 			err    error
-			user   = Context.Get(ctx).User
+			user   = Context().Get(ctx).User
 			userId = user.Id
 		)
 		n, err := dao.User.Ctx(ctx).
@@ -223,9 +228,9 @@ func (s *serviceUser) UpdateProfile(ctx context.Context, in model.UserUpdateProf
 		_, err = dao.User.Ctx(ctx).OmitEmpty().Data(in).Where(dao.User.Columns().Id, userId).Update()
 		// 更新登录session Nickname
 		if err == nil && user.Nickname != in.Nickname {
-			sessionUser := Session.GetUser(ctx)
+			sessionUser := Session().GetUser(ctx)
 			sessionUser.Nickname = in.Nickname
-			err = Session.SetUser(ctx, sessionUser)
+			err = Session().SetUser(ctx, sessionUser)
 		}
 		return err
 	})
@@ -233,7 +238,7 @@ func (s *serviceUser) UpdateProfile(ctx context.Context, in model.UserUpdateProf
 }
 
 // 禁用指定用户
-func (s *serviceUser) Disable(ctx context.Context, id uint) error {
+func (s *sUser) Disable(ctx context.Context, id uint) error {
 	_, err := dao.User.Ctx(ctx).
 		Data(dao.User.Columns().Status, consts.UserStatusDisabled).
 		Where(dao.User.Columns().Id, id).
@@ -242,7 +247,7 @@ func (s *serviceUser) Disable(ctx context.Context, id uint) error {
 }
 
 // 查询用户内容列表及用户信息
-func (s *serviceUser) GetList(ctx context.Context, in model.UserGetContentListInput) (out *model.UserGetListOutput, err error) {
+func (s *sUser) GetList(ctx context.Context, in model.UserGetContentListInput) (out *model.UserGetListOutput, err error) {
 	out = &model.UserGetListOutput{}
 	// 内容列表
 	out.Content, err = Content().GetList(ctx, in.ContentGetListInput)
@@ -250,7 +255,7 @@ func (s *serviceUser) GetList(ctx context.Context, in model.UserGetContentListIn
 		return out, err
 	}
 	// 用户信息
-	out.User, err = User.GetProfileById(ctx, in.UserId)
+	out.User, err = User().GetProfileById(ctx, in.UserId)
 	if err != nil {
 		return out, err
 	}
@@ -263,20 +268,20 @@ func (s *serviceUser) GetList(ctx context.Context, in model.UserGetContentListIn
 }
 
 // 消息列表
-func (s *serviceUser) GetMessageList(ctx context.Context, in model.UserGetMessageListInput) (out *model.UserGetMessageListOutput, err error) {
+func (s *sUser) GetMessageList(ctx context.Context, in model.UserGetMessageListInput) (out *model.UserGetMessageListOutput, err error) {
 	out = &model.UserGetMessageListOutput{
 		Page: in.Page,
 		Size: in.Size,
 	}
 	var (
-		userId = Context.Get(ctx).User.Id
+		userId = Context().Get(ctx).User.Id
 	)
 	// 管理员看所有的
 	if !s.IsAdminShow(ctx, userId) {
 		in.UserId = userId
 	}
 
-	replyList, err := Reply.GetList(ctx, model.ReplyGetListInput{
+	replyList, err := Reply().GetList(ctx, model.ReplyGetListInput{
 		Page:       in.Page,
 		Size:       in.Size,
 		TargetType: in.TargetType,
@@ -297,7 +302,7 @@ func (s *serviceUser) GetMessageList(ctx context.Context, in model.UserGetMessag
 }
 
 // 获取文章数量
-func (s *serviceUser) GetUserStats(ctx context.Context, userId uint) (map[string]int, error) {
+func (s *sUser) GetUserStats(ctx context.Context, userId uint) (map[string]int, error) {
 	// 文章统计
 	m := dao.Content.Ctx(ctx).Fields(dao.Content.Columns().Type, "count(*) total")
 	if userId > 0 && !s.IsAdminShow(ctx, userId) {
@@ -310,7 +315,9 @@ func (s *serviceUser) GetUserStats(ctx context.Context, userId uint) (map[string
 	}
 	statsMap := make(map[string]int)
 	for _, v := range statsAll {
-		statsMap[v["type"].String()] = v["total"].Int()
+		value := v["type"]
+		v2 := v["total"]
+		statsMap[value.String()] = v2.Int()
 	}
 	// 回复统计
 	replyModel := dao.Reply.Ctx(ctx).Fields("count(*) total")
@@ -321,14 +328,15 @@ func (s *serviceUser) GetUserStats(ctx context.Context, userId uint) (map[string
 	if err != nil {
 		return nil, err
 	}
-	statsMap["message"] = record["total"].Int()
+	value := record["total"]
+	statsMap["message"] = value.Int()
 
 	return statsMap, nil
 }
 
 // 是否是访问管理员的数据
-func (s *serviceUser) IsAdminShow(ctx context.Context, userId uint) bool {
-	c := Context.Get(ctx)
+func (s *sUser) IsAdminShow(ctx context.Context, userId uint) bool {
+	c := Context().Get(ctx)
 	if c == nil {
 		return false
 	}

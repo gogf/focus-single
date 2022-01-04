@@ -8,14 +8,12 @@ import (
 	"focus-single/internal/service"
 )
 
-var (
-	// Captcha 图形验证码
-	Captcha = handlerCaptcha{}
-)
+// 图形验证码
+var Captcha = hCaptcha{}
 
-type handlerCaptcha struct{}
+type hCaptcha struct{}
 
-func (a *handlerCaptcha) Index(ctx context.Context, req *apiv1.CaptchaIndexReq) (res *apiv1.CaptchaIndexRes, err error) {
-	err = service.Captcha.NewAndStore(ctx, consts.CaptchaDefaultName)
+func (a *hCaptcha) Index(ctx context.Context, req *apiv1.CaptchaIndexReq) (res *apiv1.CaptchaIndexRes, err error) {
+	err = service.Captcha().NewAndStore(ctx, consts.CaptchaDefaultName)
 	return
 }

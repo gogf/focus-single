@@ -49,30 +49,30 @@ var (
 			// 前台系统自定义错误页面
 			s.BindStatusHandler(401, func(r *ghttp.Request) {
 				if !gstr.HasPrefix(r.URL.Path, "/admin") {
-					service.View.Render401(r.Context())
+					service.View().Render401(r.Context())
 				}
 			})
 			s.BindStatusHandler(403, func(r *ghttp.Request) {
 				if !gstr.HasPrefix(r.URL.Path, "/admin") {
-					service.View.Render403(r.Context())
+					service.View().Render403(r.Context())
 				}
 			})
 			s.BindStatusHandler(404, func(r *ghttp.Request) {
 				if !gstr.HasPrefix(r.URL.Path, "/admin") {
-					service.View.Render404(r.Context())
+					service.View().Render404(r.Context())
 				}
 			})
 			s.BindStatusHandler(500, func(r *ghttp.Request) {
 				if !gstr.HasPrefix(r.URL.Path, "/admin") {
-					service.View.Render500(r.Context())
+					service.View().Render500(r.Context())
 				}
 			})
 
 			// 前台系统路由注册
 			s.Group("/", func(group *ghttp.RouterGroup) {
 				group.Middleware(
-					service.Middleware.Ctx,
-					service.Middleware.ResponseHandler,
+					service.Middleware().Ctx,
+					service.Middleware().ResponseHandler,
 				)
 				group.Bind(
 					handler.Index,    // 首页
@@ -89,7 +89,7 @@ var (
 				)
 				// 权限控制路由
 				group.Group("/", func(group *ghttp.RouterGroup) {
-					group.Middleware(service.Middleware.Auth)
+					group.Middleware(service.Middleware().Auth)
 					group.Bind(
 						handler.Profile,  // 个人
 						handler.Content,  // 内容

@@ -13,16 +13,14 @@ import (
 	"focus-single/internal/service/internal/dao"
 )
 
-var (
-	insCategory = serviceCategory{}
-)
+type sCategory struct{}
+
+var insCategory = sCategory{}
 
 // Category 栏目管理服务
-func Category() *serviceCategory {
+func Category() *sCategory {
 	return &insCategory
 }
-
-type serviceCategory struct{}
 
 const (
 	mapCacheKey       = "category_map_cache"
@@ -32,7 +30,7 @@ const (
 )
 
 // GetTree 查询列表
-func (s *serviceCategory) GetTree(ctx context.Context, contentType string) ([]*model.CategoryTreeItem, error) {
+func (s *sCategory) GetTree(ctx context.Context, contentType string) ([]*model.CategoryTreeItem, error) {
 	// 缓存控制
 	var (
 		cacheKey  = treeCacheKey + contentType
@@ -61,7 +59,7 @@ func (s *serviceCategory) GetTree(ctx context.Context, contentType string) ([]*m
 
 // GetSubIdList 获取指定栏目ID及其下面所有子ID，构成数组返回。
 // 注意，返回的ID列表中包含查询的栏目ID.
-func (s *serviceCategory) GetSubIdList(ctx context.Context, id uint) ([]uint, error) {
+func (s *sCategory) GetSubIdList(ctx context.Context, id uint) ([]uint, error) {
 	m, err := s.GetMap(ctx)
 	if err != nil {
 		return nil, err
@@ -78,7 +76,7 @@ func (s *serviceCategory) GetSubIdList(ctx context.Context, id uint) ([]uint, er
 }
 
 // 递归获取指定栏目ID下的所有子级
-func (s *serviceCategory) getSubIdListByTree(id uint, trees []*model.CategoryTreeItem) []uint {
+func (s *sCategory) getSubIdListByTree(id uint, trees []*model.CategoryTreeItem) []uint {
 	idArray := make([]uint, 0)
 	for _, item := range trees {
 		if item.ParentId == id {
@@ -94,7 +92,7 @@ func (s *serviceCategory) getSubIdListByTree(id uint, trees []*model.CategoryTre
 }
 
 // 构造树形栏目列表。
-func (s *serviceCategory) formTree(parentId uint, contentType string, entities []*entity.Category) ([]*model.CategoryTreeItem, error) {
+func (s *sCategory) formTree(parentId uint, contentType string, entities []*entity.Category) ([]*model.CategoryTreeItem, error) {
 	tree := make([]*model.CategoryTreeItem, 0)
 	for _, entity := range entities {
 		if contentType != "" && entity.ContentType != contentType {
@@ -118,7 +116,7 @@ func (s *serviceCategory) formTree(parentId uint, contentType string, entities [
 }
 
 // GetList 获得所有的栏目列表。
-func (s *serviceCategory) GetList(ctx context.Context) (list []*entity.Category, err error) {
+func (s *sCategory) GetList(ctx context.Context) (list []*entity.Category, err error) {
 	err = dao.Category.Ctx(ctx).
 		OrderAsc(dao.Category.Columns().Sort).
 		OrderAsc(dao.Category.Columns().Id).
@@ -127,7 +125,7 @@ func (s *serviceCategory) GetList(ctx context.Context) (list []*entity.Category,
 }
 
 // GetItem 查询单个栏目信息
-func (s *serviceCategory) GetItem(ctx context.Context, id uint) (*entity.Category, error) {
+func (s *sCategory) GetItem(ctx context.Context, id uint) (*entity.Category, error) {
 	m, err := s.GetMap(ctx)
 	if err != nil {
 		return nil, err
@@ -136,7 +134,7 @@ func (s *serviceCategory) GetItem(ctx context.Context, id uint) (*entity.Categor
 }
 
 // GetMap 获得所有的栏目列表，构成Map返回，键名为栏目ID
-func (s *serviceCategory) GetMap(ctx context.Context) (map[uint]*entity.Category, error) {
+func (s *sCategory) GetMap(ctx context.Context) (map[uint]*entity.Category, error) {
 	var (
 		cacheKey  = mapCacheKey
 		cacheFunc = func(ctx context.Context) (interface{}, error) {

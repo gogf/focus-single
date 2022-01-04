@@ -20,19 +20,19 @@ type viewBuildIn struct {
 
 // 我是否赞了这个内容
 func (s *viewBuildIn) DidIZan(targetType string, targetId uint) bool {
-	b, _ := Interact.DidIZan(s.httpRequest.Context(), targetType, targetId)
+	b, _ := Interact().DidIZan(s.httpRequest.Context(), targetType, targetId)
 	return b
 }
 
 // 我是否踩了这个内容
 func (s *viewBuildIn) DidICai(targetType string, targetId uint) bool {
-	b, _ := Interact.DidICai(s.httpRequest.Context(), targetType, targetId)
+	b, _ := Interact().DidICai(s.httpRequest.Context(), targetType, targetId)
 	return b
 }
 
 // 获取顶部菜单列表
 func (s *viewBuildIn) TopMenus() ([]*model.MenuItem, error) {
-	topMenus, err := Menu.GetTopMenus(s.httpRequest.Context())
+	topMenus, err := Menu().GetTopMenus(s.httpRequest.Context())
 	if err != nil {
 		return nil, err
 	}

@@ -7,10 +7,7 @@ import (
 	"focus-single/internal/model/entity"
 )
 
-// Session管理服务
-var Session = serviceSession{}
-
-type serviceSession struct{}
+type sSession struct{}
 
 const (
 	sessionKeyUser         = "SessionKeyUser"    // 用户信息存放在Session中的Key
@@ -18,14 +15,21 @@ const (
 	sessionKeyNotice       = "SessionKeyNotice"  // 存放在Session中的提示信息，往往使用后则删除
 )
 
+var insSession = sSession{}
+
+// Session管理服务
+func Session() *sSession {
+	return &insSession
+}
+
 // 设置用户Session.
-func (s *serviceSession) SetUser(ctx context.Context, user *entity.User) error {
-	return Context.Get(ctx).Session.Set(sessionKeyUser, user)
+func (s *sSession) SetUser(ctx context.Context, user *entity.User) error {
+	return Context().Get(ctx).Session.Set(sessionKeyUser, user)
 }
 
 // 获取当前登录的用户信息对象，如果用户未登录返回nil。
-func (s *serviceSession) GetUser(ctx context.Context) *entity.User {
-	customCtx := Context.Get(ctx)
+func (s *sSession) GetUser(ctx context.Context) *entity.User {
+	customCtx := Context().Get(ctx)
 	if customCtx != nil {
 		v, _ := customCtx.Session.Get(sessionKeyUser)
 		if !v.IsNil() {
@@ -38,8 +42,8 @@ func (s *serviceSession) GetUser(ctx context.Context) *entity.User {
 }
 
 // 删除用户Session。
-func (s *serviceSession) RemoveUser(ctx context.Context) error {
-	customCtx := Context.Get(ctx)
+func (s *sSession) RemoveUser(ctx context.Context) error {
+	customCtx := Context().Get(ctx)
 	if customCtx != nil {
 		return customCtx.Session.Remove(sessionKeyUser)
 	}
@@ -47,9 +51,9 @@ func (s *serviceSession) RemoveUser(ctx context.Context) error {
 }
 
 // 设置LoginReferer.
-func (s *serviceSession) SetLoginReferer(ctx context.Context, referer string) error {
+func (s *sSession) SetLoginReferer(ctx context.Context, referer string) error {
 	if s.GetLoginReferer(ctx) == "" {
-		customCtx := Context.Get(ctx)
+		customCtx := Context().Get(ctx)
 		if customCtx != nil {
 			return customCtx.Session.Set(sessionKeyLoginReferer, referer)
 		}
@@ -58,8 +62,8 @@ func (s *serviceSession) SetLoginReferer(ctx context.Context, referer string) er
 }
 
 // 获取LoginReferer.
-func (s *serviceSession) GetLoginReferer(ctx context.Context) string {
-	customCtx := Context.Get(ctx)
+func (s *sSession) GetLoginReferer(ctx context.Context) string {
+	customCtx := Context().Get(ctx)
 	if customCtx != nil {
 		return customCtx.Session.MustGet(sessionKeyLoginReferer).String()
 	}
@@ -67,8 +71,8 @@ func (s *serviceSession) GetLoginReferer(ctx context.Context) string {
 }
 
 // 删除LoginReferer.
-func (s *serviceSession) RemoveLoginReferer(ctx context.Context) error {
-	customCtx := Context.Get(ctx)
+func (s *sSession) RemoveLoginReferer(ctx context.Context) error {
+	customCtx := Context().Get(ctx)
 	if customCtx != nil {
 		return customCtx.Session.Remove(sessionKeyLoginReferer)
 	}
@@ -76,8 +80,8 @@ func (s *serviceSession) RemoveLoginReferer(ctx context.Context) error {
 }
 
 // 设置Notice
-func (s *serviceSession) SetNotice(ctx context.Context, message *model.SessionNotice) error {
-	customCtx := Context.Get(ctx)
+func (s *sSession) SetNotice(ctx context.Context, message *model.SessionNotice) error {
+	customCtx := Context().Get(ctx)
 	if customCtx != nil {
 		return customCtx.Session.Set(sessionKeyNotice, message)
 	}
@@ -85,8 +89,8 @@ func (s *serviceSession) SetNotice(ctx context.Context, message *model.SessionNo
 }
 
 // 获取Notice
-func (s *serviceSession) GetNotice(ctx context.Context) (*model.SessionNotice, error) {
-	customCtx := Context.Get(ctx)
+func (s *sSession) GetNotice(ctx context.Context) (*model.SessionNotice, error) {
+	customCtx := Context().Get(ctx)
 	if customCtx != nil {
 		var message *model.SessionNotice
 		v, err := customCtx.Session.Get(sessionKeyNotice)
@@ -102,8 +106,8 @@ func (s *serviceSession) GetNotice(ctx context.Context) (*model.SessionNotice, e
 }
 
 // 删除Notice
-func (s *serviceSession) RemoveNotice(ctx context.Context) error {
-	customCtx := Context.Get(ctx)
+func (s *sSession) RemoveNotice(ctx context.Context) error {
+	customCtx := Context().Get(ctx)
 	if customCtx != nil {
 		return customCtx.Session.Remove(sessionKeyNotice)
 	}

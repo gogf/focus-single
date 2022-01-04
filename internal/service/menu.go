@@ -7,28 +7,30 @@ import (
 	"focus-single/internal/model"
 )
 
-// Menu 菜单管理服务
-var Menu = serviceMenu{}
+type sMenu struct{}
 
-type serviceMenu struct{}
+const settingTopMenusKey = "TopMenus"
 
-const (
-	settingTopMenusKey = "TopMenus"
-)
+var insMenu = sMenu{}
 
-// SetTopMenus 获取顶部菜单
-func (s *serviceMenu) SetTopMenus(ctx context.Context, menus []*model.MenuItem) error {
+// 菜单管理服务
+func Menu() *sMenu {
+	return &insMenu
+}
+
+// 获取顶部菜单
+func (s *sMenu) SetTopMenus(ctx context.Context, menus []*model.MenuItem) error {
 	b, err := json.Marshal(menus)
 	if err != nil {
 		return err
 	}
-	return Setting.Set(ctx, settingTopMenusKey, string(b))
+	return Setting().Set(ctx, settingTopMenusKey, string(b))
 }
 
-// GetTopMenus 获取顶部菜单
-func (s *serviceMenu) GetTopMenus(ctx context.Context) ([]*model.MenuItem, error) {
+// 获取顶部菜单
+func (s *sMenu) GetTopMenus(ctx context.Context) ([]*model.MenuItem, error) {
 	var topMenus []*model.MenuItem
-	v, err := Setting.GetVar(ctx, settingTopMenusKey)
+	v, err := Setting().GetVar(ctx, settingTopMenusKey)
 	if err != nil {
 		return nil, err
 	}
@@ -36,8 +38,8 @@ func (s *serviceMenu) GetTopMenus(ctx context.Context) ([]*model.MenuItem, error
 	return topMenus, err
 }
 
-// GetTopMenuByUrl 根据给定的Url检索顶部菜单，给定的Url可能只是一个Url Path。
-func (s *serviceMenu) GetTopMenuByUrl(ctx context.Context, url string) (*model.MenuItem, error) {
+// 根据给定的Url检索顶部菜单，给定的Url可能只是一个Url Path。
+func (s *sMenu) GetTopMenuByUrl(ctx context.Context, url string) (*model.MenuItem, error) {
 	items, _ := s.GetTopMenus(ctx)
 	for _, v := range items {
 		if v.Url == url {

@@ -10,15 +10,13 @@ import (
 	"focus-single/internal/service"
 )
 
-var (
-	// Reply 回复控制器
-	Reply = handlerReply{}
-)
+// Reply 回复控制器
+var Reply = hReply{}
 
-type handlerReply struct{}
+type hReply struct{}
 
-func (a *handlerReply) GetListContent(ctx context.Context, req *apiv1.ReplyGetListContentReq) (res *apiv1.ReplyGetListContentRes, err error) {
-	if getListRes, err := service.Reply.GetList(ctx, model.ReplyGetListInput{
+func (a *hReply) GetListContent(ctx context.Context, req *apiv1.ReplyGetListContentReq) (res *apiv1.ReplyGetListContentRes, err error) {
+	if getListRes, err := service.Reply().GetList(ctx, model.ReplyGetListInput{
 		Page:       req.Page,
 		Size:       req.Size,
 		TargetType: req.TargetType,
@@ -27,26 +25,26 @@ func (a *handlerReply) GetListContent(ctx context.Context, req *apiv1.ReplyGetLi
 		return nil, err
 	} else {
 		request := g.RequestFromCtx(ctx)
-		service.View.RenderTpl(ctx, "index/reply.html", model.View{Data: getListRes})
+		service.View().RenderTpl(ctx, "index/reply.html", model.View{Data: getListRes})
 		tplContent := request.Response.BufferString()
 		request.Response.ClearBuffer()
 		return &apiv1.ReplyGetListContentRes{Content: tplContent}, nil
 	}
 }
 
-func (a *handlerReply) Create(ctx context.Context, req *apiv1.ReplyCreateReq) (res *apiv1.ReplyCreateRes, err error) {
-	err = service.Reply.Create(ctx, model.ReplyCreateInput{
+func (a *hReply) Create(ctx context.Context, req *apiv1.ReplyCreateReq) (res *apiv1.ReplyCreateRes, err error) {
+	err = service.Reply().Create(ctx, model.ReplyCreateInput{
 		Title:      req.Title,
 		ParentId:   req.ParentId,
 		TargetType: req.TargetType,
 		TargetId:   req.TargetId,
 		Content:    req.Content,
-		UserId:     service.Session.GetUser(ctx).Id,
+		UserId:     service.Session().GetUser(ctx).Id,
 	})
 	return
 }
 
-func (a *handlerReply) Delete(ctx context.Context, req *apiv1.ReplyDeleteReq) (res *apiv1.ReplyDeleteRes, err error) {
-	err = service.Reply.Delete(ctx, req.Id)
+func (a *hReply) Delete(ctx context.Context, req *apiv1.ReplyDeleteReq) (res *apiv1.ReplyDeleteRes, err error) {
+	err = service.Reply().Delete(ctx, req.Id)
 	return
 }

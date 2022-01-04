@@ -15,13 +15,17 @@ import (
 	"focus-single/internal/service/internal/dao"
 )
 
+type sFile struct{}
+
+var insFile = sFile{}
+
 // File 文件管理服务
-var File = serviceFile{}
+func File() *sFile {
+	return &insFile
+}
 
-type serviceFile struct{}
-
-// Upload 同一上传文件
-func (s *serviceFile) Upload(ctx context.Context, in model.FileUploadInput) (*model.FileUploadOutput, error) {
+// 同一上传文件
+func (s *sFile) Upload(ctx context.Context, in model.FileUploadInput) (*model.FileUploadOutput, error) {
 	uploadPath := g.Cfg().MustGet(ctx, "upload.path").String()
 	if uploadPath == "" {
 		return nil, gerror.New("上传文件路径配置不存在")
@@ -31,7 +35,7 @@ func (s *serviceFile) Upload(ctx context.Context, in model.FileUploadInput) (*mo
 	}
 	// 同一用户1分钟之内只能上传10张图片
 	count, err := dao.File.Ctx(ctx).
-		Where(dao.File.Columns().UserId, Context.Get(ctx).User.Id).
+		Where(dao.File.Columns().UserId, Context().Get(ctx).User.Id).
 		WhereGTE(dao.File.Columns().CreatedAt, gtime.Now().Add(time.Minute)).
 		Count()
 	if err != nil {
@@ -50,7 +54,7 @@ func (s *serviceFile) Upload(ctx context.Context, in model.FileUploadInput) (*mo
 		Name:   fileName,
 		Src:    gfile.Join(uploadPath, dateDirName, fileName),
 		Url:    "/upload/" + dateDirName + "/" + fileName,
-		UserId: Context.Get(ctx).User.Id,
+		UserId: Context().Get(ctx).User.Id,
 	}
 	result, err := dao.File.Ctx(ctx).Data(data).OmitEmpty().Insert()
 	if err != nil {

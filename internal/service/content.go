@@ -14,18 +14,17 @@ import (
 	"focus-single/internal/service/internal/dao"
 )
 
-// Content 内容管理服务
-var insContent = serviceContent{}
+type sContent struct{}
+
+var insContent = sContent{}
 
 // Content 内容管理服务
-func Content() *serviceContent {
+func Content() *sContent {
 	return &insContent
 }
 
-type serviceContent struct{}
-
 // GetList 查询内容列表
-func (s *serviceContent) GetList(ctx context.Context, in model.ContentGetListInput) (out *model.ContentGetListOutput, err error) {
+func (s *sContent) GetList(ctx context.Context, in model.ContentGetListInput) (out *model.ContentGetListOutput, err error) {
 	var (
 		m = dao.Content.Ctx(ctx)
 	)
@@ -48,7 +47,7 @@ func (s *serviceContent) GetList(ctx context.Context, in model.ContentGetListInp
 		m = m.Where(dao.Content.Columns().CategoryId, idArray)
 	}
 	// 管理员可以查看所有文章
-	if in.UserId > 0 && !User.IsAdminShow(ctx, in.UserId) {
+	if in.UserId > 0 && !User().IsAdminShow(ctx, in.UserId) {
 		m = m.Where(dao.Content.Columns().UserId, in.UserId)
 	}
 	// 分配查询
@@ -101,7 +100,7 @@ func (s *serviceContent) GetList(ctx context.Context, in model.ContentGetListInp
 }
 
 // Search 搜索内容列表
-func (s *serviceContent) Search(ctx context.Context, in model.ContentSearchInput) (out *model.ContentSearchOutput, err error) {
+func (s *sContent) Search(ctx context.Context, in model.ContentSearchInput) (out *model.ContentSearchOutput, err error) {
 	var (
 		m           = dao.Content.Ctx(ctx)
 		likePattern = `%` + in.Key + `%`
@@ -184,7 +183,7 @@ func (s *serviceContent) Search(ctx context.Context, in model.ContentSearchInput
 }
 
 // GetDetail 查询详情
-func (s *serviceContent) GetDetail(ctx context.Context, id uint) (out *model.ContentGetDetailOutput, err error) {
+func (s *sContent) GetDetail(ctx context.Context, id uint) (out *model.ContentGetDetailOutput, err error) {
 	out = &model.ContentGetDetailOutput{}
 	if err := dao.Content.Ctx(ctx).WherePri(id).Scan(&out.Content); err != nil {
 		return nil, err
@@ -201,9 +200,9 @@ func (s *serviceContent) GetDetail(ctx context.Context, id uint) (out *model.Con
 }
 
 // Create 创建内容
-func (s *serviceContent) Create(ctx context.Context, in model.ContentCreateInput) (out model.ContentCreateOutput, err error) {
+func (s *sContent) Create(ctx context.Context, in model.ContentCreateInput) (out model.ContentCreateOutput, err error) {
 	if in.UserId == 0 {
-		in.UserId = Context.Get(ctx).User.Id
+		in.UserId = Context().Get(ctx).User.Id
 	}
 	// 不允许HTML代码
 	if err = ghtml.SpecialCharsMapOrStruct(in); err != nil {
@@ -217,7 +216,7 @@ func (s *serviceContent) Create(ctx context.Context, in model.ContentCreateInput
 }
 
 // Update 修改
-func (s *serviceContent) Update(ctx context.Context, in model.ContentUpdateInput) error {
+func (s *sContent) Update(ctx context.Context, in model.ContentUpdateInput) error {
 	return dao.Content.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		// 不允许HTML代码
 		if err := ghtml.SpecialCharsMapOrStruct(in); err != nil {
@@ -228,16 +227,16 @@ func (s *serviceContent) Update(ctx context.Context, in model.ContentUpdateInput
 			Data(in).
 			FieldsEx(dao.Content.Columns().Id).
 			Where(dao.Content.Columns().Id, in.Id).
-			Where(dao.Content.Columns().UserId, Context.Get(ctx).User.Id).
+			Where(dao.Content.Columns().UserId, Context().Get(ctx).User.Id).
 			Update()
 		return err
 	})
 }
 
 // Delete 删除
-func (s *serviceContent) Delete(ctx context.Context, id uint) error {
+func (s *sContent) Delete(ctx context.Context, id uint) error {
 	return dao.Content.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
-		user := Context.Get(ctx).User
+		user := Context().Get(ctx).User
 		// 管理员直接删除文章和评论
 		if user.IsAdmin {
 			_, err := dao.Content.Ctx(ctx).Where(dao.Content.Columns().Id, id).Delete()
@@ -249,18 +248,18 @@ func (s *serviceContent) Delete(ctx context.Context, id uint) error {
 		// 删除内容
 		_, err := dao.Content.Ctx(ctx).Where(g.Map{
 			dao.Content.Columns().Id:     id,
-			dao.Content.Columns().UserId: Context.Get(ctx).User.Id,
+			dao.Content.Columns().UserId: Context().Get(ctx).User.Id,
 		}).Delete()
 		// 删除评论
 		if err == nil {
-			err = Reply.DeleteByUserContentId(ctx, user.Id, id)
+			err = Reply().DeleteByUserContentId(ctx, user.Id, id)
 		}
 		return err
 	})
 }
 
 // AddViewCount 浏览次数增加
-func (s *serviceContent) AddViewCount(ctx context.Context, id uint, count int) error {
+func (s *sContent) AddViewCount(ctx context.Context, id uint, count int) error {
 	return dao.Content.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		_, err := dao.Content.Ctx(ctx).WherePri(id).Increment(dao.Content.Columns().ViewCount, count)
 		if err != nil {
@@ -271,7 +270,7 @@ func (s *serviceContent) AddViewCount(ctx context.Context, id uint, count int) e
 }
 
 // AddReplyCount 回复次数增加
-func (s *serviceContent) AddReplyCount(ctx context.Context, id uint, count int) error {
+func (s *sContent) AddReplyCount(ctx context.Context, id uint, count int) error {
 	return dao.Content.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		_, err := dao.Content.Ctx(ctx).WherePri(id).Increment(dao.Content.Columns().ReplyCount, count)
 		if err != nil {
@@ -282,11 +281,11 @@ func (s *serviceContent) AddReplyCount(ctx context.Context, id uint, count int) 
 }
 
 // AdoptReply 采纳回复
-func (s *serviceContent) AdoptReply(ctx context.Context, id uint, replyID uint) error {
+func (s *sContent) AdoptReply(ctx context.Context, id uint, replyID uint) error {
 	return dao.Content.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		_, err := dao.Content.Ctx(ctx).
 			Data(dao.Content.Columns().AdoptedReplyId, replyID).
-			Where(dao.Content.Columns().UserId, Context.Get(ctx).User.Id).
+			Where(dao.Content.Columns().UserId, Context().Get(ctx).User.Id).
 			WherePri(id).
 			Update()
 		if err != nil {
@@ -297,7 +296,7 @@ func (s *serviceContent) AdoptReply(ctx context.Context, id uint, replyID uint) 
 }
 
 // UnacceptedReply 取消采纳回复
-func (s *serviceContent) UnacceptedReply(ctx context.Context, id uint) error {
+func (s *sContent) UnacceptedReply(ctx context.Context, id uint) error {
 	return dao.Content.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		_, err := dao.Content.Ctx(ctx).
 			Data(dao.Content.Columns().AdoptedReplyId, 0).

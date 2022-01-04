@@ -11,19 +11,23 @@ import (
 	"focus-single/utility/response"
 )
 
-// Middleware 中间件管理服务
+type sMiddleware struct {
+	LoginUrl string // 登录路由地址
+}
+
 var (
-	Middleware = serviceMiddleware{
+	insMiddleware = sMiddleware{
 		LoginUrl: "/login",
 	}
 )
 
-type serviceMiddleware struct {
-	LoginUrl string // 登录路由地址
+// 中间件管理服务
+func Middleware() *sMiddleware {
+	return &insMiddleware
 }
 
-// ResponseHandler 返回处理中间件
-func (s *serviceMiddleware) ResponseHandler(r *ghttp.Request) {
+// 返回处理中间件
+func (s *sMiddleware) ResponseHandler(r *ghttp.Request) {
 	r.Middleware.Next()
 
 	// 如果已经有返回内容，那么该中间件什么也不做
@@ -45,7 +49,7 @@ func (s *serviceMiddleware) ResponseHandler(r *ghttp.Request) {
 		if r.IsAjaxRequest() {
 			response.JsonExit(r, code.Code(), err.Error())
 		} else {
-			View.Render500(r.Context(), model.View{
+			View().Render500(r.Context(), model.View{
 				Error: err.Error(),
 			})
 		}
@@ -58,15 +62,15 @@ func (s *serviceMiddleware) ResponseHandler(r *ghttp.Request) {
 	}
 }
 
-// Ctx 自定义上下文对象
-func (s *serviceMiddleware) Ctx(r *ghttp.Request) {
+// 自定义上下文对象
+func (s *sMiddleware) Ctx(r *ghttp.Request) {
 	// 初始化，务必最开始执行
 	customCtx := &model.Context{
 		Session: r.Session,
 		Data:    make(g.Map),
 	}
-	Context.Init(r, customCtx)
-	if userEntity := Session.GetUser(r.Context()); userEntity.Id > 0 {
+	Context().Init(r, customCtx)
+	if userEntity := Session().GetUser(r.Context()); userEntity.Id > 0 {
 		adminId := g.Cfg().MustGet(r.Context(), "setting.adminId", consts.DefaultAdminId).Uint()
 		customCtx.User = &model.ContextUser{
 			Id:       userEntity.Id,
@@ -84,17 +88,17 @@ func (s *serviceMiddleware) Ctx(r *ghttp.Request) {
 	r.Middleware.Next()
 }
 
-// Auth 前台系统权限控制，用户必须登录才能访问
-func (s *serviceMiddleware) Auth(r *ghttp.Request) {
-	user := Session.GetUser(r.Context())
+// 前台系统权限控制，用户必须登录才能访问
+func (s *sMiddleware) Auth(r *ghttp.Request) {
+	user := Session().GetUser(r.Context())
 	if user.Id == 0 {
-		Session.SetNotice(r.Context(), &model.SessionNotice{
+		_ = Session().SetNotice(r.Context(), &model.SessionNotice{
 			Type:    consts.SessionNoticeTypeWarn,
 			Content: "未登录或会话已过期，请您登录后再继续",
 		})
 		// 只有GET请求才支持保存当前URL，以便后续登录后再跳转回来。
 		if r.Method == "GET" {
-			Session.SetLoginReferer(r.Context(), r.GetUrl())
+			_ = Session().SetLoginReferer(r.Context(), r.GetUrl())
 		}
 		// 根据当前请求方式执行不同的返回数据结构
 		if r.IsAjaxRequest() {

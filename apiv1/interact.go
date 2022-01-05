@@ -5,14 +5,14 @@ import "github.com/gogf/gf/v2/frame/g"
 type InteractZanReq struct {
 	g.Meta `path:"/interact/zan" method:"put" summary:"赞" tags:"交互"`
 	Id     uint   `json:"id"   v:"min:1#请选择需要赞的内容"`
-	Type   string `json:"type" v:"required#请提交需要赞的内容类型"` // content, reply
+	Type   string `json:"type" v:"required#请提交需要赞的内容类型" dc:"content/reply"`
 }
 type InteractZanRes struct{}
 
 type InteractCancelZanReq struct {
 	g.Meta `path:"/interact/zan" method:"delete" summary:"取消赞" tags:"交互"`
 	Id     uint   `json:"id"   v:"min:1#请选择需要取消赞的内容"`
-	Type   string `json:"type" v:"required#请提交需要取消赞的内容类型" dc:"content/reply"`
+	Type   string `json:"type" v:"required#请提交需要取消赞的内容类型" `
 }
 type InteractCancelZanRes struct{}
 

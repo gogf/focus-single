@@ -6,7 +6,7 @@ import (
 	"focus-single/internal/consts"
 	"focus-single/internal/model/entity"
 	"focus-single/internal/service/internal/dao"
-	"focus-single/internal/service/internal/dto"
+	"focus-single/internal/service/internal/do"
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
 )
@@ -29,7 +29,7 @@ func (s *sInteract) Zan(ctx context.Context, targetType string, targetId uint) e
 		if customCtx == nil || customCtx.User == nil {
 			return nil
 		}
-		r, err := dao.Interact.Ctx(ctx).Data(&dto.Interact{
+		r, err := dao.Interact.Ctx(ctx).Data(do.Interact{
 			UserId:     customCtx.User.Id,
 			TargetId:   targetId,
 			TargetType: targetType,
@@ -52,7 +52,7 @@ func (s *sInteract) CancelZan(ctx context.Context, targetType string, targetId u
 		if customCtx == nil || customCtx.User == nil {
 			return nil
 		}
-		r, err := dao.Interact.Ctx(ctx).Where(dto.Interact{
+		r, err := dao.Interact.Ctx(ctx).Where(do.Interact{
 			Type:       consts.InteractTypeZan,
 			UserId:     Context().Get(ctx).User.Id,
 			TargetId:   targetId,
@@ -89,7 +89,7 @@ func (s *sInteract) Cai(ctx context.Context, targetType string, targetId uint) e
 		if customCtx == nil || customCtx.User == nil {
 			return nil
 		}
-		r, err := dao.Interact.Ctx(ctx).Data(&dto.Interact{
+		r, err := dao.Interact.Ctx(ctx).Data(do.Interact{
 			UserId:     customCtx.User.Id,
 			TargetId:   targetId,
 			TargetType: targetType,
@@ -112,7 +112,7 @@ func (s *sInteract) CancelCai(ctx context.Context, targetType string, targetId u
 		if customCtx == nil || customCtx.User == nil {
 			return nil
 		}
-		r, err := dao.Interact.Ctx(ctx).Where(dto.Interact{
+		r, err := dao.Interact.Ctx(ctx).Where(do.Interact{
 			Type:       consts.InteractTypeCai,
 			UserId:     Context().Get(ctx).User.Id,
 			TargetId:   targetId,

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"focus-single/internal/service/internal/do"
 	"github.com/gogf/gf/v2/crypto/gmd5"
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
@@ -17,7 +18,6 @@ import (
 	"focus-single/internal/model"
 	"focus-single/internal/model/entity"
 	"focus-single/internal/service/internal/dao"
-	"focus-single/internal/service/internal/dto"
 )
 
 type sUser struct {
@@ -198,9 +198,9 @@ func (s *sUser) UpdateAvatar(ctx context.Context, in model.UserUpdateAvatarInput
 		var (
 			err error
 		)
-		_, err = dao.User.Ctx(ctx).Data(dto.User{
+		_, err = dao.User.Ctx(ctx).Data(do.User{
 			Avatar: in.Avatar,
-		}).Where(dto.User{
+		}).Where(do.User{
 			Id: in.UserId,
 		}).Update()
 		return err

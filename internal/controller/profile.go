@@ -1,4 +1,4 @@
-package handler
+package controller
 
 import (
 	"context"
@@ -12,11 +12,11 @@ import (
 )
 
 // 个人中心
-var Profile = hProfile{}
+var Profile = cProfile{}
 
-type hProfile struct{}
+type cProfile struct{}
 
-func (a *hProfile) Index(ctx context.Context, req *apiv1.ProfileIndexReq) (res *apiv1.ProfileIndexRes, err error) {
+func (a *cProfile) Index(ctx context.Context, req *apiv1.ProfileIndexReq) (res *apiv1.ProfileIndexRes, err error) {
 	if getProfile, err := service.User().GetProfile(ctx); err != nil {
 		return nil, err
 	} else {
@@ -31,7 +31,7 @@ func (a *hProfile) Index(ctx context.Context, req *apiv1.ProfileIndexReq) (res *
 	}
 }
 
-func (a *hProfile) Avatar(ctx context.Context, req *apiv1.ProfileAvatarReq) (res *apiv1.ProfileAvatarRes, err error) {
+func (a *cProfile) Avatar(ctx context.Context, req *apiv1.ProfileAvatarReq) (res *apiv1.ProfileAvatarRes, err error) {
 	if getProfile, err := service.User().GetProfile(ctx); err != nil {
 		return nil, err
 	} else {
@@ -46,7 +46,7 @@ func (a *hProfile) Avatar(ctx context.Context, req *apiv1.ProfileAvatarReq) (res
 	}
 }
 
-func (a *hProfile) UpdateAvatar(ctx context.Context, req *apiv1.ProfileUpdateAvatarReq) (res *apiv1.ProfileUpdateAvatarRes, err error) {
+func (a *cProfile) UpdateAvatar(ctx context.Context, req *apiv1.ProfileUpdateAvatarReq) (res *apiv1.ProfileUpdateAvatarRes, err error) {
 	var (
 		request = g.RequestFromCtx(ctx)
 		file    = request.GetUploadFile("file")
@@ -78,7 +78,7 @@ func (a *hProfile) UpdateAvatar(ctx context.Context, req *apiv1.ProfileUpdateAva
 	return
 }
 
-func (a *hProfile) Password(ctx context.Context, req *apiv1.ProfilePasswordReq) (res *apiv1.ProfilePasswordRes, err error) {
+func (a *cProfile) Password(ctx context.Context, req *apiv1.ProfilePasswordReq) (res *apiv1.ProfilePasswordRes, err error) {
 	if getProfile, err := service.User().GetProfile(ctx); err != nil {
 		return nil, err
 	} else {
@@ -93,7 +93,7 @@ func (a *hProfile) Password(ctx context.Context, req *apiv1.ProfilePasswordReq) 
 	}
 }
 
-func (a *hProfile) UpdatePassword(ctx context.Context, req *apiv1.ProfileUpdatePasswordReq) (res *apiv1.ProfileUpdatePasswordRes, err error) {
+func (a *cProfile) UpdatePassword(ctx context.Context, req *apiv1.ProfileUpdatePasswordReq) (res *apiv1.ProfileUpdatePasswordRes, err error) {
 	err = service.User().UpdatePassword(ctx, model.UserPasswordInput{
 		OldPassword: req.OldPassword,
 		NewPassword: req.NewPassword,
@@ -101,7 +101,7 @@ func (a *hProfile) UpdatePassword(ctx context.Context, req *apiv1.ProfileUpdateP
 	return
 }
 
-func (a *hProfile) UpdateProfile(ctx context.Context, req *apiv1.ProfileUpdateReq) (res *apiv1.ProfileUpdateRes, err error) {
+func (a *cProfile) UpdateProfile(ctx context.Context, req *apiv1.ProfileUpdateReq) (res *apiv1.ProfileUpdateRes, err error) {
 	err = service.User().UpdateProfile(ctx, model.UserUpdateProfileInput{
 		UserId:   req.Id,
 		Nickname: req.Nickname,
@@ -111,7 +111,7 @@ func (a *hProfile) UpdateProfile(ctx context.Context, req *apiv1.ProfileUpdateRe
 	return
 }
 
-func (a *hProfile) Message(ctx context.Context, req *apiv1.ProfileMessageReq) (res *apiv1.ProfileMessageRes, err error) {
+func (a *cProfile) Message(ctx context.Context, req *apiv1.ProfileMessageReq) (res *apiv1.ProfileMessageRes, err error) {
 	if getListRes, err := service.User().GetMessageList(ctx, model.UserGetMessageListInput{
 		Page:       req.Page,
 		Size:       req.Size,

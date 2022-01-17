@@ -1,4 +1,4 @@
-package handler
+package controller
 
 import (
 	"context"
@@ -13,16 +13,16 @@ import (
 )
 
 // 登录管理
-var Login = hLogin{}
+var Login = cLogin{}
 
-type hLogin struct{}
+type cLogin struct{}
 
-func (a *hLogin) Index(ctx context.Context, req *apiv1.LoginIndexReq) (res *apiv1.LoginIndexRes, err error) {
+func (a *cLogin) Index(ctx context.Context, req *apiv1.LoginIndexReq) (res *apiv1.LoginIndexRes, err error) {
 	service.View().Render(ctx, model.View{})
 	return
 }
 
-func (a *hLogin) Login(ctx context.Context, req *apiv1.LoginDoReq) (res *apiv1.LoginDoRes, err error) {
+func (a *cLogin) Login(ctx context.Context, req *apiv1.LoginDoReq) (res *apiv1.LoginDoRes, err error) {
 	res = &apiv1.LoginDoRes{}
 	if !service.Captcha().VerifyAndClear(g.RequestFromCtx(ctx), consts.CaptchaDefaultName, req.Captcha) {
 		return res, gerror.NewCode(gcode.CodeBusinessValidationFailed, "请输入正确的验证码")

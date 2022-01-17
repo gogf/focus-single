@@ -1,4 +1,4 @@
-package handler
+package controller
 
 import (
 	"context"
@@ -12,11 +12,11 @@ import (
 )
 
 // 文件管理
-var File = hFile{}
+var File = cFile{}
 
-type hFile struct{}
+type cFile struct{}
 
-func (a *hFile) Upload(ctx context.Context, req *apiv1.FileUploadReq) (res *apiv1.FileUploadRes, err error) {
+func (a *cFile) Upload(ctx context.Context, req *apiv1.FileUploadReq) (res *apiv1.FileUploadRes, err error) {
 	var (
 		request = g.RequestFromCtx(ctx)
 		file    = request.GetUploadFile("file")

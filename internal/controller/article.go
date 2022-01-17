@@ -1,4 +1,4 @@
-package handler
+package controller
 
 import (
 	"context"
@@ -10,12 +10,12 @@ import (
 )
 
 // Article 文章管理
-var Article = hArticle{}
+var Article = cArticle{}
 
-type hArticle struct{}
+type cArticle struct{}
 
 // Index article list
-func (a *hArticle) Index(ctx context.Context, req *apiv1.ArticleIndexReq) (res *apiv1.ArticleIndexRes, err error) {
+func (a *cArticle) Index(ctx context.Context, req *apiv1.ArticleIndexReq) (res *apiv1.ArticleIndexRes, err error) {
 	req.Type = consts.ContentTypeArticle
 	getListRes, err := service.Content().GetList(ctx, model.ContentGetListInput{
 		Type:       req.Type,
@@ -39,7 +39,7 @@ func (a *hArticle) Index(ctx context.Context, req *apiv1.ArticleIndexReq) (res *
 }
 
 // Detail .article details
-func (a *hArticle) Detail(ctx context.Context, req *apiv1.ArticleDetailReq) (res *apiv1.ArticleDetailRes, err error) {
+func (a *cArticle) Detail(ctx context.Context, req *apiv1.ArticleDetailReq) (res *apiv1.ArticleDetailRes, err error) {
 	getDetailRes, err := service.Content().GetDetail(ctx, req.Id)
 	if err != nil {
 		return nil, err

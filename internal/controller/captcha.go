@@ -1,4 +1,4 @@
-package handler
+package controller
 
 import (
 	"context"
@@ -9,11 +9,11 @@ import (
 )
 
 // 图形验证码
-var Captcha = hCaptcha{}
+var Captcha = cCaptcha{}
 
-type hCaptcha struct{}
+type cCaptcha struct{}
 
-func (a *hCaptcha) Index(ctx context.Context, req *apiv1.CaptchaIndexReq) (res *apiv1.CaptchaIndexRes, err error) {
+func (a *cCaptcha) Index(ctx context.Context, req *apiv1.CaptchaIndexReq) (res *apiv1.CaptchaIndexRes, err error) {
 	err = service.Captcha().NewAndStore(ctx, consts.CaptchaDefaultName)
 	return
 }

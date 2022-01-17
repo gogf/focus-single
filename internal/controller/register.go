@@ -1,4 +1,4 @@
-package handler
+package controller
 
 import (
 	"context"
@@ -13,16 +13,16 @@ import (
 )
 
 // 注册控制器
-var Register = hRegister{}
+var Register = cRegister{}
 
-type hRegister struct{}
+type cRegister struct{}
 
-func (a *hRegister) Index(ctx context.Context, req *apiv1.RegisterIndexReq) (res *apiv1.RegisterIndexRes, err error) {
+func (a *cRegister) Index(ctx context.Context, req *apiv1.RegisterIndexReq) (res *apiv1.RegisterIndexRes, err error) {
 	service.View().Render(ctx, model.View{})
 	return
 }
 
-func (a *hRegister) Register(ctx context.Context, req *apiv1.RegisterDoReq) (res *apiv1.RegisterDoRes, err error) {
+func (a *cRegister) Register(ctx context.Context, req *apiv1.RegisterDoReq) (res *apiv1.RegisterDoRes, err error) {
 	if !service.Captcha().VerifyAndClear(g.RequestFromCtx(ctx), consts.CaptchaDefaultName, req.Captcha) {
 		return nil, gerror.NewCode(gcode.CodeBusinessValidationFailed, "请输入正确的验证码")
 	}

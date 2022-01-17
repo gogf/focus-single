@@ -1,4 +1,4 @@
-package handler
+package controller
 
 import (
 	"context"
@@ -8,11 +8,11 @@ import (
 )
 
 // 栏目管理
-var Category = hCategory{}
+var Category = cCategory{}
 
-type hCategory struct{}
+type cCategory struct{}
 
-func (a *hCategory) Tree(ctx context.Context, req *apiv1.CategoryTreeReq) (res *apiv1.CategoryTreeRes, err error) {
+func (a *cCategory) Tree(ctx context.Context, req *apiv1.CategoryTreeReq) (res *apiv1.CategoryTreeRes, err error) {
 	res = &apiv1.CategoryTreeRes{}
 	res.List, err = service.Category().GetTree(ctx, req.ContentType)
 	return

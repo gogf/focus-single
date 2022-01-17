@@ -1,4 +1,4 @@
-package handler
+package controller
 
 import (
 	"context"
@@ -9,18 +9,18 @@ import (
 )
 
 // Content 内容管理
-var Content = hContent{}
+var Content = cContent{}
 
-type hContent struct{}
+type cContent struct{}
 
-func (a *hContent) ShowCreate(ctx context.Context, req *apiv1.ContentShowCreateReq) (res *apiv1.ContentShowCreateRes, err error) {
+func (a *cContent) ShowCreate(ctx context.Context, req *apiv1.ContentShowCreateReq) (res *apiv1.ContentShowCreateRes, err error) {
 	service.View().Render(ctx, model.View{
 		ContentType: req.Type,
 	})
 	return
 }
 
-func (a *hContent) Create(ctx context.Context, req *apiv1.ContentCreateReq) (res *apiv1.ContentCreateRes, err error) {
+func (a *cContent) Create(ctx context.Context, req *apiv1.ContentCreateReq) (res *apiv1.ContentCreateRes, err error) {
 	out, err := service.Content().Create(ctx, model.ContentCreateInput{
 		ContentCreateUpdateBase: model.ContentCreateUpdateBase{
 			Type:       req.Type,
@@ -40,7 +40,7 @@ func (a *hContent) Create(ctx context.Context, req *apiv1.ContentCreateReq) (res
 	return &apiv1.ContentCreateRes{ContentId: out.ContentId}, nil
 }
 
-func (a *hContent) ShowUpdate(ctx context.Context, req *apiv1.ContentShowUpdateReq) (res *apiv1.ContentShowUpdateRes, err error) {
+func (a *cContent) ShowUpdate(ctx context.Context, req *apiv1.ContentShowUpdateReq) (res *apiv1.ContentShowUpdateRes, err error) {
 	if getDetailRes, err := service.Content().GetDetail(ctx, req.Id); err != nil {
 		return nil, err
 	} else {
@@ -62,7 +62,7 @@ func (a *hContent) ShowUpdate(ctx context.Context, req *apiv1.ContentShowUpdateR
 	return
 }
 
-func (a *hContent) Update(ctx context.Context, req *apiv1.ContentUpdateReq) (res *apiv1.ContentUpdateRes, err error) {
+func (a *cContent) Update(ctx context.Context, req *apiv1.ContentUpdateReq) (res *apiv1.ContentUpdateRes, err error) {
 	err = service.Content().Update(ctx, model.ContentUpdateInput{
 		Id: req.Id,
 		ContentCreateUpdateBase: model.ContentCreateUpdateBase{
@@ -79,7 +79,7 @@ func (a *hContent) Update(ctx context.Context, req *apiv1.ContentUpdateReq) (res
 	return
 }
 
-func (a *hContent) Delete(ctx context.Context, req *apiv1.ContentDeleteReq) (res *apiv1.ContentDeleteRes, err error) {
+func (a *cContent) Delete(ctx context.Context, req *apiv1.ContentDeleteReq) (res *apiv1.ContentDeleteRes, err error) {
 	err = service.Content().Delete(ctx, req.Id)
 	return
 }

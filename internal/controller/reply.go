@@ -1,4 +1,4 @@
-package handler
+package controller
 
 import (
 	"context"
@@ -11,11 +11,11 @@ import (
 )
 
 // Reply 回复控制器
-var Reply = hReply{}
+var Reply = cReply{}
 
-type hReply struct{}
+type cReply struct{}
 
-func (a *hReply) GetListContent(ctx context.Context, req *apiv1.ReplyGetListContentReq) (res *apiv1.ReplyGetListContentRes, err error) {
+func (a *cReply) GetListContent(ctx context.Context, req *apiv1.ReplyGetListContentReq) (res *apiv1.ReplyGetListContentRes, err error) {
 	if getListRes, err := service.Reply().GetList(ctx, model.ReplyGetListInput{
 		Page:       req.Page,
 		Size:       req.Size,
@@ -32,7 +32,7 @@ func (a *hReply) GetListContent(ctx context.Context, req *apiv1.ReplyGetListCont
 	}
 }
 
-func (a *hReply) Create(ctx context.Context, req *apiv1.ReplyCreateReq) (res *apiv1.ReplyCreateRes, err error) {
+func (a *cReply) Create(ctx context.Context, req *apiv1.ReplyCreateReq) (res *apiv1.ReplyCreateRes, err error) {
 	err = service.Reply().Create(ctx, model.ReplyCreateInput{
 		Title:      req.Title,
 		ParentId:   req.ParentId,
@@ -44,7 +44,7 @@ func (a *hReply) Create(ctx context.Context, req *apiv1.ReplyCreateReq) (res *ap
 	return
 }
 
-func (a *hReply) Delete(ctx context.Context, req *apiv1.ReplyDeleteReq) (res *apiv1.ReplyDeleteRes, err error) {
+func (a *cReply) Delete(ctx context.Context, req *apiv1.ReplyDeleteReq) (res *apiv1.ReplyDeleteRes, err error) {
 	err = service.Reply().Delete(ctx, req.Id)
 	return
 }

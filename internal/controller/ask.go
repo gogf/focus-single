@@ -1,4 +1,4 @@
-package handler
+package controller
 
 import (
 	"context"
@@ -10,11 +10,11 @@ import (
 )
 
 // Ask 问答管理
-var Ask = hAak{}
+var Ask = cAak{}
 
-type hAak struct{}
+type cAak struct{}
 
-func (a *hAak) Index(ctx context.Context, req *apiv1.AskIndexReq) (res *apiv1.AskIndexRes, err error) {
+func (a *cAak) Index(ctx context.Context, req *apiv1.AskIndexReq) (res *apiv1.AskIndexRes, err error) {
 	req.Type = consts.ContentTypeAsk
 	if getListRes, err := service.Content().GetList(ctx, model.ContentGetListInput{
 		Type:       req.Type,
@@ -37,7 +37,7 @@ func (a *hAak) Index(ctx context.Context, req *apiv1.AskIndexReq) (res *apiv1.As
 	return
 }
 
-func (a *hAak) Detail(ctx context.Context, req *apiv1.AskDetailReq) (res *apiv1.AskDetailRes, err error) {
+func (a *cAak) Detail(ctx context.Context, req *apiv1.AskDetailReq) (res *apiv1.AskDetailRes, err error) {
 	if getDetailRes, err := service.Content().GetDetail(ctx, req.Id); err != nil {
 		return nil, err
 	} else {

@@ -1,4 +1,4 @@
-package handler
+package controller
 
 import (
 	"context"
@@ -9,11 +9,11 @@ import (
 )
 
 // 搜索管理
-var Search = hSearch{}
+var Search = cSearch{}
 
-type hSearch struct{}
+type cSearch struct{}
 
-func (a *hSearch) Index(ctx context.Context, req *apiv1.SearchIndexReq) (res *apiv1.SearchIndexRes, err error) {
+func (a *cSearch) Index(ctx context.Context, req *apiv1.SearchIndexReq) (res *apiv1.SearchIndexRes, err error) {
 	if searchRes, err := service.Content().Search(ctx, model.ContentSearchInput{
 		Key:        req.Key,
 		Type:       req.Type,

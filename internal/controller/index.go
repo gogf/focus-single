@@ -1,4 +1,4 @@
-package handler
+package controller
 
 import (
 	"context"
@@ -9,11 +9,11 @@ import (
 )
 
 // 首页接口
-var Index = hIndex{}
+var Index = cIndex{}
 
-type hIndex struct{}
+type cIndex struct{}
 
-func (a *hIndex) Index(ctx context.Context, req *apiv1.IndexReq) (res *apiv1.IndexRes, err error) {
+func (a *cIndex) Index(ctx context.Context, req *apiv1.IndexReq) (res *apiv1.IndexRes, err error) {
 	if getListRes, err := service.Content().GetList(ctx, model.ContentGetListInput{
 		Type:       req.Type,
 		CategoryId: req.CategoryId,

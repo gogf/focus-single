@@ -1,4 +1,4 @@
-package handler
+package controller
 
 import (
 	"context"
@@ -10,11 +10,11 @@ import (
 )
 
 // Topic 主题管理
-var Topic = hTopic{}
+var Topic = cTopic{}
 
-type hTopic struct{}
+type cTopic struct{}
 
-func (a *hTopic) Index(ctx context.Context, req *apiv1.TopicIndexReq) (res *apiv1.TopicIndexRes, err error) {
+func (a *cTopic) Index(ctx context.Context, req *apiv1.TopicIndexReq) (res *apiv1.TopicIndexRes, err error) {
 	req.Type = consts.ContentTypeTopic
 	if getListRes, err := service.Content().GetList(ctx, model.ContentGetListInput{
 		Type:       req.Type,
@@ -38,7 +38,7 @@ func (a *hTopic) Index(ctx context.Context, req *apiv1.TopicIndexReq) (res *apiv
 	}
 }
 
-func (a *hTopic) Detail(ctx context.Context, req *apiv1.TopicDetailReq) (res *apiv1.TopicDetailRes, err error) {
+func (a *cTopic) Detail(ctx context.Context, req *apiv1.TopicDetailReq) (res *apiv1.TopicDetailRes, err error) {
 	if getDetailRes, err := service.Content().GetDetail(ctx, req.Id); err != nil {
 		return nil, err
 	} else {

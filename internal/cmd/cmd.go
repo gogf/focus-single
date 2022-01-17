@@ -3,6 +3,7 @@ package cmd
 import (
 	"context"
 
+	"focus-single/internal/controller"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/os/gcmd"
@@ -11,7 +12,6 @@ import (
 	"github.com/gogf/gf/v2/util/gmode"
 
 	"focus-single/internal/consts"
-	"focus-single/internal/handler"
 	"focus-single/internal/service"
 	"focus-single/utility/response"
 )
@@ -75,26 +75,26 @@ var (
 					service.Middleware().ResponseHandler,
 				)
 				group.Bind(
-					handler.Index,    // 首页
-					handler.Login,    // 登录
-					handler.Register, // 注册
-					handler.Category, // 栏目
-					handler.Topic,    // 主题
-					handler.Ask,      // 问答
-					handler.Article,  // 文章
-					handler.Reply,    // 回复
-					handler.Search,   // 搜索
-					handler.Captcha,  // 验证码
-					handler.User,     // 用户
+					controller.Index,    // 首页
+					controller.Login,    // 登录
+					controller.Register, // 注册
+					controller.Category, // 栏目
+					controller.Topic,    // 主题
+					controller.Ask,      // 问答
+					controller.Article,  // 文章
+					controller.Reply,    // 回复
+					controller.Search,   // 搜索
+					controller.Captcha,  // 验证码
+					controller.User,     // 用户
 				)
 				// 权限控制路由
 				group.Group("/", func(group *ghttp.RouterGroup) {
 					group.Middleware(service.Middleware().Auth)
 					group.Bind(
-						handler.Profile,  // 个人
-						handler.Content,  // 内容
-						handler.Interact, // 交互
-						handler.File,     // 文件
+						controller.Profile,  // 个人
+						controller.Content,  // 内容
+						controller.Interact, // 交互
+						controller.File,     // 文件
 					)
 				})
 			})

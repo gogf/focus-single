@@ -1,4 +1,4 @@
-package handler
+package controller
 
 import (
 	"context"
@@ -11,34 +11,34 @@ import (
 )
 
 // 用户管理
-var User = hUser{}
+var User = cUser{}
 
-type hUser struct{}
+type cUser struct{}
 
-func (a *hUser) Index(ctx context.Context, req *apiv1.UserIndexReq) (res *apiv1.UserIndexRes, err error) {
+func (a *cUser) Index(ctx context.Context, req *apiv1.UserIndexReq) (res *apiv1.UserIndexRes, err error) {
 	err = a.getContentList(ctx, req.UserId, req.ContentGetListCommonReq)
 	return
 }
 
-func (a *hUser) Article(ctx context.Context, req *apiv1.UserArticleReq) (res *apiv1.UserArticleRes, err error) {
+func (a *cUser) Article(ctx context.Context, req *apiv1.UserArticleReq) (res *apiv1.UserArticleRes, err error) {
 	req.Type = consts.ContentTypeArticle
 	err = a.getContentList(ctx, req.UserId, req.ContentGetListCommonReq)
 	return
 }
 
-func (a *hUser) Topic(ctx context.Context, req *apiv1.UserTopicReq) (res *apiv1.UserTopicRes, err error) {
+func (a *cUser) Topic(ctx context.Context, req *apiv1.UserTopicReq) (res *apiv1.UserTopicRes, err error) {
 	req.Type = consts.ContentTypeTopic
 	err = a.getContentList(ctx, req.UserId, req.ContentGetListCommonReq)
 	return
 }
 
-func (a *hUser) Ask(ctx context.Context, req *apiv1.UserAskReq) (res *apiv1.UserAskRes, err error) {
+func (a *cUser) Ask(ctx context.Context, req *apiv1.UserAskReq) (res *apiv1.UserAskRes, err error) {
 	req.Type = consts.ContentTypeAsk
 	err = a.getContentList(ctx, req.UserId, req.ContentGetListCommonReq)
 	return
 }
 
-func (a *hUser) getContentList(ctx context.Context, userId uint, req apiv1.ContentGetListCommonReq) error {
+func (a *cUser) getContentList(ctx context.Context, userId uint, req apiv1.ContentGetListCommonReq) error {
 	if out, err := service.User().GetList(ctx, model.UserGetContentListInput{
 		ContentGetListInput: model.ContentGetListInput{
 			Type:       req.Type,
@@ -64,7 +64,7 @@ func (a *hUser) getContentList(ctx context.Context, userId uint, req apiv1.Conte
 	}
 }
 
-func (a *hUser) Logout(ctx context.Context, req *apiv1.UserLogoutReq) (res *apiv1.UserLogoutRes, err error) {
+func (a *cUser) Logout(ctx context.Context, req *apiv1.UserLogoutReq) (res *apiv1.UserLogoutRes, err error) {
 	if err = service.User().Logout(ctx); err != nil {
 		return
 	}

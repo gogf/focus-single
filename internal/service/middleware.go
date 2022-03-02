@@ -36,11 +36,10 @@ func (s *sMiddleware) ResponseHandler(r *ghttp.Request) {
 	}
 
 	var (
-		err  error
-		res  interface{}
+		err             = r.GetError()
+		res             = r.GetHandlerResponse()
 		code gcode.Code = gcode.CodeOK
 	)
-	res, err = r.GetHandlerResponse()
 	if err != nil {
 		code = gerror.Code(err)
 		if code == gcode.CodeNil {

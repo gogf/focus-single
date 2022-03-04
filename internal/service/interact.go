@@ -15,11 +15,9 @@ type sInteract struct{}
 
 const contextMapKeyForMyInteractList = "ContextMapKeyForMyInteractList"
 
-var insInteract = sInteract{}
-
 // 交互管理服务
 func Interact() *sInteract {
-	return &insInteract
+	return &sInteract{}
 }
 
 // 赞

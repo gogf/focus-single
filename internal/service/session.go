@@ -15,11 +15,9 @@ const (
 	sessionKeyNotice       = "SessionKeyNotice"  // 存放在Session中的提示信息，往往使用后则删除
 )
 
-var insSession = sSession{}
-
 // Session管理服务
 func Session() *sSession {
-	return &insSession
+	return &sSession{}
 }
 
 // 设置用户Session.

@@ -15,11 +15,9 @@ import (
 
 type sCategory struct{}
 
-var insCategory = sCategory{}
-
 // Category 栏目管理服务
 func Category() *sCategory {
-	return &insCategory
+	return &sCategory{}
 }
 
 const (

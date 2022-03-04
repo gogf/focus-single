@@ -15,11 +15,9 @@ import (
 
 type sView struct{}
 
-var insView = sView{}
-
 // 视图管理服务
 func View() *sView {
-	return &insView
+	return &sView{}
 }
 
 // 前台系统-获取面包屑列表

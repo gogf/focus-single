@@ -11,11 +11,9 @@ type sMenu struct{}
 
 const settingTopMenusKey = "TopMenus"
 
-var insMenu = sMenu{}
-
 // 菜单管理服务
 func Menu() *sMenu {
-	return &insMenu
+	return &sMenu{}
 }
 
 // 获取顶部菜单

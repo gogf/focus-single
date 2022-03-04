@@ -11,11 +11,9 @@ import (
 
 type sSetting struct{}
 
-var insSetting = sSetting{}
-
 // 持久化Key-Value管理服务
 func Setting() *sSetting {
-	return &insSetting
+	return &sSetting{}
 }
 
 // 设置KV。

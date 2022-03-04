@@ -17,11 +17,9 @@ import (
 
 type sFile struct{}
 
-var insFile = sFile{}
-
 // File 文件管理服务
 func File() *sFile {
-	return &insFile
+	return &sFile{}
 }
 
 // 同一上传文件

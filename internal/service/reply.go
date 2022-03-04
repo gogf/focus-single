@@ -14,11 +14,9 @@ import (
 
 type sReply struct{}
 
-var insReply = sReply{}
-
 // Reply 评论/回复管理服务
 func Reply() *sReply {
-	return &insReply
+	return &sReply{}
 }
 
 // Create 创建回复

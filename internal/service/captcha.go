@@ -12,14 +12,13 @@ import (
 type sCaptcha struct{}
 
 var (
-	insCaptcha    = sCaptcha{}
 	captchaStore  = base64Captcha.DefaultMemStore
 	captchaDriver = newDriver()
 )
 
 // Captcha 验证码管理服务
 func Captcha() *sCaptcha {
-	return &insCaptcha
+	return &sCaptcha{}
 }
 
 func newDriver() *base64Captcha.DriverString {

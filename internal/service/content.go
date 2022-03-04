@@ -16,11 +16,9 @@ import (
 
 type sContent struct{}
 
-var insContent = sContent{}
-
 // Content 内容管理服务
 func Content() *sContent {
-	return &insContent
+	return &sContent{}
 }
 
 // GetList 查询内容列表

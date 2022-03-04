@@ -12,11 +12,9 @@ import (
 
 type sContext struct{}
 
-var insContext = sContext{}
-
 // Context 上下文管理服务
 func Context() *sContext {
-	return &insContext
+	return &sContext{}
 }
 
 // Init 初始化上下文对象指针到上下文对象中，以便后续的请求流程中可以修改。

@@ -3,7 +3,7 @@ package controller
 import (
 	"context"
 
-	"focus-single/apiv1"
+	"focus-single/api/v1"
 	"focus-single/internal/consts"
 	"focus-single/internal/model"
 	"focus-single/internal/service"
@@ -17,13 +17,13 @@ var Login = cLogin{}
 
 type cLogin struct{}
 
-func (a *cLogin) Index(ctx context.Context, req *apiv1.LoginIndexReq) (res *apiv1.LoginIndexRes, err error) {
+func (a *cLogin) Index(ctx context.Context, req *v1.LoginIndexReq) (res *v1.LoginIndexRes, err error) {
 	service.View().Render(ctx, model.View{})
 	return
 }
 
-func (a *cLogin) Login(ctx context.Context, req *apiv1.LoginDoReq) (res *apiv1.LoginDoRes, err error) {
-	res = &apiv1.LoginDoRes{}
+func (a *cLogin) Login(ctx context.Context, req *v1.LoginDoReq) (res *v1.LoginDoRes, err error) {
+	res = &v1.LoginDoRes{}
 	if !service.Captcha().VerifyAndClear(g.RequestFromCtx(ctx), consts.CaptchaDefaultName, req.Captcha) {
 		return res, gerror.NewCode(gcode.CodeBusinessValidationFailed, "请输入正确的验证码")
 	}

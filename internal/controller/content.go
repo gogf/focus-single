@@ -3,7 +3,7 @@ package controller
 import (
 	"context"
 
-	"focus-single/apiv1"
+	"focus-single/api/v1"
 	"focus-single/internal/model"
 	"focus-single/internal/service"
 )
@@ -13,14 +13,14 @@ var Content = cContent{}
 
 type cContent struct{}
 
-func (a *cContent) ShowCreate(ctx context.Context, req *apiv1.ContentShowCreateReq) (res *apiv1.ContentShowCreateRes, err error) {
+func (a *cContent) ShowCreate(ctx context.Context, req *v1.ContentShowCreateReq) (res *v1.ContentShowCreateRes, err error) {
 	service.View().Render(ctx, model.View{
 		ContentType: req.Type,
 	})
 	return
 }
 
-func (a *cContent) Create(ctx context.Context, req *apiv1.ContentCreateReq) (res *apiv1.ContentCreateRes, err error) {
+func (a *cContent) Create(ctx context.Context, req *v1.ContentCreateReq) (res *v1.ContentCreateRes, err error) {
 	out, err := service.Content().Create(ctx, model.ContentCreateInput{
 		ContentCreateUpdateBase: model.ContentCreateUpdateBase{
 			Type:       req.Type,
@@ -37,10 +37,10 @@ func (a *cContent) Create(ctx context.Context, req *apiv1.ContentCreateReq) (res
 	if err != nil {
 		return nil, err
 	}
-	return &apiv1.ContentCreateRes{ContentId: out.ContentId}, nil
+	return &v1.ContentCreateRes{ContentId: out.ContentId}, nil
 }
 
-func (a *cContent) ShowUpdate(ctx context.Context, req *apiv1.ContentShowUpdateReq) (res *apiv1.ContentShowUpdateRes, err error) {
+func (a *cContent) ShowUpdate(ctx context.Context, req *v1.ContentShowUpdateReq) (res *v1.ContentShowUpdateRes, err error) {
 	if getDetailRes, err := service.Content().GetDetail(ctx, req.Id); err != nil {
 		return nil, err
 	} else {
@@ -62,7 +62,7 @@ func (a *cContent) ShowUpdate(ctx context.Context, req *apiv1.ContentShowUpdateR
 	return
 }
 
-func (a *cContent) Update(ctx context.Context, req *apiv1.ContentUpdateReq) (res *apiv1.ContentUpdateRes, err error) {
+func (a *cContent) Update(ctx context.Context, req *v1.ContentUpdateReq) (res *v1.ContentUpdateRes, err error) {
 	err = service.Content().Update(ctx, model.ContentUpdateInput{
 		Id: req.Id,
 		ContentCreateUpdateBase: model.ContentCreateUpdateBase{
@@ -79,7 +79,7 @@ func (a *cContent) Update(ctx context.Context, req *apiv1.ContentUpdateReq) (res
 	return
 }
 
-func (a *cContent) Delete(ctx context.Context, req *apiv1.ContentDeleteReq) (res *apiv1.ContentDeleteRes, err error) {
+func (a *cContent) Delete(ctx context.Context, req *v1.ContentDeleteReq) (res *v1.ContentDeleteRes, err error) {
 	err = service.Content().Delete(ctx, req.Id)
 	return
 }

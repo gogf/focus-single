@@ -3,7 +3,7 @@ package controller
 import (
 	"context"
 
-	"focus-single/apiv1"
+	"focus-single/api/v1"
 	"focus-single/internal/model"
 	"focus-single/internal/service"
 )
@@ -13,7 +13,7 @@ var Index = cIndex{}
 
 type cIndex struct{}
 
-func (a *cIndex) Index(ctx context.Context, req *apiv1.IndexReq) (res *apiv1.IndexRes, err error) {
+func (a *cIndex) Index(ctx context.Context, req *v1.IndexReq) (res *v1.IndexRes, err error) {
 	if getListRes, err := service.Content().GetList(ctx, model.ContentGetListInput{
 		Type:       req.Type,
 		CategoryId: req.CategoryId,

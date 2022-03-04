@@ -3,7 +3,7 @@ package controller
 import (
 	"context"
 
-	"focus-single/apiv1"
+	"focus-single/api/v1"
 	"focus-single/internal/consts"
 	"focus-single/internal/model"
 	"focus-single/internal/service"
@@ -17,12 +17,12 @@ var Register = cRegister{}
 
 type cRegister struct{}
 
-func (a *cRegister) Index(ctx context.Context, req *apiv1.RegisterIndexReq) (res *apiv1.RegisterIndexRes, err error) {
+func (a *cRegister) Index(ctx context.Context, req *v1.RegisterIndexReq) (res *v1.RegisterIndexRes, err error) {
 	service.View().Render(ctx, model.View{})
 	return
 }
 
-func (a *cRegister) Register(ctx context.Context, req *apiv1.RegisterDoReq) (res *apiv1.RegisterDoRes, err error) {
+func (a *cRegister) Register(ctx context.Context, req *v1.RegisterDoReq) (res *v1.RegisterDoRes, err error) {
 	if !service.Captcha().VerifyAndClear(g.RequestFromCtx(ctx), consts.CaptchaDefaultName, req.Captcha) {
 		return nil, gerror.NewCode(gcode.CodeBusinessValidationFailed, "请输入正确的验证码")
 	}

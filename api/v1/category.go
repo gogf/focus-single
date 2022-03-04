@@ -1,4 +1,4 @@
-package apiv1
+package v1
 
 import (
 	"focus-single/internal/model"

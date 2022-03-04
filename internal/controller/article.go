@@ -3,7 +3,7 @@ package controller
 import (
 	"context"
 
-	"focus-single/apiv1"
+	"focus-single/api/v1"
 	"focus-single/internal/consts"
 	"focus-single/internal/model"
 	"focus-single/internal/service"
@@ -15,7 +15,7 @@ var Article = cArticle{}
 type cArticle struct{}
 
 // Index article list
-func (a *cArticle) Index(ctx context.Context, req *apiv1.ArticleIndexReq) (res *apiv1.ArticleIndexRes, err error) {
+func (a *cArticle) Index(ctx context.Context, req *v1.ArticleIndexReq) (res *v1.ArticleIndexRes, err error) {
 	req.Type = consts.ContentTypeArticle
 	getListRes, err := service.Content().GetList(ctx, model.ContentGetListInput{
 		Type:       req.Type,
@@ -39,7 +39,7 @@ func (a *cArticle) Index(ctx context.Context, req *apiv1.ArticleIndexReq) (res *
 }
 
 // Detail .article details
-func (a *cArticle) Detail(ctx context.Context, req *apiv1.ArticleDetailReq) (res *apiv1.ArticleDetailRes, err error) {
+func (a *cArticle) Detail(ctx context.Context, req *v1.ArticleDetailReq) (res *v1.ArticleDetailRes, err error) {
 	getDetailRes, err := service.Content().GetDetail(ctx, req.Id)
 	if err != nil {
 		return nil, err

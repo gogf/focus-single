@@ -5,7 +5,7 @@ import (
 
 	"github.com/gogf/gf/v2/frame/g"
 
-	"focus-single/apiv1"
+	"focus-single/api/v1"
 	"focus-single/internal/model"
 	"focus-single/internal/service"
 )
@@ -15,7 +15,7 @@ var Reply = cReply{}
 
 type cReply struct{}
 
-func (a *cReply) GetListContent(ctx context.Context, req *apiv1.ReplyGetListContentReq) (res *apiv1.ReplyGetListContentRes, err error) {
+func (a *cReply) GetListContent(ctx context.Context, req *v1.ReplyGetListContentReq) (res *v1.ReplyGetListContentRes, err error) {
 	if getListRes, err := service.Reply().GetList(ctx, model.ReplyGetListInput{
 		Page:       req.Page,
 		Size:       req.Size,
@@ -28,11 +28,11 @@ func (a *cReply) GetListContent(ctx context.Context, req *apiv1.ReplyGetListCont
 		service.View().RenderTpl(ctx, "index/reply.html", model.View{Data: getListRes})
 		tplContent := request.Response.BufferString()
 		request.Response.ClearBuffer()
-		return &apiv1.ReplyGetListContentRes{Content: tplContent}, nil
+		return &v1.ReplyGetListContentRes{Content: tplContent}, nil
 	}
 }
 
-func (a *cReply) Create(ctx context.Context, req *apiv1.ReplyCreateReq) (res *apiv1.ReplyCreateRes, err error) {
+func (a *cReply) Create(ctx context.Context, req *v1.ReplyCreateReq) (res *v1.ReplyCreateRes, err error) {
 	err = service.Reply().Create(ctx, model.ReplyCreateInput{
 		Title:      req.Title,
 		ParentId:   req.ParentId,
@@ -44,7 +44,7 @@ func (a *cReply) Create(ctx context.Context, req *apiv1.ReplyCreateReq) (res *ap
 	return
 }
 
-func (a *cReply) Delete(ctx context.Context, req *apiv1.ReplyDeleteReq) (res *apiv1.ReplyDeleteRes, err error) {
+func (a *cReply) Delete(ctx context.Context, req *v1.ReplyDeleteReq) (res *v1.ReplyDeleteRes, err error) {
 	err = service.Reply().Delete(ctx, req.Id)
 	return
 }

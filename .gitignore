@@ -20,7 +20,6 @@ cbuild
 config/config.toml
 main
 .vscode
-go.sum
 node_modules/
 temp/
 logs/

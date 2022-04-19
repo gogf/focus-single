@@ -23,33 +23,33 @@ func New() *controller {
 }
 
 func (c *controller) Index(ctx context.Context, req *v1.IndexReq) (res *v1.IndexRes, err error) {
-	if getProfile, err := user.GetProfile(ctx); err != nil {
+	out, err := user.GetProfile(ctx)
+	if err != nil {
 		return nil, err
-	} else {
-		title := "用户 " + getProfile.Nickname + " 资料"
-		view.Render(ctx, model.View{
-			Title:       title,
-			Keywords:    title,
-			Description: title,
-			Data:        getProfile,
-		})
-		return nil, nil
 	}
+	title := "用户 " + out.Nickname + " 资料"
+	view.Render(ctx, model.View{
+		Title:       title,
+		Keywords:    title,
+		Description: title,
+		Data:        out,
+	})
+	return nil, nil
 }
 
 func (c *controller) Avatar(ctx context.Context, req *v1.AvatarReq) (res *v1.AvatarRes, err error) {
-	if getProfile, err := user.GetProfile(ctx); err != nil {
+	out, err := user.GetProfile(ctx)
+	if err != nil {
 		return nil, err
-	} else {
-		title := "用户 " + getProfile.Nickname + " 头像"
-		view.Render(ctx, model.View{
-			Title:       title,
-			Keywords:    title,
-			Description: title,
-			Data:        getProfile,
-		})
-		return nil, nil
 	}
+	title := "用户 " + out.Nickname + " 头像"
+	view.Render(ctx, model.View{
+		Title:       title,
+		Keywords:    title,
+		Description: title,
+		Data:        out,
+	})
+	return nil, nil
 }
 
 func (c *controller) UpdateAvatar(ctx context.Context, req *v1.UpdateAvatarReq) (res *v1.UpdateAvatarRes, err error) {
@@ -85,18 +85,18 @@ func (c *controller) UpdateAvatar(ctx context.Context, req *v1.UpdateAvatarReq) 
 }
 
 func (c *controller) Password(ctx context.Context, req *v1.PasswordReq) (res *v1.PasswordRes, err error) {
-	if getProfile, err := user.GetProfile(ctx); err != nil {
+	out, err := user.GetProfile(ctx)
+	if err != nil {
 		return nil, err
-	} else {
-		title := "用户 " + getProfile.Nickname + " 修改密码"
-		view.Render(ctx, model.View{
-			Title:       title,
-			Keywords:    title,
-			Description: title,
-			Data:        getProfile,
-		})
-		return nil, nil
 	}
+	title := "用户 " + out.Nickname + " 修改密码"
+	view.Render(ctx, model.View{
+		Title:       title,
+		Keywords:    title,
+		Description: title,
+		Data:        out,
+	})
+	return nil, nil
 }
 
 func (c *controller) UpdatePassword(ctx context.Context, req *v1.UpdatePasswordReq) (res *v1.UpdatePasswordRes, err error) {
@@ -134,7 +134,7 @@ func (c *controller) Message(ctx context.Context, req *v1.MessageReq) (res *v1.M
 			TargetId:   req.TargetId,
 		}
 	)
-	if !user.IsAdmin(ctx, ctxUser.Id) {
+	if !ctxUser.IsAdmin {
 		in.UserId = ctxUser.Id
 	}
 	// 回复列表

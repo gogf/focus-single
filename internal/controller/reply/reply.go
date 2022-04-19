@@ -18,20 +18,20 @@ func New() *controller {
 }
 
 func (c *controller) GetListContent(ctx context.Context, req *v1.GetListContentReq) (res *v1.GetListContentRes, err error) {
-	if getListRes, err := reply.GetList(ctx, model.ReplyGetListInput{
+	out, err := reply.GetList(ctx, model.ReplyGetListInput{
 		Page:       req.Page,
 		Size:       req.Size,
 		TargetType: req.TargetType,
 		TargetId:   req.TargetId,
-	}); err != nil {
+	})
+	if err != nil {
 		return nil, err
-	} else {
-		request := g.RequestFromCtx(ctx)
-		view.RenderTpl(ctx, "index/reply.html", model.View{Data: getListRes})
-		tplContent := request.Response.BufferString()
-		request.Response.ClearBuffer()
-		return &v1.GetListContentRes{Content: tplContent}, nil
 	}
+	request := g.RequestFromCtx(ctx)
+	view.RenderTpl(ctx, "index/reply.html", model.View{Data: out})
+	tplContent := request.Response.BufferString()
+	request.Response.ClearBuffer()
+	return &v1.GetListContentRes{Content: tplContent}, nil
 }
 
 func (c *controller) Create(ctx context.Context, req *v1.CreateReq) (res *v1.CreateRes, err error) {

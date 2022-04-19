@@ -31,18 +31,18 @@ func (c *controller) Login(ctx context.Context, req *v1.DoReq) (res *v1.DoRes, e
 	if !captcha.VerifyAndClear(g.RequestFromCtx(ctx), consts.CaptchaDefaultName, req.Captcha) {
 		return res, gerror.NewCode(gcode.CodeBusinessValidationFailed, "请输入正确的验证码")
 	}
-	if err = user.Login(ctx, model.UserLoginInput{
+	err = user.Login(ctx, model.UserLoginInput{
 		Passport: req.Passport,
 		Password: req.Password,
-	}); err != nil {
-		return
-	} else {
-		// 识别并跳转到登录前页面
-		loginReferer := session.GetLoginReferer(ctx)
-		if loginReferer != "" {
-			_ = session.RemoveLoginReferer(ctx)
-		}
-		res.Referer = loginReferer
+	})
+	if err != nil {
 		return
 	}
+	// 识别并跳转到登录前页面
+	loginReferer := session.GetLoginReferer(ctx)
+	if loginReferer != "" {
+		_ = session.RemoveLoginReferer(ctx)
+	}
+	res.Referer = loginReferer
+	return
 }

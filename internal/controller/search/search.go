@@ -16,20 +16,20 @@ func New() *controller {
 }
 
 func (c *controller) Index(ctx context.Context, req *v1.IndexReq) (res *v1.IndexRes, err error) {
-	if searchRes, err := content.Search(ctx, model.ContentSearchInput{
+	out, err := content.Search(ctx, model.ContentSearchInput{
 		Key:        req.Key,
 		Type:       req.Type,
 		CategoryId: req.CategoryId,
 		Page:       req.Page,
 		Size:       req.Size,
 		Sort:       req.Sort,
-	}); err != nil {
+	})
+	if err != nil {
 		return nil, err
-	} else {
-		view.Render(ctx, model.View{
-			Data:  searchRes,
-			Title: view.GetTitle(ctx, &model.ViewGetTitleInput{}),
-		})
-		return nil, nil
 	}
+	view.Render(ctx, model.View{
+		Data:  out,
+		Title: view.GetTitle(ctx, &model.ViewGetTitleInput{}),
+	})
+	return nil, nil
 }

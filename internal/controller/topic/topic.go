@@ -18,51 +18,51 @@ func New() *controller {
 
 func (c *controller) Index(ctx context.Context, req *v1.IndexReq) (res *v1.IndexRes, err error) {
 	req.Type = consts.ContentTypeTopic
-	if getListRes, err := content.GetList(ctx, model.ContentGetListInput{
+	out, err := content.GetList(ctx, model.ContentGetListInput{
 		Type:       req.Type,
 		CategoryId: req.CategoryId,
 		Page:       req.Page,
 		Size:       req.Size,
 		Sort:       req.Sort,
-	}); err != nil {
+	})
+	if err != nil {
 		return nil, err
-	} else {
-		title := view.GetTitle(ctx, &model.ViewGetTitleInput{
-			ContentType: req.Type,
-			CategoryId:  req.CategoryId,
-		})
-		view.Render(ctx, model.View{
-			ContentType: req.Type,
-			Data:        getListRes,
-			Title:       title,
-		})
-		return nil, nil
 	}
+	title := view.GetTitle(ctx, &model.ViewGetTitleInput{
+		ContentType: req.Type,
+		CategoryId:  req.CategoryId,
+	})
+	view.Render(ctx, model.View{
+		ContentType: req.Type,
+		Data:        out,
+		Title:       title,
+	})
+	return nil, nil
 }
 
 func (c *controller) Detail(ctx context.Context, req *v1.DetailReq) (res *v1.DetailRes, err error) {
-	if getDetailRes, err := content.GetDetail(ctx, req.Id); err != nil {
+	out, err := content.GetDetail(ctx, req.Id)
+	if err != nil {
 		return nil, err
-	} else {
-		if getDetailRes == nil {
-			view.Render404(ctx)
-			return nil, nil
-		}
-		err = content.AddViewCount(ctx, req.Id, 1)
-		view.Render(ctx, model.View{
-			ContentType: consts.ContentTypeTopic,
-			Data:        getDetailRes,
-			Title: view.GetTitle(ctx, &model.ViewGetTitleInput{
-				ContentType: getDetailRes.Content.Type,
-				CategoryId:  getDetailRes.Content.CategoryId,
-				CurrentName: getDetailRes.Content.Title,
-			}),
-			BreadCrumb: view.GetBreadCrumb(ctx, &model.ViewGetBreadCrumbInput{
-				ContentId:   getDetailRes.Content.Id,
-				ContentType: getDetailRes.Content.Type,
-				CategoryId:  getDetailRes.Content.CategoryId,
-			}),
-		})
+	}
+	if out == nil {
+		view.Render404(ctx)
 		return nil, nil
 	}
+	err = content.AddViewCount(ctx, req.Id, 1)
+	view.Render(ctx, model.View{
+		ContentType: consts.ContentTypeTopic,
+		Data:        out,
+		Title: view.GetTitle(ctx, &model.ViewGetTitleInput{
+			ContentType: out.Content.Type,
+			CategoryId:  out.Content.CategoryId,
+			CurrentName: out.Content.Title,
+		}),
+		BreadCrumb: view.GetBreadCrumb(ctx, &model.ViewGetBreadCrumbInput{
+			ContentId:   out.Content.Id,
+			ContentType: out.Content.Type,
+			CategoryId:  out.Content.CategoryId,
+		}),
+	})
+	return nil, nil
 }

@@ -16,48 +16,44 @@ const contextMapKeyForMyInteractList = "ContextMapKeyForMyInteractList"
 
 // 赞
 func Zan(ctx context.Context, targetType string, targetId uint) error {
-	return dao.Interact.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
-		customCtx := bizctx.Get(ctx)
-		if customCtx == nil || customCtx.User == nil {
-			return nil
-		}
-		r, err := dao.Interact.Ctx(ctx).Data(do.Interact{
-			UserId:     customCtx.User.Id,
-			TargetId:   targetId,
-			TargetType: targetType,
-			Type:       consts.InteractTypeZan,
-		}).InsertIgnore()
-		if err != nil {
-			return err
-		}
-		if n, _ := r.RowsAffected(); n == 0 {
-			return gerror.New("您已经赞过啦")
-		}
-		return updateCount(ctx, consts.InteractTypeZan, targetType, targetId, 1)
-	})
+	customCtx := bizctx.Get(ctx)
+	if customCtx == nil || customCtx.User == nil {
+		return nil
+	}
+	r, err := dao.Interact.Ctx(ctx).Data(do.Interact{
+		UserId:     customCtx.User.Id,
+		TargetId:   targetId,
+		TargetType: targetType,
+		Type:       consts.InteractTypeZan,
+	}).InsertIgnore()
+	if err != nil {
+		return err
+	}
+	if n, _ := r.RowsAffected(); n == 0 {
+		return gerror.New("您已经赞过啦")
+	}
+	return updateCount(ctx, consts.InteractTypeZan, targetType, targetId, 1)
 }
 
 // 取消赞
 func CancelZan(ctx context.Context, targetType string, targetId uint) error {
-	return dao.Interact.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
-		customCtx := bizctx.Get(ctx)
-		if customCtx == nil || customCtx.User == nil {
-			return nil
-		}
-		r, err := dao.Interact.Ctx(ctx).Where(do.Interact{
-			Type:       consts.InteractTypeZan,
-			UserId:     bizctx.Get(ctx).User.Id,
-			TargetId:   targetId,
-			TargetType: targetType,
-		}).Delete()
-		if err != nil {
-			return err
-		}
-		if n, _ := r.RowsAffected(); n == 0 {
-			return nil
-		}
-		return updateCount(ctx, consts.InteractTypeZan, targetType, targetId, -1)
-	})
+	customCtx := bizctx.Get(ctx)
+	if customCtx == nil || customCtx.User == nil {
+		return nil
+	}
+	r, err := dao.Interact.Ctx(ctx).Where(do.Interact{
+		Type:       consts.InteractTypeZan,
+		UserId:     bizctx.Get(ctx).User.Id,
+		TargetId:   targetId,
+		TargetType: targetType,
+	}).Delete()
+	if err != nil {
+		return err
+	}
+	if n, _ := r.RowsAffected(); n == 0 {
+		return nil
+	}
+	return updateCount(ctx, consts.InteractTypeZan, targetType, targetId, -1)
 }
 
 // 我是否有对指定内容赞
@@ -154,59 +150,58 @@ func getMyList(ctx context.Context) ([]*entity.Interact, error) {
 
 // 根据业务类型更新指定模块的赞/踩数量
 func updateCount(ctx context.Context, interactType int, targetType string, targetId uint, count int) error {
-	return dao.Interact.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
-		defer func() {
-			// 清空上下文对应的互动数据缓存
-			if customCtx := bizctx.Get(ctx); customCtx != nil {
-				delete(customCtx.Data, contextMapKeyForMyInteractList)
+	defer func() {
+		// 清空上下文对应的互动数据缓存
+		if customCtx := bizctx.Get(ctx); customCtx != nil {
+			delete(customCtx.Data, contextMapKeyForMyInteractList)
+		}
+	}()
+
+	var err error
+	switch targetType {
+	// 内容赞踩
+	case consts.InteractTargetTypeContent:
+		switch interactType {
+		case consts.InteractTypeZan:
+			_, err = dao.Content.Ctx(ctx).
+				Where(dao.Content.Columns().Id, targetId).
+				WhereGTE(dao.Content.Columns().ZanCount, 0).
+				Increment(dao.Content.Columns().ZanCount, count)
+			if err != nil {
+				return err
 			}
-		}()
 
-		var err error
-		switch targetType {
-		// 内容赞踩
-		case consts.InteractTargetTypeContent:
-			switch interactType {
-			case consts.InteractTypeZan:
-				_, err = dao.Content.Ctx(ctx).
-					Where(dao.Content.Columns().Id, targetId).
-					WhereGTE(dao.Content.Columns().ZanCount, 0).
-					Increment(dao.Content.Columns().ZanCount, count)
-				if err != nil {
-					return err
-				}
-
-			case consts.InteractTypeCai:
-				_, err = dao.Content.Ctx(ctx).
-					Where(dao.Content.Columns().Id, targetId).
-					WhereGTE(dao.Content.Columns().CaiCount, 0).
-					Increment(dao.Content.Columns().CaiCount, count)
-				if err != nil {
-					return err
-				}
-			}
-		// 评论赞踩
-		case consts.InteractTargetTypeReply:
-			switch interactType {
-			case consts.InteractTypeZan:
-				_, err = dao.Reply.Ctx(ctx).
-					Where(dao.Content.Columns().Id, targetId).
-					WhereGTE(dao.Content.Columns().ZanCount, 0).
-					Increment(dao.Content.Columns().ZanCount, count)
-				if err != nil {
-					return err
-				}
-
-			case consts.InteractTypeCai:
-				_, err = dao.Reply.Ctx(ctx).
-					Where(dao.Content.Columns().Id, targetId).
-					WhereGTE(dao.Content.Columns().CaiCount, 0).
-					Increment(dao.Content.Columns().CaiCount, count)
-				if err != nil {
-					return err
-				}
+		case consts.InteractTypeCai:
+			_, err = dao.Content.Ctx(ctx).
+				Where(dao.Content.Columns().Id, targetId).
+				WhereGTE(dao.Content.Columns().CaiCount, 0).
+				Increment(dao.Content.Columns().CaiCount, count)
+			if err != nil {
+				return err
 			}
 		}
-		return nil
-	})
+
+	// 评论赞踩
+	case consts.InteractTargetTypeReply:
+		switch interactType {
+		case consts.InteractTypeZan:
+			_, err = dao.Reply.Ctx(ctx).
+				Where(dao.Reply.Columns().Id, targetId).
+				WhereGTE(dao.Reply.Columns().ZanCount, 0).
+				Increment(dao.Reply.Columns().ZanCount, count)
+			if err != nil {
+				return err
+			}
+
+		case consts.InteractTypeCai:
+			_, err = dao.Reply.Ctx(ctx).
+				Where(dao.Reply.Columns().Id, targetId).
+				WhereGTE(dao.Reply.Columns().CaiCount, 0).
+				Increment(dao.Reply.Columns().CaiCount, count)
+			if err != nil {
+				return err
+			}
+		}
+	}
+	return nil
 }

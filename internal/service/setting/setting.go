@@ -20,6 +20,7 @@ func Set(ctx context.Context, key, value string) error {
 
 // 查询KV，返回泛型，便于转换。
 func Get(ctx context.Context, key string) (*g.Var, error) {
-	v, err := dao.Setting.Ctx(ctx).Fields(dao.Setting.Columns().V).Where(dao.Setting.Columns().K, key).Value()
+	var cls = dao.Setting.Columns()
+	v, err := dao.Setting.Ctx(ctx).Fields(cls.V).Where(cls.K, key).Value()
 	return v, err
 }

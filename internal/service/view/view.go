@@ -33,11 +33,11 @@ func GetBreadCrumb(ctx context.Context, in *model.ViewGetBreadCrumbInput) []mode
 		}
 	}
 	if uriPrefix != "" && in.CategoryId > 0 {
-		category, _ := category.GetItem(ctx, in.CategoryId)
-		if category != nil {
+		categoryEntity, _ := category.GetItem(ctx, in.CategoryId)
+		if categoryEntity != nil {
 			breadcrumb = append(breadcrumb, model.ViewBreadCrumb{
-				Name: category.Name,
-				Url:  fmt.Sprintf(`%s?cate=%d`, uriPrefix, category.Id),
+				Name: categoryEntity.Name,
+				Url:  fmt.Sprintf(`%s?cate=%d`, uriPrefix, categoryEntity.Id),
 			})
 		}
 	}
@@ -59,9 +59,9 @@ func GetTitle(ctx context.Context, in *model.ViewGetTitleInput) string {
 		titleArray = append(titleArray, in.CurrentName)
 	}
 	if in.CategoryId > 0 {
-		category, _ := category.GetItem(ctx, in.CategoryId)
-		if category != nil {
-			titleArray = append(titleArray, category.Name)
+		categoryEntity, _ := category.GetItem(ctx, in.CategoryId)
+		if categoryEntity != nil {
+			titleArray = append(titleArray, categoryEntity.Name)
 		}
 	}
 	if in.ContentType != "" {

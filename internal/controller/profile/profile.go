@@ -7,6 +7,7 @@ import (
 	"focus-single/internal/model"
 	"focus-single/internal/service/bizctx"
 	"focus-single/internal/service/file"
+	"focus-single/internal/service/reply"
 	"focus-single/internal/service/session"
 	"focus-single/internal/service/user"
 	"focus-single/internal/service/view"
@@ -117,19 +118,47 @@ func (c *controller) UpdateProfile(ctx context.Context, req *v1.UpdateReq) (res 
 }
 
 func (c *controller) Message(ctx context.Context, req *v1.MessageReq) (res *v1.MessageRes, err error) {
-	if getListRes, err := user.GetMessageList(ctx, model.UserGetMessageListInput{
-		Page:       req.Page,
-		Size:       req.Size,
-		TargetType: req.TargetType,
-		TargetId:   req.TargetId,
-		UserId:     session.GetUser(ctx).Id,
-	}); err != nil {
-		return nil, err
-	} else {
-		view.Render(ctx, model.View{
-			ContentType: req.TargetType,
-			Data:        getListRes,
-		})
-		return nil, nil
+	type ViewData struct {
+		List  []model.ReplyGetListOutputItem // 列表
+		Page  int                            // 分页码
+		Size  int                            // 分页数量
+		Total int                            // 数据总数
+		Stats map[string]int                 // 发布内容数量
 	}
+	var (
+		ctxUser = bizctx.Get(ctx).User
+		in      = model.ReplyGetListInput{
+			Page:       req.Page,
+			Size:       req.Size,
+			TargetType: req.TargetType,
+			TargetId:   req.TargetId,
+		}
+	)
+	if !user.IsAdmin(ctx, ctxUser.Id) {
+		in.UserId = ctxUser.Id
+	}
+	// 回复列表
+	replyListOut, err := reply.GetList(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	var data = ViewData{
+		Page:  req.Page,
+		Size:  req.Size,
+		List:  replyListOut.List,
+		Total: replyListOut.Total,
+	}
+	if err != nil {
+		return nil, err
+	}
+	// 用户信息统计
+	data.Stats, err = user.GetUserStats(ctx, ctxUser.Id)
+	if err != nil {
+		return nil, err
+	}
+	view.Render(ctx, model.View{
+		ContentType: req.TargetType,
+		Data:        data,
+	})
+	return nil, nil
 }

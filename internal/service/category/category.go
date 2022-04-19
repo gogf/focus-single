@@ -41,9 +41,7 @@ func GetTree(ctx context.Context, contentType string) ([]*model.CategoryTreeItem
 	if err != nil {
 		return nil, err
 	}
-	var (
-		result []*model.CategoryTreeItem
-	)
+	var result []*model.CategoryTreeItem
 	err = v.Scan(&result)
 	return result, err
 }
@@ -55,11 +53,11 @@ func GetSubIdList(ctx context.Context, id uint) ([]uint, error) {
 	if err != nil {
 		return nil, err
 	}
-	entity := m[id]
-	if entity == nil {
+	categoryEntity := m[id]
+	if categoryEntity == nil {
 		return nil, gerror.Newf(`%d栏目不存在`, id)
 	}
-	tree, err := GetTree(ctx, entity.ContentType)
+	tree, err := GetTree(ctx, categoryEntity.ContentType)
 	if err != nil {
 		return nil, err
 	}
@@ -85,19 +83,19 @@ func getSubIdListByTree(id uint, trees []*model.CategoryTreeItem) []uint {
 // 构造树形栏目列表。
 func formTree(parentId uint, contentType string, entities []*entity.Category) ([]*model.CategoryTreeItem, error) {
 	tree := make([]*model.CategoryTreeItem, 0)
-	for _, entity := range entities {
-		if contentType != "" && entity.ContentType != contentType {
+	for _, categoryEntity := range entities {
+		if contentType != "" && categoryEntity.ContentType != contentType {
 			continue
 		}
-		if entity.ParentId == parentId {
-			subTree, err := formTree(entity.Id, contentType, entities)
+		if categoryEntity.ParentId == parentId {
+			subTree, err := formTree(categoryEntity.Id, contentType, entities)
 			if err != nil {
 				return nil, err
 			}
 			item := &model.CategoryTreeItem{
 				Items: subTree,
 			}
-			if err = gconv.Struct(entity, item); err != nil {
+			if err = gconv.Struct(categoryEntity, item); err != nil {
 				return nil, err
 			}
 			tree = append(tree, item)
@@ -108,10 +106,8 @@ func formTree(parentId uint, contentType string, entities []*entity.Category) ([
 
 // GetList 获得所有的栏目列表。
 func GetList(ctx context.Context) (list []*entity.Category, err error) {
-	err = dao.Category.Ctx(ctx).
-		OrderAsc(dao.Category.Columns().Sort).
-		OrderAsc(dao.Category.Columns().Id).
-		Scan(&list)
+	var cls = dao.Category.Columns()
+	err = dao.Category.Ctx(ctx).OrderAsc(cls.Sort).OrderAsc(cls.Id).Scan(&list)
 	return
 }
 
@@ -134,9 +130,9 @@ func GetMap(ctx context.Context) (map[uint]*entity.Category, error) {
 				return nil, err
 			}
 			m := make(map[uint]*entity.Category)
-			for _, entity := range entities {
-				item := entity
-				m[entity.Id] = item
+			for _, categoryEntity := range entities {
+				item := categoryEntity
+				m[categoryEntity.Id] = item
 			}
 			return m, nil
 		}
@@ -145,9 +141,7 @@ func GetMap(ctx context.Context) (map[uint]*entity.Category, error) {
 	if err != nil {
 		return nil, err
 	}
-	var (
-		result map[uint]*entity.Category
-	)
+	var result map[uint]*entity.Category
 	err = v.Scan(&result)
 	return result, err
 }

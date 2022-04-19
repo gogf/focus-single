@@ -43,13 +43,6 @@ type UserGetContentListInput struct {
 	ContentGetListInput
 }
 
-// UserGetListOutput 查询用户详情结果
-type UserGetListOutput struct {
-	Content *ContentGetListOutput `json:"content"` // 查询用户
-	User    *UserGetProfileOutput `json:"user"`    // 查询用户
-	Stats   map[string]int        // 发布内容数量
-}
-
 type UserGetMessageListInput struct {
 	Page       int    // 分页码
 	Size       int    // 分页数量

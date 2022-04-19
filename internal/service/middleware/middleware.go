@@ -3,6 +3,7 @@ package middleware
 import (
 	"focus-single/internal/service/bizctx"
 	"focus-single/internal/service/session"
+	"focus-single/internal/service/user"
 	"focus-single/internal/service/view"
 	"github.com/gogf/gf/v2/errors/gcode"
 	"github.com/gogf/gf/v2/errors/gerror"
@@ -62,13 +63,12 @@ func Ctx(r *ghttp.Request) {
 	}
 	bizctx.Init(r, customCtx)
 	if userEntity := session.GetUser(r.Context()); userEntity.Id > 0 {
-		adminId := g.Cfg().MustGet(r.Context(), "setting.adminId", consts.DefaultAdminId).Uint()
 		customCtx.User = &model.ContextUser{
 			Id:       userEntity.Id,
 			Passport: userEntity.Passport,
 			Nickname: userEntity.Nickname,
 			Avatar:   userEntity.Avatar,
-			IsAdmin:  userEntity.Id == adminId,
+			IsAdmin:  user.IsAdmin(r.Context(), userEntity.Id),
 		}
 	}
 	// 将自定义的上下文对象传递到模板变量中使用
@@ -81,8 +81,8 @@ func Ctx(r *ghttp.Request) {
 
 // 前台系统权限控制，用户必须登录才能访问
 func Auth(r *ghttp.Request) {
-	user := session.GetUser(r.Context())
-	if user.Id == 0 {
+	sessionUser := session.GetUser(r.Context())
+	if sessionUser.Id == 0 {
 		_ = session.SetNotice(r.Context(), &model.SessionNotice{
 			Type:    consts.SessionNoticeTypeWarn,
 			Content: "未登录或会话已过期，请您登录后再继续",

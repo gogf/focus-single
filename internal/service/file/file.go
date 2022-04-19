@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"focus-single/internal/model/do"
 	"focus-single/internal/service/bizctx"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
@@ -13,7 +14,6 @@ import (
 	"focus-single/internal/consts"
 	"focus-single/internal/dao"
 	"focus-single/internal/model"
-	"focus-single/internal/model/entity"
 )
 
 // 同一上传文件
@@ -42,21 +42,26 @@ func Upload(ctx context.Context, in model.FileUploadInput) (*model.FileUploadOut
 		return nil, err
 	}
 	// 记录到数据表
-	data := entity.File{
-		Name:   fileName,
-		Src:    gfile.Join(uploadPath, dateDirName, fileName),
-		Url:    "/upload/" + dateDirName + "/" + fileName,
-		UserId: bizctx.Get(ctx).User.Id,
-	}
-	result, err := dao.File.Ctx(ctx).Data(data).OmitEmpty().Insert()
+	var (
+		src  = gfile.Join(uploadPath, dateDirName, fileName)
+		url  = "/upload/" + dateDirName + "/" + fileName
+		data = do.File{
+			Name:   fileName,
+			Src:    src,
+			Url:    url,
+			UserId: bizctx.Get(ctx).User.Id,
+		}
+	)
+
+	result, err := dao.File.Ctx(ctx).Data(data).Insert()
 	if err != nil {
 		return nil, err
 	}
 	id, _ := result.LastInsertId()
 	return &model.FileUploadOutput{
 		Id:   uint(id),
-		Name: data.Name,
-		Path: data.Src,
-		Url:  data.Url,
+		Name: fileName,
+		Path: src,
+		Url:  url,
 	}, nil
 }

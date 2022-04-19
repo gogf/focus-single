@@ -28,7 +28,7 @@ func newDriver() *base64Captcha.DriverString {
 }
 
 // NewAndStore 创建验证码，直接输出验证码图片内容到HTTP Response.
-func NewAndStore(ctx context.Context, name string) error {
+func NewAndStore(ctx context.Context, name string) (err error) {
 	var (
 		request = g.RequestFromCtx(ctx)
 		captcha = base64Captcha.NewCaptcha(captchaDriver, captchaStore)
@@ -36,9 +36,11 @@ func NewAndStore(ctx context.Context, name string) error {
 	_, content, answer := captcha.Driver.GenerateIdQuestionAnswer()
 	item, _ := captcha.Driver.DrawCaptcha(content)
 	captchaStoreKey := guid.S()
-	request.Session.Set(name, captchaStoreKey)
+	if err = request.Session.Set(name, captchaStoreKey); err != nil {
+		return
+	}
 	captcha.Store.Set(captchaStoreKey, answer)
-	_, err := item.WriteTo(request.Response.Writer)
+	_, err = item.WriteTo(request.Response.Writer)
 	return err
 }
 

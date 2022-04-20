@@ -17,9 +17,54 @@ import (
 	"github.com/o1egl/govatar"
 
 	"focus-single/internal/dao"
-	"focus-single/internal/model"
 	"focus-single/internal/model/entity"
 )
+
+// UserRegisterInput 创建用户
+type RegisterInput struct {
+	Passport string // 账号
+	Password string // 密码(明文)
+	Nickname string // 昵称
+}
+
+type PasswordInput struct {
+	OldPassword string // 原密码
+	NewPassword string // 新密码
+}
+
+// UserLoginInput 用户登录
+type LoginInput struct {
+	Passport string // 账号
+	Password string // 密码(明文)
+}
+
+type GetProfileOutput struct {
+	Id       uint           // 用户ID
+	Nickname string         // 昵称
+	Avatar   string         // 头像地址
+	Gender   int            // 性别 0: 未设置 1: 男 2: 女
+	Stats    map[string]int // 发布内容数量
+}
+
+type UpdateAvatarInput struct {
+	UserId uint   // 用户ID
+	Avatar string // 头像地址
+}
+
+type UpdateProfileInput struct {
+	UserId   uint   // 用户ID
+	Nickname string // 昵称
+	Avatar   string // 头像地址
+	Gender   int    // 性别 0: 未设置 1: 男 2: 女
+}
+
+type GetMessageListInput struct {
+	Page       int    // 分页码
+	Size       int    // 分页数量
+	TargetType string // 数据类型
+	TargetId   uint   // 数据ID
+	UserId     uint   // 用户ID
+}
 
 const (
 	avatarUploadUrlPrefix = `/upload/avatar`
@@ -39,7 +84,7 @@ func init() {
 }
 
 // 执行登录
-func Login(ctx context.Context, in model.UserLoginInput) error {
+func Login(ctx context.Context, in LoginInput) error {
 	userEntity, err := GetUserByPassportAndPassword(
 		ctx,
 		in.Passport,
@@ -55,7 +100,7 @@ func Login(ctx context.Context, in model.UserLoginInput) error {
 		return err
 	}
 	// 自动更新Ctx用户信息
-	bizctx.SetUser(ctx, &model.ContextUser{
+	bizctx.SetUser(ctx, &bizctx.ContextUser{
 		Id:       userEntity.Id,
 		Passport: userEntity.Passport,
 		Nickname: userEntity.Nickname,
@@ -113,7 +158,7 @@ func CheckNicknameUnique(ctx context.Context, nickname string) error {
 }
 
 // 用户注册。
-func Register(ctx context.Context, in model.UserRegisterInput) error {
+func Register(ctx context.Context, in RegisterInput) error {
 	return dao.User.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		var user *entity.User
 		if err := gconv.Struct(in, &user); err != nil {
@@ -138,7 +183,7 @@ func Register(ctx context.Context, in model.UserRegisterInput) error {
 }
 
 // 修改个人密码
-func UpdatePassword(ctx context.Context, in model.UserPasswordInput) error {
+func UpdatePassword(ctx context.Context, in PasswordInput) error {
 	oldPassword := EncryptPassword(bizctx.Get(ctx).User.Passport, in.OldPassword)
 	count, err := dao.User.Ctx(ctx).Where(do.User{
 		Id:       bizctx.Get(ctx).User.Id,
@@ -160,7 +205,7 @@ func UpdatePassword(ctx context.Context, in model.UserPasswordInput) error {
 }
 
 // 获取个人信息
-func GetProfileById(ctx context.Context, userId uint) (out *model.UserGetProfileOutput, err error) {
+func GetProfileById(ctx context.Context, userId uint) (out *GetProfileOutput, err error) {
 	if err = dao.User.Ctx(ctx).WherePri(userId).Scan(&out); err != nil {
 		return nil, err
 	}
@@ -176,11 +221,11 @@ func GetProfileById(ctx context.Context, userId uint) (out *model.UserGetProfile
 }
 
 // 修改个人资料
-func GetProfile(ctx context.Context) (*model.UserGetProfileOutput, error) {
+func GetProfile(ctx context.Context) (*GetProfileOutput, error) {
 	return GetProfileById(ctx, bizctx.Get(ctx).User.Id)
 }
 
-func UpdateAvatar(ctx context.Context, in model.UserUpdateAvatarInput) error {
+func UpdateAvatar(ctx context.Context, in UpdateAvatarInput) error {
 	return dao.User.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
 		var err error
 		_, err = dao.User.Ctx(ctx).Data(do.User{
@@ -193,7 +238,7 @@ func UpdateAvatar(ctx context.Context, in model.UserUpdateAvatarInput) error {
 }
 
 // 修改个人资料
-func UpdateProfile(ctx context.Context, in model.UserUpdateProfileInput) error {
+func UpdateProfile(ctx context.Context, in UpdateProfileInput) error {
 	var (
 		err    error
 		user   = bizctx.Get(ctx).User

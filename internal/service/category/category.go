@@ -9,9 +9,20 @@ import (
 	"github.com/gogf/gf/v2/util/gconv"
 
 	"focus-single/internal/dao"
-	"focus-single/internal/model"
 	"focus-single/internal/model/entity"
 )
+
+// 栏目树形列表
+type TreeItem struct {
+	Id       uint        `json:"id"`              // 分类ID，自增主键
+	ParentId uint        `json:"parent_id"`       // 父级分类ID，用于层级管理
+	Name     string      `json:"name"`            // 分类名称
+	Thumb    string      `json:"thumb"`           // 封面图
+	Brief    string      `json:"brief"`           // 简述
+	Content  string      `json:"content"`         // 详细介绍
+	Indent   string      `json:"indent"`          // 缩进字符串，包含：&nbsp;, " │", " ├", " └"
+	Items    []*TreeItem `json:"items,omitempty"` // 子级数据项
+}
 
 const (
 	mapCacheKey       = "category_map_cache"
@@ -21,7 +32,7 @@ const (
 )
 
 // GetTree 查询列表
-func GetTree(ctx context.Context, contentType string) ([]*model.CategoryTreeItem, error) {
+func GetTree(ctx context.Context, contentType string) ([]*TreeItem, error) {
 	// 缓存控制
 	var (
 		cacheKey  = treeCacheKey + contentType
@@ -41,7 +52,7 @@ func GetTree(ctx context.Context, contentType string) ([]*model.CategoryTreeItem
 	if err != nil {
 		return nil, err
 	}
-	var result []*model.CategoryTreeItem
+	var result []*TreeItem
 	err = v.Scan(&result)
 	return result, err
 }
@@ -65,7 +76,7 @@ func GetSubIdList(ctx context.Context, id uint) ([]uint, error) {
 }
 
 // 递归获取指定栏目ID下的所有子级
-func getSubIdListByTree(id uint, trees []*model.CategoryTreeItem) []uint {
+func getSubIdListByTree(id uint, trees []*TreeItem) []uint {
 	idArray := make([]uint, 0)
 	for _, item := range trees {
 		if item.ParentId == id {
@@ -81,8 +92,8 @@ func getSubIdListByTree(id uint, trees []*model.CategoryTreeItem) []uint {
 }
 
 // 构造树形栏目列表。
-func formTree(parentId uint, contentType string, entities []*entity.Category) ([]*model.CategoryTreeItem, error) {
-	tree := make([]*model.CategoryTreeItem, 0)
+func formTree(parentId uint, contentType string, entities []*entity.Category) ([]*TreeItem, error) {
+	tree := make([]*TreeItem, 0)
 	for _, categoryEntity := range entities {
 		if contentType != "" && categoryEntity.ContentType != contentType {
 			continue
@@ -92,7 +103,7 @@ func formTree(parentId uint, contentType string, entities []*entity.Category) ([
 			if err != nil {
 				return nil, err
 			}
-			item := &model.CategoryTreeItem{
+			item := &TreeItem{
 				Items: subTree,
 			}
 			if err = gconv.Struct(categoryEntity, item); err != nil {

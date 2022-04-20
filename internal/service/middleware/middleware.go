@@ -11,12 +11,7 @@ import (
 	"github.com/gogf/gf/v2/net/ghttp"
 
 	"focus-single/internal/consts"
-	"focus-single/internal/model"
 	"focus-single/utility/response"
-)
-
-const (
-	LoginUrl = "/login"
 )
 
 // 返回处理中间件
@@ -41,7 +36,7 @@ func ResponseHandler(r *ghttp.Request) {
 		if r.IsAjaxRequest() {
 			response.JsonExit(r, code.Code(), err.Error())
 		} else {
-			view.Render500(r.Context(), model.View{
+			view.Render500(r.Context(), view.View{
 				Error: err.Error(),
 			})
 		}
@@ -57,13 +52,13 @@ func ResponseHandler(r *ghttp.Request) {
 // 自定义上下文对象
 func Ctx(r *ghttp.Request) {
 	// 初始化，务必最开始执行
-	customCtx := &model.Context{
+	customCtx := &bizctx.Context{
 		Session: r.Session,
 		Data:    make(g.Map),
 	}
 	bizctx.Init(r, customCtx)
 	if userEntity := session.GetUser(r.Context()); userEntity.Id > 0 {
-		customCtx.User = &model.ContextUser{
+		customCtx.User = &bizctx.ContextUser{
 			Id:       userEntity.Id,
 			Passport: userEntity.Passport,
 			Nickname: userEntity.Nickname,
@@ -83,7 +78,7 @@ func Ctx(r *ghttp.Request) {
 func Auth(r *ghttp.Request) {
 	sessionUser := session.GetUser(r.Context())
 	if sessionUser.Id == 0 {
-		_ = session.SetNotice(r.Context(), &model.SessionNotice{
+		_ = session.SetNotice(r.Context(), &session.Notice{
 			Type:    consts.SessionNoticeTypeWarn,
 			Content: "未登录或会话已过期，请您登录后再继续",
 		})
@@ -93,9 +88,9 @@ func Auth(r *ghttp.Request) {
 		}
 		// 根据当前请求方式执行不同的返回数据结构
 		if r.IsAjaxRequest() {
-			response.JsonRedirectExit(r, 1, "", LoginUrl)
+			response.JsonRedirectExit(r, 1, "", consts.UserLoginUrl)
 		} else {
-			r.Response.RedirectTo(LoginUrl)
+			r.Response.RedirectTo(consts.UserLoginUrl)
 		}
 	}
 	r.Middleware.Next()

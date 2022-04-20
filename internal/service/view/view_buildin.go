@@ -13,7 +13,6 @@ import (
 	"github.com/gogf/gf/v2/util/gmode"
 
 	"focus-single/internal/consts"
-	"focus-single/internal/model"
 )
 
 // 视图自定义方法管理对象
@@ -34,7 +33,7 @@ func (s *viewBuildIn) DidICai(targetType string, targetId uint) bool {
 }
 
 // 获取顶部菜单列表
-func (s *viewBuildIn) TopMenus() ([]*model.MenuItem, error) {
+func (s *viewBuildIn) TopMenus() ([]*menu.Item, error) {
 	topMenus, err := menu.GetTopMenus(s.httpRequest.Context())
 	if err != nil {
 		return nil, err
@@ -78,7 +77,7 @@ func (s *viewBuildIn) TopMenus() ([]*model.MenuItem, error) {
 }
 
 // 获得指定的栏目树形对象，当contentType为空时，表示获取所有的栏目树形对象。
-func (s *viewBuildIn) CategoryTree(contentType string) ([]*model.CategoryTreeItem, error) {
+func (s *viewBuildIn) CategoryTree(contentType string) ([]*category.TreeItem, error) {
 	return category.GetTree(s.httpRequest.Context(), contentType)
 }
 

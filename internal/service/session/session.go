@@ -3,10 +3,15 @@ package session
 import (
 	"context"
 
-	"focus-single/internal/model"
 	"focus-single/internal/model/entity"
 	"focus-single/internal/service/bizctx"
 )
+
+// Notice 存放在Session中的提示信息，往往使用后则删除
+type Notice struct {
+	Type    string // 消息类型
+	Content string // 消息内容
+}
 
 const (
 	sessionKeyUser         = "SessionKeyUser"    // 用户信息存放在Session中的Key
@@ -72,7 +77,7 @@ func RemoveLoginReferer(ctx context.Context) error {
 }
 
 // 设置Notice
-func SetNotice(ctx context.Context, message *model.SessionNotice) error {
+func SetNotice(ctx context.Context, message *Notice) error {
 	customCtx := bizctx.Get(ctx)
 	if customCtx != nil {
 		return customCtx.Session.Set(sessionKeyNotice, message)
@@ -81,10 +86,10 @@ func SetNotice(ctx context.Context, message *model.SessionNotice) error {
 }
 
 // 获取Notice
-func GetNotice(ctx context.Context) (*model.SessionNotice, error) {
+func GetNotice(ctx context.Context) (*Notice, error) {
 	customCtx := bizctx.Get(ctx)
 	if customCtx != nil {
-		var message *model.SessionNotice
+		var message *Notice
 		v, err := customCtx.Session.Get(sessionKeyNotice)
 		if err != nil {
 			return nil, err

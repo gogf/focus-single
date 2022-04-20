@@ -8,16 +8,29 @@ import (
 	"focus-single/internal/service/bizctx"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/os/gfile"
 	"github.com/gogf/gf/v2/os/gtime"
 
 	"focus-single/internal/consts"
 	"focus-single/internal/dao"
-	"focus-single/internal/model"
 )
 
+type UploadInput struct {
+	File       *ghttp.UploadFile // 上传文件对象
+	Name       string            // 自定义文件名称
+	RandomName bool              // 是否随机命名文件
+}
+
+type UploadOutput struct {
+	Id   uint   // 数据表ID
+	Name string // 文件名称
+	Path string // 本地路径
+	Url  string // 访问URL，可能只是URI
+}
+
 // 同一上传文件
-func Upload(ctx context.Context, in model.FileUploadInput) (*model.FileUploadOutput, error) {
+func Upload(ctx context.Context, in UploadInput) (*UploadOutput, error) {
 	uploadPath := g.Cfg().MustGet(ctx, "upload.path").String()
 	if uploadPath == "" {
 		return nil, gerror.New("上传文件路径配置不存在")
@@ -58,7 +71,7 @@ func Upload(ctx context.Context, in model.FileUploadInput) (*model.FileUploadOut
 		return nil, err
 	}
 	id, _ := result.LastInsertId()
-	return &model.FileUploadOutput{
+	return &UploadOutput{
 		Id:   uint(id),
 		Name: fileName,
 		Path: src,

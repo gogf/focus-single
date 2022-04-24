@@ -5,8 +5,8 @@ import (
 
 	"focus-single/api/v1"
 	"focus-single/internal/consts"
-	"focus-single/internal/service/content"
-	"focus-single/internal/service/view"
+	"focus-single/internal/model"
+	"focus-single/internal/service"
 )
 
 // Topic 主题管理
@@ -16,7 +16,7 @@ type cTopic struct{}
 
 func (a *cTopic) Index(ctx context.Context, req *v1.TopicIndexReq) (res *v1.TopicIndexRes, err error) {
 	req.Type = consts.ContentTypeTopic
-	out, err := content.GetList(ctx, content.GetListInput{
+	out, err := service.Content().GetList(ctx, model.ContentGetListInput{
 		Type:       req.Type,
 		CategoryId: req.CategoryId,
 		Page:       req.Page,
@@ -26,11 +26,11 @@ func (a *cTopic) Index(ctx context.Context, req *v1.TopicIndexReq) (res *v1.Topi
 	if err != nil {
 		return nil, err
 	}
-	title := view.GetTitle(ctx, &view.GetTitleInput{
+	title := service.View().GetTitle(ctx, &model.ViewGetTitleInput{
 		ContentType: req.Type,
 		CategoryId:  req.CategoryId,
 	})
-	view.Render(ctx, view.View{
+	service.View().Render(ctx, model.View{
 		ContentType: req.Type,
 		Data:        out,
 		Title:       title,
@@ -39,24 +39,24 @@ func (a *cTopic) Index(ctx context.Context, req *v1.TopicIndexReq) (res *v1.Topi
 }
 
 func (a *cTopic) Detail(ctx context.Context, req *v1.TopicDetailReq) (res *v1.TopicDetailRes, err error) {
-	out, err := content.GetDetail(ctx, req.Id)
+	out, err := service.Content().GetDetail(ctx, req.Id)
 	if err != nil {
 		return nil, err
 	}
 	if out == nil {
-		view.Render404(ctx)
+		service.View().Render404(ctx)
 		return
 	}
-	err = content.AddViewCount(ctx, req.Id, 1)
-	view.Render(ctx, view.View{
+	err = service.Content().AddViewCount(ctx, req.Id, 1)
+	service.View().Render(ctx, model.View{
 		ContentType: consts.ContentTypeTopic,
 		Data:        out,
-		Title: view.GetTitle(ctx, &view.GetTitleInput{
+		Title: service.View().GetTitle(ctx, &model.ViewGetTitleInput{
 			ContentType: out.Content.Type,
 			CategoryId:  out.Content.CategoryId,
 			CurrentName: out.Content.Title,
 		}),
-		BreadCrumb: view.GetBreadCrumb(ctx, &view.GetBreadCrumbInput{
+		BreadCrumb: service.View().GetBreadCrumb(ctx, &model.ViewGetBreadCrumbInput{
 			ContentId:   out.Content.Id,
 			ContentType: out.Content.Type,
 			CategoryId:  out.Content.CategoryId,

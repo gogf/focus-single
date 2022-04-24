@@ -1,7 +1,7 @@
 package v1
 
 import (
-	"focus-single/internal/service/category"
+	"focus-single/internal/model"
 	"github.com/gogf/gf/v2/frame/g"
 )
 
@@ -10,5 +10,5 @@ type CategoryTreeReq struct {
 	ContentType string `json:"contentType" dc:"栏目类型：topic/question/article。当传递空时表示获取所有类型的栏目"`
 }
 type CategoryTreeRes struct {
-	List []*category.TreeItem `json:"list" dc:"栏目列表"`
+	List []*model.CategoryTreeItem `json:"list" dc:"栏目列表"`
 }

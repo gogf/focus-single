@@ -5,9 +5,8 @@ import (
 
 	"focus-single/api/v1"
 	"focus-single/internal/consts"
-	"focus-single/internal/service/captcha"
-	"focus-single/internal/service/user"
-	"focus-single/internal/service/view"
+	"focus-single/internal/model"
+	"focus-single/internal/service"
 	"github.com/gogf/gf/v2/errors/gcode"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
@@ -19,15 +18,15 @@ var Register = cRegister{}
 type cRegister struct{}
 
 func (a *cRegister) Index(ctx context.Context, req *v1.RegisterIndexReq) (res *v1.RegisterIndexRes, err error) {
-	view.Render(ctx, view.View{})
+	service.View().Render(ctx, model.View{})
 	return
 }
 
 func (a *cRegister) Register(ctx context.Context, req *v1.RegisterDoReq) (res *v1.RegisterDoRes, err error) {
-	if !captcha.VerifyAndClear(g.RequestFromCtx(ctx), consts.CaptchaDefaultName, req.Captcha) {
+	if !service.Captcha().VerifyAndClear(g.RequestFromCtx(ctx), consts.CaptchaDefaultName, req.Captcha) {
 		return nil, gerror.NewCode(gcode.CodeBusinessValidationFailed, "请输入正确的验证码")
 	}
-	if err = user.Register(ctx, user.RegisterInput{
+	if err = service.User().Register(ctx, model.UserRegisterInput{
 		Passport: req.Passport,
 		Password: req.Password,
 		Nickname: req.Nickname,
@@ -36,7 +35,7 @@ func (a *cRegister) Register(ctx context.Context, req *v1.RegisterDoReq) (res *v
 	}
 
 	// 自动登录
-	err = user.Login(ctx, user.LoginInput{
+	err = service.User().Login(ctx, model.UserLoginInput{
 		Passport: req.Passport,
 		Password: req.Password,
 	})

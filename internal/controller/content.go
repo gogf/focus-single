@@ -4,9 +4,8 @@ import (
 	"context"
 
 	"focus-single/api/v1"
-	"focus-single/internal/service/content"
-	"focus-single/internal/service/session"
-	"focus-single/internal/service/view"
+	"focus-single/internal/model"
+	"focus-single/internal/service"
 )
 
 // Content 内容管理
@@ -15,15 +14,15 @@ var Content = cContent{}
 type cContent struct{}
 
 func (a *cContent) ShowCreate(ctx context.Context, req *v1.ContentShowCreateReq) (res *v1.ContentShowCreateRes, err error) {
-	view.Render(ctx, view.View{
+	service.View().Render(ctx, model.View{
 		ContentType: req.Type,
 	})
 	return
 }
 
 func (a *cContent) Create(ctx context.Context, req *v1.ContentCreateReq) (res *v1.ContentCreateRes, err error) {
-	out, err := content.Create(ctx, content.CreateInput{
-		CreateUpdateBase: content.CreateUpdateBase{
+	out, err := service.Content().Create(ctx, model.ContentCreateInput{
+		ContentCreateUpdateBase: model.ContentCreateUpdateBase{
 			Type:       req.Type,
 			CategoryId: req.CategoryId,
 			Title:      req.Title,
@@ -33,7 +32,7 @@ func (a *cContent) Create(ctx context.Context, req *v1.ContentCreateReq) (res *v
 			Tags:       req.Tags,
 			Referer:    req.Referer,
 		},
-		UserId: session.GetUser(ctx).Id,
+		UserId: service.Session().GetUser(ctx).Id,
 	})
 	if err != nil {
 		return nil, err
@@ -42,19 +41,19 @@ func (a *cContent) Create(ctx context.Context, req *v1.ContentCreateReq) (res *v
 }
 
 func (a *cContent) ShowUpdate(ctx context.Context, req *v1.ContentShowUpdateReq) (res *v1.ContentShowUpdateRes, err error) {
-	getDetailRes, err := content.GetDetail(ctx, req.Id)
+	getDetailRes, err := service.Content().GetDetail(ctx, req.Id)
 	if err != nil {
 		return nil, err
 	}
-	view.Render(ctx, view.View{
+	service.View().Render(ctx, model.View{
 		ContentType: getDetailRes.Content.Type,
 		Data:        getDetailRes,
-		Title: view.GetTitle(ctx, &view.GetTitleInput{
+		Title: service.View().GetTitle(ctx, &model.ViewGetTitleInput{
 			ContentType: getDetailRes.Content.Type,
 			CategoryId:  getDetailRes.Content.CategoryId,
 			CurrentName: getDetailRes.Content.Title,
 		}),
-		BreadCrumb: view.GetBreadCrumb(ctx, &view.GetBreadCrumbInput{
+		BreadCrumb: service.View().GetBreadCrumb(ctx, &model.ViewGetBreadCrumbInput{
 			ContentId:   getDetailRes.Content.Id,
 			ContentType: getDetailRes.Content.Type,
 			CategoryId:  getDetailRes.Content.CategoryId,
@@ -64,9 +63,9 @@ func (a *cContent) ShowUpdate(ctx context.Context, req *v1.ContentShowUpdateReq)
 }
 
 func (a *cContent) Update(ctx context.Context, req *v1.ContentUpdateReq) (res *v1.ContentUpdateRes, err error) {
-	err = content.Update(ctx, content.UpdateInput{
+	err = service.Content().Update(ctx, model.ContentUpdateInput{
 		Id: req.Id,
-		CreateUpdateBase: content.CreateUpdateBase{
+		ContentCreateUpdateBase: model.ContentCreateUpdateBase{
 			Type:       req.Type,
 			CategoryId: req.CategoryId,
 			Title:      req.Title,
@@ -81,6 +80,6 @@ func (a *cContent) Update(ctx context.Context, req *v1.ContentUpdateReq) (res *v
 }
 
 func (a *cContent) Delete(ctx context.Context, req *v1.ContentDeleteReq) (res *v1.ContentDeleteRes, err error) {
-	err = content.Delete(ctx, req.Id)
+	err = service.Content().Delete(ctx, req.Id)
 	return
 }

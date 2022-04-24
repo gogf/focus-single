@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"focus-single/api/v1"
-	"focus-single/internal/service/category"
+	"focus-single/internal/service"
 )
 
 // 栏目管理
@@ -14,6 +14,6 @@ type cCategory struct{}
 
 func (a *cCategory) Tree(ctx context.Context, req *v1.CategoryTreeReq) (res *v1.CategoryTreeRes, err error) {
 	res = &v1.CategoryTreeRes{}
-	res.List, err = category.GetTree(ctx, req.ContentType)
+	res.List, err = service.Category().GetTree(ctx, req.ContentType)
 	return
 }

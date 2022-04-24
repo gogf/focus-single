@@ -4,8 +4,7 @@ import (
 	"context"
 
 	"focus-single/internal/controller"
-	"focus-single/internal/service/middleware"
-	"focus-single/internal/service/view"
+	"focus-single/internal/service"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/os/gcmd"
@@ -50,29 +49,29 @@ var (
 			// 前台系统自定义错误页面
 			s.BindStatusHandler(401, func(r *ghttp.Request) {
 				if !gstr.HasPrefix(r.URL.Path, "/admin") {
-					view.Render401(r.Context())
+					service.View().Render401(r.Context())
 				}
 			})
 			s.BindStatusHandler(403, func(r *ghttp.Request) {
 				if !gstr.HasPrefix(r.URL.Path, "/admin") {
-					view.Render403(r.Context())
+					service.View().Render403(r.Context())
 				}
 			})
 			s.BindStatusHandler(404, func(r *ghttp.Request) {
 				if !gstr.HasPrefix(r.URL.Path, "/admin") {
-					view.Render404(r.Context())
+					service.View().Render404(r.Context())
 				}
 			})
 			s.BindStatusHandler(500, func(r *ghttp.Request) {
 				if !gstr.HasPrefix(r.URL.Path, "/admin") {
-					view.Render500(r.Context())
+					service.View().Render500(r.Context())
 				}
 			})
 
 			s.Group("/", func(group *ghttp.RouterGroup) {
 				group.Middleware(
-					middleware.Ctx,
-					middleware.ResponseHandler,
+					service.Middleware().Ctx,
+					service.Middleware().ResponseHandler,
 				)
 				group.Bind(
 					controller.Index,    // 首页
@@ -89,7 +88,7 @@ var (
 				)
 				// 权限控制路由
 				group.Group("/", func(group *ghttp.RouterGroup) {
-					group.Middleware(middleware.Auth)
+					group.Middleware(service.Middleware().Auth)
 					group.Bind(
 						controller.Profile,  // 个人
 						controller.Content,  // 内容

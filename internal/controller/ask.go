@@ -5,8 +5,8 @@ import (
 
 	"focus-single/api/v1"
 	"focus-single/internal/consts"
-	"focus-single/internal/service/content"
-	"focus-single/internal/service/view"
+	"focus-single/internal/model"
+	"focus-single/internal/service"
 )
 
 // Ask 问答管理
@@ -16,7 +16,7 @@ type cAak struct{}
 
 func (a *cAak) Index(ctx context.Context, req *v1.AskIndexReq) (res *v1.AskIndexRes, err error) {
 	req.Type = consts.ContentTypeAsk
-	getListRes, err := content.GetList(ctx, content.GetListInput{
+	getListRes, err := service.Content().GetList(ctx, model.ContentGetListInput{
 		Type:       req.Type,
 		CategoryId: req.CategoryId,
 		Page:       req.Page,
@@ -26,10 +26,10 @@ func (a *cAak) Index(ctx context.Context, req *v1.AskIndexReq) (res *v1.AskIndex
 	if err != nil {
 		return nil, err
 	}
-	view.Render(ctx, view.View{
+	service.View().Render(ctx, model.View{
 		ContentType: req.Type,
 		Data:        getListRes,
-		Title: view.GetTitle(ctx, &view.GetTitleInput{
+		Title: service.View().GetTitle(ctx, &model.ViewGetTitleInput{
 			ContentType: req.Type,
 			CategoryId:  req.CategoryId,
 		}),
@@ -38,30 +38,30 @@ func (a *cAak) Index(ctx context.Context, req *v1.AskIndexReq) (res *v1.AskIndex
 }
 
 func (a *cAak) Detail(ctx context.Context, req *v1.AskDetailReq) (res *v1.AskDetailRes, err error) {
-	getDetailRes, err := content.GetDetail(ctx, req.Id)
+	getDetailRes, err := service.Content().GetDetail(ctx, req.Id)
 	if err != nil {
 		return nil, err
 	}
 	if getDetailRes == nil {
-		view.Render404(ctx)
+		service.View().Render404(ctx)
 		return nil, nil
 	}
-	if err = content.AddViewCount(ctx, req.Id, 1); err != nil {
+	if err = service.Content().AddViewCount(ctx, req.Id, 1); err != nil {
 		return nil, err
 	}
 	var (
-		title = view.GetTitle(ctx, &view.GetTitleInput{
+		title = service.View().GetTitle(ctx, &model.ViewGetTitleInput{
 			ContentType: getDetailRes.Content.Type,
 			CategoryId:  getDetailRes.Content.CategoryId,
 			CurrentName: getDetailRes.Content.Title,
 		})
-		breadCrumb = view.GetBreadCrumb(ctx, &view.GetBreadCrumbInput{
+		breadCrumb = service.View().GetBreadCrumb(ctx, &model.ViewGetBreadCrumbInput{
 			ContentId:   getDetailRes.Content.Id,
 			ContentType: getDetailRes.Content.Type,
 			CategoryId:  getDetailRes.Content.CategoryId,
 		})
 	)
-	view.Render(ctx, view.View{
+	service.View().Render(ctx, model.View{
 		ContentType: consts.ContentTypeAsk,
 		Data:        getDetailRes,
 		Title:       title,

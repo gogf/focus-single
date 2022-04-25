@@ -3,7 +3,7 @@ module focus-single
 go 1.15
 
 require (
-	github.com/gogf/gf/v2 v2.0.0-rc3.0.20220302131516-4e2d3781455d
+	github.com/gogf/gf/v2 v2.0.6
 	github.com/kr/text v0.2.0 // indirect
 	github.com/mojocn/base64Captcha v1.3.1
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect

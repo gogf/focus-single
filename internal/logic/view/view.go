@@ -24,7 +24,6 @@ func (s *sView) GetBreadCrumb(ctx context.Context, in *model.ViewGetBreadCrumbIn
 	breadcrumb := []model.ViewBreadCrumb{
 		{Name: "首页", Url: "/"},
 	}
-
 	var uriPrefix string
 	if in.ContentType != "" {
 		uriPrefix = "/" + in.ContentType

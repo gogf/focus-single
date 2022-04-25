@@ -49,7 +49,7 @@ func (s *sContent) GetList(ctx context.Context, in model.ContentGetListInput) (o
 		m = m.Where(dao.Content.Columns().CategoryId, idArray)
 	}
 	// 管理员可以查看所有文章
-	if in.UserId > 0 && !service.service.User().IsAdminShow(ctx, in.UserId) {
+	if in.UserId > 0 && !service.User().IsAdmin(ctx, in.UserId) {
 		m = m.Where(dao.Content.Columns().UserId, in.UserId)
 	}
 	// 分配查询

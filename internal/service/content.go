@@ -25,6 +25,9 @@ type IContent interface {
 var localContent IContent
 
 func Content() IContent {
+	if localContent == nil {
+		panic("implement not found for interface IContent, forgot register?")
+	}
 	return localContent
 }
 

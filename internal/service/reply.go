@@ -19,6 +19,9 @@ type IReply interface {
 var localReply IReply
 
 func Reply() IReply {
+	if localReply == nil {
+		panic("implement not found for interface IReply, forgot register?")
+	}
 	return localReply
 }
 

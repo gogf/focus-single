@@ -22,6 +22,9 @@ type IBizCtx interface {
 var localBizCtx IBizCtx
 
 func BizCtx() IBizCtx {
+	if localBizCtx == nil {
+		panic("implement not found for interface IBizCtx, forgot register?")
+	}
 	return localBizCtx
 }
 

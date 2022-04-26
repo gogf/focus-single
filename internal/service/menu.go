@@ -18,6 +18,9 @@ type IMenu interface {
 var localMenu IMenu
 
 func Menu() IMenu {
+	if localMenu == nil {
+		panic("implement not found for interface IMenu, forgot register?")
+	}
 	return localMenu
 }
 

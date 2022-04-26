@@ -19,6 +19,9 @@ type ISetting interface {
 var localSetting ISetting
 
 func Setting() ISetting {
+	if localSetting == nil {
+		panic("implement not found for interface ISetting, forgot register?")
+	}
 	return localSetting
 }
 

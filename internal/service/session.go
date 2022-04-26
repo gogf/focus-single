@@ -25,6 +25,9 @@ type ISession interface {
 var localSession ISession
 
 func Session() ISession {
+	if localSession == nil {
+		panic("implement not found for interface ISession, forgot register?")
+	}
 	return localSession
 }
 

@@ -24,6 +24,9 @@ type IView interface {
 var localView IView
 
 func View() IView {
+	if localView == nil {
+		panic("implement not found for interface IView, forgot register?")
+	}
 	return localView
 }
 

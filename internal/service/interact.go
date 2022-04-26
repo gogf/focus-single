@@ -18,6 +18,9 @@ type IInteract interface {
 var localInteract IInteract
 
 func Interact() IInteract {
+	if localInteract == nil {
+		panic("implement not found for interface IInteract, forgot register?")
+	}
 	return localInteract
 }
 

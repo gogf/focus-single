@@ -16,6 +16,9 @@ type IFile interface {
 var localFile IFile
 
 func File() IFile {
+	if localFile == nil {
+		panic("implement not found for interface IFile, forgot register?")
+	}
 	return localFile
 }
 

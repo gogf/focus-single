@@ -21,6 +21,9 @@ type ICategory interface {
 var localCategory ICategory
 
 func Category() ICategory {
+	if localCategory == nil {
+		panic("implement not found for interface ICategory, forgot register?")
+	}
 	return localCategory
 }
 

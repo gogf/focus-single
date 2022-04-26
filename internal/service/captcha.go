@@ -18,6 +18,9 @@ type ICaptcha interface {
 var localCaptcha ICaptcha
 
 func Captcha() ICaptcha {
+	if localCaptcha == nil {
+		panic("implement not found for interface ICaptcha, forgot register?")
+	}
 	return localCaptcha
 }
 

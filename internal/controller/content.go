@@ -41,24 +41,24 @@ func (a *cContent) Create(ctx context.Context, req *v1.ContentCreateReq) (res *v
 }
 
 func (a *cContent) ShowUpdate(ctx context.Context, req *v1.ContentShowUpdateReq) (res *v1.ContentShowUpdateRes, err error) {
-	if getDetailRes, err := service.Content().GetDetail(ctx, req.Id); err != nil {
+	getDetailRes, err := service.Content().GetDetail(ctx, req.Id)
+	if err != nil {
 		return nil, err
-	} else {
-		service.View().Render(ctx, model.View{
-			ContentType: getDetailRes.Content.Type,
-			Data:        getDetailRes,
-			Title: service.View().GetTitle(ctx, &model.ViewGetTitleInput{
-				ContentType: getDetailRes.Content.Type,
-				CategoryId:  getDetailRes.Content.CategoryId,
-				CurrentName: getDetailRes.Content.Title,
-			}),
-			BreadCrumb: service.View().GetBreadCrumb(ctx, &model.ViewGetBreadCrumbInput{
-				ContentId:   getDetailRes.Content.Id,
-				ContentType: getDetailRes.Content.Type,
-				CategoryId:  getDetailRes.Content.CategoryId,
-			}),
-		})
 	}
+	service.View().Render(ctx, model.View{
+		ContentType: getDetailRes.Content.Type,
+		Data:        getDetailRes,
+		Title: service.View().GetTitle(ctx, &model.ViewGetTitleInput{
+			ContentType: getDetailRes.Content.Type,
+			CategoryId:  getDetailRes.Content.CategoryId,
+			CurrentName: getDetailRes.Content.Title,
+		}),
+		BreadCrumb: service.View().GetBreadCrumb(ctx, &model.ViewGetBreadCrumbInput{
+			ContentId:   getDetailRes.Content.Id,
+			ContentType: getDetailRes.Content.Type,
+			CategoryId:  getDetailRes.Content.CategoryId,
+		}),
+	})
 	return
 }
 

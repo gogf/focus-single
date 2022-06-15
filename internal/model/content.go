@@ -1,9 +1,8 @@
 package model
 
 import (
-	"github.com/gogf/gf/v2/os/gtime"
-
 	"focus-single/internal/model/entity"
+	"github.com/gogf/gf/v2/os/gtime"
 )
 
 // ContentGetListInput 获取内容列表

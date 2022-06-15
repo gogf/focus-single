@@ -4,15 +4,15 @@ import (
 	"context"
 
 	"focus-single/internal/controller"
+	"focus-single/internal/service"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
+	"github.com/gogf/gf/v2/net/goai"
 	"github.com/gogf/gf/v2/os/gcmd"
-	"github.com/gogf/gf/v2/protocol/goai"
 	"github.com/gogf/gf/v2/text/gstr"
 	"github.com/gogf/gf/v2/util/gmode"
 
 	"focus-single/internal/consts"
-	"focus-single/internal/service"
 	"focus-single/utility/response"
 )
 
@@ -68,7 +68,6 @@ var (
 				}
 			})
 
-			// 前台系统路由注册
 			s.Group("/", func(group *ghttp.RouterGroup) {
 				group.Middleware(
 					service.Middleware().Ctx,

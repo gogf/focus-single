@@ -3,11 +3,10 @@ package controller
 import (
 	"context"
 
-	"github.com/gogf/gf/v2/frame/g"
-
 	"focus-single/api/v1"
 	"focus-single/internal/model"
 	"focus-single/internal/service"
+	"github.com/gogf/gf/v2/frame/g"
 )
 
 // Reply 回复控制器
@@ -16,20 +15,20 @@ var Reply = cReply{}
 type cReply struct{}
 
 func (a *cReply) GetListContent(ctx context.Context, req *v1.ReplyGetListContentReq) (res *v1.ReplyGetListContentRes, err error) {
-	if getListRes, err := service.Reply().GetList(ctx, model.ReplyGetListInput{
+	out, err := service.Reply().GetList(ctx, model.ReplyGetListInput{
 		Page:       req.Page,
 		Size:       req.Size,
 		TargetType: req.TargetType,
 		TargetId:   req.TargetId,
-	}); err != nil {
+	})
+	if err != nil {
 		return nil, err
-	} else {
-		request := g.RequestFromCtx(ctx)
-		service.View().RenderTpl(ctx, "index/reply.html", model.View{Data: getListRes})
-		tplContent := request.Response.BufferString()
-		request.Response.ClearBuffer()
-		return &v1.ReplyGetListContentRes{Content: tplContent}, nil
 	}
+	request := g.RequestFromCtx(ctx)
+	service.View().RenderTpl(ctx, "index/reply.html", model.View{Data: out})
+	tplContent := request.Response.BufferString()
+	request.Response.ClearBuffer()
+	return &v1.ReplyGetListContentRes{Content: tplContent}, nil
 }
 
 func (a *cReply) Create(ctx context.Context, req *v1.ReplyCreateReq) (res *v1.ReplyCreateRes, err error) {

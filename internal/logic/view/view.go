@@ -15,6 +15,10 @@ import (
 
 type sView struct{}
 
+func init() {
+	service.RegisterView(New())
+}
+
 func New() *sView {
 	return &sView{}
 }

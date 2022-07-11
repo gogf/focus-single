@@ -1,6 +1,8 @@
 package main
 
 import (
+	_ "github.com/gogf/gf/contrib/drivers/mysql/v2"
+
 	_ "focus-single/internal/packed"
 
 	_ "focus-single/internal/logic"

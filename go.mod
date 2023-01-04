@@ -4,6 +4,7 @@ go 1.15
 
 require (
 	github.com/gogf/gf/contrib/drivers/mysql/v2 v2.2.1
+	github.com/gogf/gf/contrib/drivers/sqlite/v2 v2.2.6
 	github.com/gogf/gf/v2 v2.2.1
 	github.com/kr/text v0.2.0 // indirect
 	github.com/mojocn/base64Captcha v1.3.1

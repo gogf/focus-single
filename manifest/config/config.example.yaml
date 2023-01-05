@@ -21,7 +21,8 @@ database:
     ctxKeys: ["RequestId"]
 
   default:
-    link:   "mysql:root:12345678@tcp(127.0.0.1:3306)/focus"
+    # link:   "mysql:root:12345678@tcp(127.0.0.1:3306)/focus"
+    link:   "sqlite::@file(manifest/document/sqlite/focus.db)"
     debug:  true
 
 # 内容设置

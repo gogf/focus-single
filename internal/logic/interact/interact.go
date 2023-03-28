@@ -26,7 +26,7 @@ func New() *sInteract {
 
 // 赞
 func (s *sInteract) Zan(ctx context.Context, targetType string, targetId uint) error {
-	return dao.Interact.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
+	return dao.Interact.Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
 		customCtx := service.BizCtx().Get(ctx)
 		if customCtx == nil || customCtx.User == nil {
 			return nil
@@ -49,7 +49,7 @@ func (s *sInteract) Zan(ctx context.Context, targetType string, targetId uint) e
 
 // 取消赞
 func (s *sInteract) CancelZan(ctx context.Context, targetType string, targetId uint) error {
-	return dao.Interact.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
+	return dao.Interact.Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
 		customCtx := service.BizCtx().Get(ctx)
 		if customCtx == nil || customCtx.User == nil {
 			return nil
@@ -86,7 +86,7 @@ func (s *sInteract) DidIZan(ctx context.Context, targetType string, targetId uin
 
 // 踩
 func (s *sInteract) Cai(ctx context.Context, targetType string, targetId uint) error {
-	return dao.Interact.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
+	return dao.Interact.Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
 		customCtx := service.BizCtx().Get(ctx)
 		if customCtx == nil || customCtx.User == nil {
 			return nil
@@ -109,7 +109,7 @@ func (s *sInteract) Cai(ctx context.Context, targetType string, targetId uint) e
 
 // 取消踩
 func (s *sInteract) CancelCai(ctx context.Context, targetType string, targetId uint) error {
-	return dao.Interact.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
+	return dao.Interact.Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
 		customCtx := service.BizCtx().Get(ctx)
 		if customCtx == nil || customCtx.User == nil {
 			return nil
@@ -164,7 +164,7 @@ func (s *sInteract) getMyList(ctx context.Context) ([]*entity.Interact, error) {
 
 // 根据业务类型更新指定模块的赞/踩数量
 func (s *sInteract) updateCount(ctx context.Context, interactType int, targetType string, targetId uint, count int) error {
-	return dao.Interact.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
+	return dao.Interact.Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
 		defer func() {
 			// 清空上下文对应的互动数据缓存
 			if customCtx := service.BizCtx().Get(ctx); customCtx != nil {

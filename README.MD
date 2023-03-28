@@ -1,10 +1,10 @@
 # 1. Focus Single
 
-A project using GoFrame.
+A `MVC` project using `GoFrame`.
 
 # 2. Quick start
 
-## 2.1 If you use Sqlite
+## 2.1 If you use SQLite
 
 1. Download the source code
 ```
@@ -21,10 +21,12 @@ gf run main.go
 3. Enjoy it
 then open http://127.0.0.1:8199/ and enjoy it.
 
-> user: goframe
-> password: 123456
+```
+user:     goframe
+password: 123456
+```
 
-## 2.2 If you use mysql 
+## 2.2 If you use MySQL 
 
 1. Download the source code
 ```
@@ -47,6 +49,8 @@ gf run main.go
 ```
 
 then open http://127.0.0.1:8199/ and enjoy it.
+```
+user:     goframe
+password: 123456
+```
 
-> user: goframe
-> password: 123456

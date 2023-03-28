@@ -25,7 +25,7 @@ func New() *sReply {
 
 // Create 创建回复
 func (s *sReply) Create(ctx context.Context, in model.ReplyCreateInput) error {
-	return dao.Reply.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
+	return dao.Reply.Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
 		// 覆盖用户ID
 		in.UserId = service.BizCtx().Get(ctx).User.Id
 		_, err := dao.Reply.Ctx(ctx).Data(in).Insert()
@@ -38,7 +38,7 @@ func (s *sReply) Create(ctx context.Context, in model.ReplyCreateInput) error {
 
 // Delete 删除回复(硬删除)
 func (s *sReply) Delete(ctx context.Context, id uint) error {
-	return dao.Reply.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
+	return dao.Reply.Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
 		var reply *entity.Reply
 		err := dao.Reply.Ctx(ctx).WherePri(id).Scan(&reply)
 		if err != nil {
@@ -68,7 +68,7 @@ func (s *sReply) Delete(ctx context.Context, id uint) error {
 
 // 删除回复(硬删除)
 func (s *sReply) DeleteByUserContentId(ctx context.Context, userId, contentId uint) error {
-	return dao.Reply.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
+	return dao.Reply.Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
 		// 删除内容对应的回复
 		_, err := dao.Reply.Ctx(ctx).Where(g.Map{
 			dao.Reply.Columns().TargetId: contentId,

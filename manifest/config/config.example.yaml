@@ -15,7 +15,7 @@ server:
 # 数据库连接配置
 database:
   logger:
-    path:    "logs/sql"
+    path:    "temp/logs/sql"
     level:   "all"
     stdout:  true
     ctxKeys: ["RequestId"]
@@ -34,11 +34,11 @@ setting:
 
 # 文件上传设置
 upload:
-  path: "upload"
+  path: "temp/upload"
 
 # Logger configurations.
 logger:
-  path:    "logs/default"
+  path:    "temp/logs/default"
   level:   "all"
   stdout:  true
   ctxKeys: ["RequestId"]

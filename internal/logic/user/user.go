@@ -126,7 +126,7 @@ func (s *sUser) CheckNicknameUnique(ctx context.Context, nickname string) error 
 
 // 用户注册。
 func (s *sUser) Register(ctx context.Context, in model.UserRegisterInput) error {
-	return dao.User.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
+	return dao.User.Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
 		var user *entity.User
 		if err := gconv.Struct(in, &user); err != nil {
 			return err
@@ -151,7 +151,7 @@ func (s *sUser) Register(ctx context.Context, in model.UserRegisterInput) error 
 
 // 修改个人密码
 func (s *sUser) UpdatePassword(ctx context.Context, in model.UserPasswordInput) error {
-	return dao.User.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
+	return dao.User.Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
 		oldPassword := s.EncryptPassword(service.BizCtx().Get(ctx).User.Passport, in.OldPassword)
 		n, err := dao.User.Ctx(ctx).
 			Where(dao.User.Columns().Password, oldPassword).
@@ -193,7 +193,7 @@ func (s *sUser) GetProfile(ctx context.Context) (*model.UserGetProfileOutput, er
 }
 
 func (s *sUser) UpdateAvatar(ctx context.Context, in model.UserUpdateAvatarInput) error {
-	return dao.User.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
+	return dao.User.Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
 		var (
 			err error
 		)
@@ -208,7 +208,7 @@ func (s *sUser) UpdateAvatar(ctx context.Context, in model.UserUpdateAvatarInput
 
 // 修改个人资料
 func (s *sUser) UpdateProfile(ctx context.Context, in model.UserUpdateProfileInput) error {
-	return dao.User.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
+	return dao.User.Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
 		var (
 			err    error
 			user   = service.BizCtx().Get(ctx).User

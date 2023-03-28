@@ -3,12 +3,13 @@ package view
 import (
 	"fmt"
 
-	"focus-single/internal/service"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/gogf/gf/v2/text/gstr"
 	"github.com/gogf/gf/v2/util/gconv"
 	"github.com/gogf/gf/v2/util/gmode"
+
+	"focus-single/internal/service"
 
 	"focus-single/internal/consts"
 	"focus-single/internal/model"
@@ -19,19 +20,19 @@ type viewBuildIn struct {
 	httpRequest *ghttp.Request
 }
 
-// 我是否赞了这个内容
+// DidIZan 我是否赞了这个内容
 func (s *viewBuildIn) DidIZan(targetType string, targetId uint) bool {
 	b, _ := service.Interact().DidIZan(s.httpRequest.Context(), targetType, targetId)
 	return b
 }
 
-// 我是否踩了这个内容
+// DidICai 我是否踩了这个内容
 func (s *viewBuildIn) DidICai(targetType string, targetId uint) bool {
 	b, _ := service.Interact().DidICai(s.httpRequest.Context(), targetType, targetId)
 	return b
 }
 
-// 获取顶部菜单列表
+// TopMenus 获取顶部菜单列表
 func (s *viewBuildIn) TopMenus() ([]*model.MenuItem, error) {
 	topMenus, err := service.Menu().GetTopMenus(s.httpRequest.Context())
 	if err != nil {
@@ -75,12 +76,12 @@ func (s *viewBuildIn) TopMenus() ([]*model.MenuItem, error) {
 	return topMenus, nil
 }
 
-// 获得指定的栏目树形对象，当contentType为空时，表示获取所有的栏目树形对象。
+// CategoryTree 获得指定的栏目树形对象，当contentType为空时，表示获取所有的栏目树形对象。
 func (s *viewBuildIn) CategoryTree(contentType string) ([]*model.CategoryTreeItem, error) {
 	return service.Category().GetTree(s.httpRequest.Context(), contentType)
 }
 
-// 最新文章，12小时内为最新文章
+// IsNew 最新文章，12小时内为最新文章
 func (s *viewBuildIn) IsNew(gt *gtime.Time) bool {
 	if gt == nil {
 		return false
@@ -98,7 +99,7 @@ func (s *viewBuildIn) IsNew(gt *gtime.Time) bool {
 	return false
 }
 
-// 根据性别字段内容返回性别的font。
+// GenderFont 根据性别字段内容返回性别的font。
 func (s *viewBuildIn) GenderFont(gender int) string {
 	switch gender {
 	case consts.UserGenderMale:
@@ -110,7 +111,7 @@ func (s *viewBuildIn) GenderFont(gender int) string {
 	}
 }
 
-// 根据性别字段内容返回性别。
+// Gender 根据性别字段内容返回性别。
 func (s *viewBuildIn) Gender(gender int) string {
 	switch gender {
 	case consts.UserGenderMale:
@@ -122,7 +123,7 @@ func (s *viewBuildIn) Gender(gender int) string {
 	}
 }
 
-// 根据性别字段内容返回性别。
+// ContentTypeName 根据性别字段内容返回性别。
 func (s *viewBuildIn) ContentTypeName(contentType string) string {
 	switch contentType {
 	case consts.ContentTypeArticle:
@@ -136,7 +137,7 @@ func (s *viewBuildIn) ContentTypeName(contentType string) string {
 	}
 }
 
-// 创建分页HTML内容
+// Page 创建分页HTML内容
 func (s *viewBuildIn) Page(total, size int) string {
 	page := s.httpRequest.GetPage(total, size)
 	page.LinkStyle = "page-link"
@@ -153,7 +154,7 @@ func (s *viewBuildIn) Page(total, size int) string {
 	return content
 }
 
-// 获取当前页面的Url Path.
+// UrlPath 获取当前页面的Url Path.
 func (s *viewBuildIn) UrlPath() string {
 	return s.httpRequest.URL.Path
 }
@@ -193,7 +194,7 @@ func (s *viewBuildIn) FormatTime(gt *gtime.Time) string {
 	return rs
 }
 
-// 随机数 开发环境时间戳，线上为前端版本号
+// Version 随机数 开发环境时间戳，线上为前端版本号
 func (s *viewBuildIn) Version() string {
 	var rand string
 	if gmode.IsDevelop() {

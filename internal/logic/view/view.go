@@ -4,26 +4,23 @@ import (
 	"context"
 	"fmt"
 
-	"focus-single/internal/model"
-	"focus-single/internal/service"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gfile"
 	"github.com/gogf/gf/v2/text/gstr"
 	"github.com/gogf/gf/v2/util/gconv"
 	"github.com/gogf/gf/v2/util/gmode"
+
+	"focus-single/internal/model"
+	"focus-single/internal/service"
 )
 
 type sView struct{}
 
 func init() {
-	service.RegisterView(New())
+	service.RegisterView(&sView{})
 }
 
-func New() *sView {
-	return &sView{}
-}
-
-// 前台系统-获取面包屑列表
+// GetBreadCrumb 前台系统-获取面包屑列表.
 func (s *sView) GetBreadCrumb(ctx context.Context, in *model.ViewGetBreadCrumbInput) []model.ViewBreadCrumb {
 	breadcrumb := []model.ViewBreadCrumb{
 		{Name: "首页", Url: "/"},
@@ -56,7 +53,7 @@ func (s *sView) GetBreadCrumb(ctx context.Context, in *model.ViewGetBreadCrumbIn
 	return breadcrumb
 }
 
-// 前台系统-获取标题
+// GetTitle 前台系统-获取标题
 func (s *sView) GetTitle(ctx context.Context, in *model.ViewGetTitleInput) string {
 	var (
 		titleArray []string
@@ -82,7 +79,7 @@ func (s *sView) GetTitle(ctx context.Context, in *model.ViewGetTitleInput) strin
 	return gstr.Join(titleArray, " - ")
 }
 
-// 渲染指定模板页面
+// RenderTpl 渲染指定模板页面
 func (s *sView) RenderTpl(ctx context.Context, tpl string, data ...model.View) {
 	var (
 		viewObj  = model.View{}
@@ -125,16 +122,19 @@ func (s *sView) RenderTpl(ctx context.Context, tpl string, data ...model.View) {
 	_ = request.Response.WriteTpl(tpl, viewData)
 	// 开发模式下，在页面最下面打印所有的模板变量
 	if gmode.IsDevelop() {
-		_ = request.Response.WriteTplContent(`{{dump .}}`, viewData)
+		err := request.Response.WriteTplContent(`{{dump .}}`, viewData)
+		if err != nil {
+			panic(err)
+		}
 	}
 }
 
-// 渲染默认模板页面
+// Render 渲染默认模板页面
 func (s *sView) Render(ctx context.Context, data ...model.View) {
 	s.RenderTpl(ctx, g.Cfg().MustGet(ctx, "viewer.indexLayout").String(), data...)
 }
 
-// 跳转中间页面
+// Render302 跳转中间页面
 func (s *sView) Render302(ctx context.Context, data ...model.View) {
 	view := model.View{}
 	if len(data) > 0 {
@@ -147,7 +147,7 @@ func (s *sView) Render302(ctx context.Context, data ...model.View) {
 	s.Render(ctx, view)
 }
 
-// 401页面
+// Render401 401页面
 func (s *sView) Render401(ctx context.Context, data ...model.View) {
 	view := model.View{}
 	if len(data) > 0 {
@@ -160,7 +160,7 @@ func (s *sView) Render401(ctx context.Context, data ...model.View) {
 	s.Render(ctx, view)
 }
 
-// 403页面
+// Render403 403页面
 func (s *sView) Render403(ctx context.Context, data ...model.View) {
 	view := model.View{}
 	if len(data) > 0 {
@@ -173,7 +173,7 @@ func (s *sView) Render403(ctx context.Context, data ...model.View) {
 	s.Render(ctx, view)
 }
 
-// 404页面
+// Render404 404页面
 func (s *sView) Render404(ctx context.Context, data ...model.View) {
 	view := model.View{}
 	if len(data) > 0 {
@@ -186,7 +186,7 @@ func (s *sView) Render404(ctx context.Context, data ...model.View) {
 	s.Render(ctx, view)
 }
 
-// 500页面
+// Render500 500页面
 func (s *sView) Render500(ctx context.Context, data ...model.View) {
 	view := model.View{}
 	if len(data) > 0 {

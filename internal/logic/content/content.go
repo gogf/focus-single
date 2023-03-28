@@ -219,7 +219,7 @@ func (s *sContent) Create(ctx context.Context, in model.ContentCreateInput) (out
 
 // Update 修改
 func (s *sContent) Update(ctx context.Context, in model.ContentUpdateInput) error {
-	return dao.Content.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
+	return dao.Content.Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
 		// 不允许HTML代码
 		if err := ghtml.SpecialCharsMapOrStruct(in); err != nil {
 			return err
@@ -237,7 +237,7 @@ func (s *sContent) Update(ctx context.Context, in model.ContentUpdateInput) erro
 
 // Delete 删除
 func (s *sContent) Delete(ctx context.Context, id uint) error {
-	return dao.Content.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
+	return dao.Content.Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
 		user := service.BizCtx().Get(ctx).User
 		// 管理员直接删除文章和评论
 		if user.IsAdmin {
@@ -262,7 +262,7 @@ func (s *sContent) Delete(ctx context.Context, id uint) error {
 
 // AddViewCount 浏览次数增加
 func (s *sContent) AddViewCount(ctx context.Context, id uint, count int) error {
-	return dao.Content.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
+	return dao.Content.Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
 		_, err := dao.Content.Ctx(ctx).WherePri(id).Increment(dao.Content.Columns().ViewCount, count)
 		if err != nil {
 			return err
@@ -273,7 +273,7 @@ func (s *sContent) AddViewCount(ctx context.Context, id uint, count int) error {
 
 // AddReplyCount 回复次数增加
 func (s *sContent) AddReplyCount(ctx context.Context, id uint, count int) error {
-	return dao.Content.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
+	return dao.Content.Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
 		_, err := dao.Content.Ctx(ctx).WherePri(id).Increment(dao.Content.Columns().ReplyCount, count)
 		if err != nil {
 			return err
@@ -284,7 +284,7 @@ func (s *sContent) AddReplyCount(ctx context.Context, id uint, count int) error 
 
 // AdoptReply 采纳回复
 func (s *sContent) AdoptReply(ctx context.Context, id uint, replyID uint) error {
-	return dao.Content.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
+	return dao.Content.Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
 		_, err := dao.Content.Ctx(ctx).
 			Data(dao.Content.Columns().AdoptedReplyId, replyID).
 			Where(dao.Content.Columns().UserId, service.BizCtx().Get(ctx).User.Id).
@@ -299,7 +299,7 @@ func (s *sContent) AdoptReply(ctx context.Context, id uint, replyID uint) error 
 
 // UnacceptedReply 取消采纳回复
 func (s *sContent) UnacceptedReply(ctx context.Context, id uint) error {
-	return dao.Content.Transaction(ctx, func(ctx context.Context, tx *gdb.TX) error {
+	return dao.Content.Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
 		_, err := dao.Content.Ctx(ctx).
 			Data(dao.Content.Columns().AdoptedReplyId, 0).
 			WherePri(id).

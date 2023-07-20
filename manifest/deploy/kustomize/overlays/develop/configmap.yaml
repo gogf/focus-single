@@ -6,7 +6,7 @@ data:
   config.yaml: |
     server:
       address:     ":8000"
-      openapiPath: "/api.json"
+      openapiPath: "/user.json"
       swaggerPath: "/swagger"
 
     logger:

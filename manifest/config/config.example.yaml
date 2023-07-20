@@ -9,7 +9,7 @@ server:
   accessLogEnabled:    false
   accessLogPattern:    "access-{Ymd}.log"
   sessionPath:         "temp/sessions"    # Session文件存储目录
-  openapiPath:         "/api.json"
+  openapiPath:         "/user.json"
   swaggerPath:         "/swagger"
 
 # 数据库连接配置

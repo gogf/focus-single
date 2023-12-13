@@ -48,6 +48,11 @@ Import manifest/document/focus.sql to your Mysql
 gf run main.go
 ```
 
+5. use gf gen
+```
+vim hack/config.yaml 
+```
+
 then open http://127.0.0.1:8199/ and enjoy it.
 ```
 user:     goframe
